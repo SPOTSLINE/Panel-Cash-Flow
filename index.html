@@ -185,6 +185,62 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 .mh{background:#141414;border-bottom:2px solid var(--yellow)}
 .toast{background:var(--yellow);color:var(--yellow-ink);font-weight:600}
 [hidden]{display:none!important}
+/* ===== ⓘ información de cada dato ===== */
+.i{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1px solid #5a5a5a;color:var(--muted);font:700 10px/1 "Public Sans",system-ui,sans-serif;font-style:normal;cursor:help;margin-left:6px;vertical-align:middle;flex:none;text-transform:none;letter-spacing:0;user-select:none}
+.i:hover,.i:focus-visible,.i.on{border-color:var(--yellow);color:var(--yellow);outline:none}
+.infotxt{border-bottom:1px dotted #6a6a6a;cursor:help}
+.infotxt:hover{border-bottom-color:var(--yellow)}
+#tip{position:fixed;z-index:80;max-width:min(360px,calc(100vw - 24px));background:#141414;border:1px solid var(--yellow);border-radius:8px;padding:10px 12px;font-size:12.5px;line-height:1.5;color:var(--ink);box-shadow:0 10px 30px rgba(0,0,0,.55);display:none;pointer-events:none;text-transform:none;letter-spacing:0;font-weight:400}
+#tip .tt{font-weight:800;color:var(--yellow);margin-bottom:4px}
+#tip .ts{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.05em;margin-top:6px}
+/* ===== Caja, bancos y acuerdos (Prioridades) ===== */
+table.cb tr.emp td{background:#262626;color:#fff;font-weight:800;box-shadow:inset 4px 0 0 var(--yellow)}
+table.cb tr.grp td{background:#141414;color:var(--muted);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding-top:9px}
+table.cb tr.tot td{background:var(--yellow-soft);color:var(--yellow);font-weight:800;border-top:2px solid var(--yellow)}
+table.cb tr.usd td{color:#cfe6d7}
+table.cb tr.usdt td{background:#132019;color:var(--pos);font-weight:800}
+table.cb td.c1{padding-left:24px}
+table.cb td.viejo{color:var(--p2);font-weight:700}
+/* ===== Caja y Bancos editable ===== */
+.cjbar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:0 0 12px}
+.cjbar select,.cjbar input[type=date],.cjform input,.cjform select{border:1px solid #3a3a3a;background:var(--surface);padding:7px 10px;border-radius:8px;font-size:14px;color-scheme:dark}
+.cjbar .sp{flex:1}
+.pendn{font-size:12.5px;color:var(--yellow);font-weight:700}
+table.cj td,table.cj th{padding:5px 8px}
+table.cj th.dsel{background:var(--yellow-soft);color:var(--yellow)}
+table.cj td.old{color:#8d8d8d;font-size:12.5px}
+table.cj td.sel{background:#1c1a10;padding:3px 6px}
+table.cj input.v{width:132px;text-align:right;background:var(--bg);border:1px solid #3a3a3a;border-radius:6px;padding:5px 7px;font-variant-numeric:tabular-nums;font-size:13.5px}
+table.cj input.v:focus{border-color:var(--yellow);outline:none}
+table.cj input.v.chg{border-color:var(--yellow);background:#2a230a;color:var(--yellow)}
+table.cj input.v.man{box-shadow:inset 3px 0 0 var(--celeste-ink)}
+table.cj input.v:disabled{opacity:.75}
+table.cj tr.emp td{background:#262626;color:#fff;font-weight:800;box-shadow:inset 4px 0 0 var(--yellow)}
+table.cj tr.grp td{background:#141414;color:var(--muted);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+table.cj tr.st td{background:#1d1d1d;font-weight:700}
+table.cj tr.st.usd td{color:var(--pos)}
+table.cj td.var.neg{color:var(--neg)} table.cj td.var.pos{color:var(--pos)}
+.cjform{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 12px}
+.leyc{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--muted);margin:8px 2px}
+.leyc span{display:inline-flex;gap:6px;align-items:center}
+.sw2{width:14px;height:14px;border-radius:3px;border:1px solid #3a3a3a;display:inline-block}
+details.reg{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+details.reg summary{font-weight:700;cursor:pointer;color:var(--yellow)}
+a.lnk{color:inherit;text-decoration:none;border-bottom:1px dashed #6a6a6a;cursor:pointer}
+a.lnk:hover,a.lnk:focus-visible{color:var(--yellow);border-bottom-color:var(--yellow)}
+.cf tr.sub3 td,.cf tr.sub3 td.first{background:#111;color:#a9a9a9;font-size:12.5px}
+.cf tr.sub3 td.first{padding-left:60px}
+.cf td.ini{color:var(--ink)}
+.tag2{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.03em;padding:1px 7px;border-radius:99px;background:#232323;color:var(--muted);margin-left:8px;vertical-align:middle}
+.tag2.ok{background:var(--sync);color:var(--sync-ink)}
+.tag2.warn{background:var(--pend-bg);color:var(--yellow)}
+.plres{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:0 0 12px}
+.plres div{background:#141414;border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.plres small{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.plres b{font-size:17px}
+tr.pag td{color:#7d7d7d}
+.fuentes{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+
 .seg{flex-wrap:wrap;max-width:100%}
 input[type=checkbox]{accent-color:var(--yellow)}
 /* Ayuda */
@@ -215,11 +271,11 @@ input[type=checkbox]{accent-color:var(--yellow)}
   <header class="top">
     <div class="brand"><span class="logo" aria-hidden="true"></span><div>
       <h1>Cash Flow <span class="h1sub">· SPL / Spotsline</span></h1>
-      <p id="fileInfo"></p>
+      <p><span id="fileInfo"></span><i class="i" tabindex="0" data-info="origen">i</i></p>
     </div></div>
     <div class="actions">
       <span class="conn" id="conn">Conectando…</span>
-      <label class="inline">Fecha de análisis <input type="date" id="hoy" class="dateinp"></label>
+      <label class="inline">Fecha de análisis<i class="i" tabindex="0" data-info="fechaAnalisis">i</i> <input type="date" id="hoy" class="dateinp"></label>
       <button class="btn" id="btnRecargar" type="button" title="Volver a leer la base compartida">↻ Actualizar</button>
       <button class="btn primary" id="btnLoad">Cargar Excel nuevo</button>
       <input type="file" id="file" accept=".xlsx,.xls" class="hidden">
@@ -233,18 +289,21 @@ input[type=checkbox]{accent-color:var(--yellow)}
   <nav class="tabs" role="tablist">
     <button role="tab" aria-selected="true" data-tab="prio">Prioridades</button>
     <button role="tab" aria-selected="false" data-tab="cf">Cash flow</button>
+    <button role="tab" aria-selected="false" data-tab="caja">Caja y Bancos</button>
     <button role="tab" aria-selected="false" data-tab="det">Detalle de deudas</button>
     <button role="tab" aria-selected="false" data-tab="ayuda">Ayuda</button>
   </nav>
 
   <section id="tab-prio"></section>
   <section id="tab-cf" class="hidden"></section>
+  <section id="tab-caja" class="hidden"></section>
   <section id="tab-det" class="hidden"></section>
   <section id="tab-ayuda" class="hidden ayuda"></section>
 </div>
 
 <dialog id="modal"><div class="mh"><h3 id="mTitle"></h3><button class="x" id="mClose" aria-label="Cerrar">×</button></div><div class="mb" id="mBody"></div></dialog>
 <div class="toast" id="toast"></div>
+<div id="tip" role="tooltip"></div>
 
 <script>
 // Convierte el Excel de Cash Flow en una lista normalizada de movimientos.
@@ -516,8 +575,8 @@ const REGLAS = {'Créditos bancarios':{limite:2, dias:7}, 'Planes ARCA':{limite:
 const ING_ORDEN = ['Deudores por ventas','OV sin facturar','Ventas futuras'];
 const EGR_ORDEN = ['Excedido de acuerdo','Cheques propios','Sueldos','Cargas sociales','Créditos bancarios','Planes ARCA','Deudas ARCA','Impuestos','Planes de pago','Tarjetas de crédito','Servicios','Proveedores','Proveedores del exterior','OC sin facturar','Desvinculaciones'];
 const SOCIOS = ['Eduardo Porcel','Facundo Porcel','Juan Manuel Porcel'];
-const EMPRESAS = ['SPL','Spotsline',...SOCIOS];
-const FILTROS = [['Todas','Todas'],['SPL','SPL'],['Spotsline','Spotsline'],['Socios','Socios'],['Eduardo Porcel','Eduardo'],['Facundo Porcel','Facundo'],['Juan Manuel Porcel','Juan Manuel']];
+const EMPRESAS = ['Spotsline','SPL',...SOCIOS];
+const FILTROS = [['Todas','Todas'],['Spotsline','Spotsline'],['SPL','SPL'],['Socios','Socios'],['Eduardo Porcel','Eduardo'],['Facundo Porcel','Facundo'],['Juan Manuel Porcel','Juan Manuel']];
 function empsSel(){ return st.emp==='Todas'? EMPRESAS : st.emp==='Socios'? SOCIOS : [st.emp]; }
 
 /* ====================== estado ====================== */
@@ -526,7 +585,7 @@ let DATA = null;
 let ITEMS = [];
 const st = {
   emp:'Todas', tab:'prio', hoy: isoLocal(new Date()),
-  gran:'semana', modo:'proy', agrupar:'prio', proy:false, arrastre:true, abiertos:{ing:false, egr:true},
+  gran:'semana', modo:'proy', agrupar:'prio', proy:false, arrastre:true, abiertos:{ing:true, egr:true, ini:false, deu:false},
   det:{q:'', cat:'', niv:'', est:'', lim:200}
 };
 try { const s = JSON.parse(localStorage.getItem(LS_KEY+'_ui')||'{}'); Object.assign(st, s.st||{}); st.hoy = isoLocal(new Date()); st.tab = st.tab||'prio'; } catch(e){}
@@ -589,14 +648,14 @@ function setConn(cls, txt){ const el=document.getElementById('conn'); el.classNa
 /* Usuario y permisos (window.PORTAL_ACCESO lo pone candado.js). Cargar Excel: administrador general
    o permiso "importar" en la config del panel. Archivo suelto (sin candado) = todo habilitado. */
 let USUARIO = {nombre:'', es_admin:true, local:true};
-let PERM = {importar:true};
+let PERM = {importar:true, editar:true};
 async function cargarAcceso(){
   if(!window.PORTAL_ACCESO || typeof window.PORTAL_ACCESO.then !== 'function') return;
   let a=null; try{ a = await window.PORTAL_ACCESO; }catch(e){ return; }
   if(!a) return;
   USUARIO = {nombre:a.nombre||a.email||'Usuario', es_admin:!!a.es_admin, local:false};
   const acc = (a.config && a.config.acciones) || {};
-  PERM = {importar: !!a.es_admin || acc.importar===true};
+  PERM = {importar: !!a.es_admin || acc.importar===true, editar: !!a.es_admin || acc.editar===true || acc.importar===true};
 }
 function aplicarPermisosUI(){ document.getElementById('btnLoad').hidden = !PERM.importar; }
 
@@ -619,8 +678,11 @@ async function initData(){
   }
   if(CONECTADO) setConn('ok', 'Base compartida');
   else setConn('bad', 'Sin conexión: copia guardada en el archivo');
+  await cargarCaja(d);
+  await cargarPaneles();
   setData(d);
   if(CONECTADO) actualizarResumen(false);
+  if(CONECTADO && (!PANELES.cob || !PANELES.prov)) toast('Aviso: '+[!PANELES.cob?'Cobranzas':'',!PANELES.prov?'Proveedores':''].filter(Boolean).join(' y ')+' no respondió; se usa el Excel para eso.');
 }
 document.getElementById('btnRecargar').onclick = ()=>initData();
 
@@ -643,7 +705,7 @@ function calcSemana(emp, planes, hoy){
 }
 function calcResumen(){
   const hoyReal = isoLocal(new Date()), guardada = st.hoy;
-  st.hoy = hoyReal; ITEMS = DATA.items.filter(it=>it.cat!=='Cheques de terceros').concat(sinteticos());
+  st.hoy = hoyReal; ITEMS = construirItems();
   try{
     const planes = evaluarPlanes();
     const sum = (a,b)=>{ const o={}; Object.keys(a).forEach(k=>{ o[k] = typeof a[k]==='number' ? a[k]+b[k] : ([a[k],b[k]].filter(Boolean).sort()[0]||null); }); return o; };
@@ -653,7 +715,7 @@ function calcResumen(){
     const todas = sum(spl, spotsline);
     return {hoy:hoyReal, archivo:(DATA.meta||{}).archivo||'', cargado:(DATA.meta||{}).cargado||'', generado:new Date().toISOString(), spl, spotsline, todas};
   } finally {
-    st.hoy = guardada; ITEMS = DATA.items.filter(it=>it.cat!=='Cheques de terceros').concat(sinteticos());
+    st.hoy = guardada; ITEMS = construirItems();
   }
 }
 async function actualizarResumen(forzar){
@@ -687,12 +749,14 @@ document.getElementById('file').onchange=async ev=>{
     const d = extractCash(X, wb);
     d.meta = {archivo:f.name, cargado:isoLocal(new Date()), por:USUARIO.local?'':USUARIO.nombre};
     if(!d.hojaAcuerdos) toast('Aviso: el Excel no tiene la hoja de acuerdos, se toman como cero');
+    let cajaMsg = '';
+    try { cajaMsg = await mezclarCajaExcel(d); } catch(e){ console.error(e); cajaMsg = ' (Caja y Bancos no se pudo actualizar: '+e.message+')'; }
     setData(d);
     let guardado = false;
     try { await sbGuardar(ROW_DATOS, toCompact(d)); guardado = true; CONECTADO = true; setConn('ok','Base compartida'); }
     catch(e){ console.error(e); setConn('bad','No se guardó en la base: '+e.message); }
     if(guardado) await actualizarResumen(true);
-    toast(guardado ? 'Listo: '+d.items.length+' movimientos de '+f.name+', guardados para todos'
+    toast(guardado ? 'Listo: '+d.items.length+' movimientos de '+f.name+', guardados para todos'+cajaMsg
                    : 'Se leyó '+f.name+' pero NO se pudo guardar en la base compartida. Solo lo ves vos hasta recargar.');
   }catch(e){ toast('No se pudo leer el archivo: '+e.message); }
   ev.target.value='';
@@ -805,7 +869,7 @@ function caja(emp){
   const totAcuerdos = bancos.reduce((s,b)=>s+b.acuerdo,0);
   const margenLibre = bancos.reduce((s,b)=>s+Math.max(b.margen,0),0);
   const excedido = bancos.reduce((s,b)=>s+Math.max(-b.margen,0),0);
-  return {emp, fecha, efectivo, usd, cheques, bancos, sinCruce, saldoBancos, totAcuerdos, margenLibre, excedido,
+  return {emp, fecha, filas: cs.map(c=>({tipo:c.tipo, cuenta:c.cuenta, u:ultimo(c.serie)})), efectivo, usd, cheques, bancos, sinCruce, saldoBancos, totAcuerdos, margenLibre, excedido,
     saldoReal: efectivo + saldoBancos,
     disponible: efectivo + margenLibre + cheques};
 }
@@ -828,15 +892,16 @@ function sinteticos(){
 
 /* ====================== render ====================== */
 function renderAll(){
-  ITEMS = DATA.items.filter(it=>it.cat!=='Cheques de terceros').concat(sinteticos());
+  ITEMS = construirItems();
   const m = DATA.meta||{};
   document.getElementById('fileInfo').textContent = 'Datos de '+(m.archivo||'—')+(m.cargado?', cargado el '+fdate(m.cargado):'')+(m.por?' por '+m.por:'');
   document.getElementById('hoy').value = st.hoy;
   renderEmp();
   document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected', b.dataset.tab===st.tab));
-  ['prio','cf','det','ayuda'].forEach(t=>document.getElementById('tab-'+t).classList.toggle('hidden', t!==st.tab));
+  ['prio','cf','caja','det','ayuda'].forEach(t=>document.getElementById('tab-'+t).classList.toggle('hidden', t!==st.tab));
   if(st.tab==='prio') renderPrio();
   if(st.tab==='cf') renderCF();
+  if(st.tab==='caja') renderCaja();
   if(st.tab==='det') renderDet();
   if(st.tab==='ayuda') renderAyuda();
   saveUI();
@@ -854,7 +919,7 @@ function renderPrio(){
   const planes = evaluarPlanes();
   const fin7 = addDays(st.hoy, 6);
   const emps = empsSel();
-  let html = `<h2 style="margin-top:0">Esta semana</h2><p class="h2sub">Del ${fdate(st.hoy)} al ${fdate(fin7)}. Cobros y pagos según la fecha prevista de pago de cada hoja. Lo atrasado se muestra aparte para no mezclarlo con la semana.</p><div class="week">`;
+  let html = `<h2 style="margin-top:0">Esta semana${ii('semana')}</h2><p class="h2sub">Del ${fdate(st.hoy)} al ${fdate(fin7)}. Cobros y pagos según la fecha prevista de pago de cada hoja. Lo atrasado se muestra aparte para no mezclarlo con la semana.</p><div class="week">`;
   emps.forEach(e=>{
     const d = dispHoy(e);
     const its = ITEMS.filter(it=>it.emp===e && !it.proyectado);
@@ -872,37 +937,22 @@ function renderPrio(){
     const res = disp + ing - egr;
     const pos = byNiv.map(v=>Math.max(v,0)); const sum = pos.reduce((a,b)=>a+b,0)||1;
     const cj = d? d.caja : null;
-    html += `<div class="wk"><div class="who"><h3>${e}</h3><small>${cj? 'Caja y Bancos al '+fdate(d.fecha): 'Sin cuentas en Caja y Bancos'}</small></div>
+    html += `<div class="wk"><div class="who"><h3>${e}</h3><small>${cj? 'Caja y Bancos al '+fdate(d.fecha)+ii('fechaCaja'): 'Sin cuentas en Caja y Bancos'}</small></div>
       <div class="eq">
-        <div class="term"><div class="lbl">Disponible hoy</div><div class="val ${disp<0?'neg':''}">${millS(disp)}</div>${cj?`<div class="lbl" style="font-weight:500;margin-top:2px">Margen de acuerdos ${millS(cj.margenLibre)}, efectivo ${millS(cj.efectivo)}, cheques en cartera ${millS(cj.cheques)}</div>`:''}</div>
-        <div class="term"><div class="lbl">Entra (cobros previstos)</div><div class="val">+ ${millS(ing)}</div></div>
-        <div class="term"><div class="lbl">Sale (pagos previstos)</div><div class="val">${egr>=0?'− '+millS(egr):'+ '+millS(-egr)}</div>
+        <div class="term"><div class="lbl">Disponible hoy${ii('disp')}</div><div class="val ${disp<0?'neg':''}">${millS(disp)}</div>${cj?`<div class="lbl" style="font-weight:500;margin-top:2px">Margen de acuerdos ${millS(cj.margenLibre)}, efectivo ${millS(cj.efectivo)}, cheques en cartera ${millS(cj.cheques)}</div>`:''}</div>
+        <div class="term"><div class="lbl">Entra (cobros previstos)${ii('entra')}</div><div class="val">+ ${millS(ing)}</div></div>
+        <div class="term"><div class="lbl">Sale (pagos previstos)${ii('sale')}</div><div class="val">${egr>=0?'− '+millS(egr):'+ '+millS(-egr)}</div>
           <div class="stack" title="Pagos de la semana por prioridad">${pos.map((v,i)=>v?`<span class="d${i}" style="width:${(v/sum*100).toFixed(2)}%"></span>`:'').join('')}</div></div>
-        <div class="term res"><div class="lbl">Queda al ${fdate(fin7).slice(0,5)}</div><div class="val ${res<0?'neg':'pos'}">${millS(res)}</div></div>
+        <div class="term res"><div class="lbl">Queda al ${fdate(fin7).slice(0,5)}${ii('queda')}</div><div class="val ${res<0?'neg':'pos'}">${millS(res)}</div></div>
       </div>
-      ${cj && cj.excedido>1? `<div class="late">Hay <b class="neg">${millS(cj.excedido)}</b> pasados del acuerdo en ${cj.bancos.filter(b=>b.margen< -1).length} cuenta(s). Ya está sumado en "Sale" como pago crítico de hoy.</div>`:''}
-      ${lateTot? `<div class="late">Además hay <b>${millS(lateTot)}</b> atrasado sin pagar${late[0]+late[1]? `, de lo cual <b class="neg">${millS(late[0]+late[1])}</b> es crítico o ya superó el límite`:''}.</div>`:''}
+      ${cj && cj.excedido>1? `<div class="late">Hay <b class="neg">${millS(cj.excedido)}</b> pasados del acuerdo en ${cj.bancos.filter(b=>b.margen< -1).length} cuenta(s). Ya está sumado en "Sale" como pago crítico de hoy.${ii('excedido')}</div>`:''}
+      ${lateTot? `<div class="late">Además hay <b>${millS(lateTot)}</b> atrasado sin pagar${late[0]+late[1]? `, de lo cual <b class="neg">${millS(late[0]+late[1])}</b> es crítico o ya superó el límite`:''}.${ii('atrasado')}</div>`:''}
     </div>`;
   });
   html += `</div>`;
 
-  // Bancos y acuerdos
-  const cajas = emps.map(caja).filter(c=>c && c.bancos.length);
-  if(cajas.length){
-    html += `<h2>Bancos y acuerdos</h2><p class="h2sub">Disponible de cada cuenta = acuerdo + saldo. Si el saldo pasa el acuerdo, la diferencia hay que cubrirla: no se compensa con el margen de otro banco.</p>`;
-    html += `<div class="tw"><table><thead><tr><th>Empresa</th><th>Cuenta</th><th class="n">Saldo</th><th class="n">Acuerdo</th><th class="n">Disponible</th><th class="n">A cubrir</th><th>Último dato</th></tr></thead><tbody>`;
-    cajas.forEach(c=>{
-      c.bancos.filter(b=>Math.abs(b.saldo)>=1||b.acuerdo).sort((a,b)=>a.margen-b.margen).forEach(b=>{
-        html += `<tr><td>${esc(c.emp)}</td><td>${esc(b.cuenta)}${b.vtoAc?'<br><span class="hint">Acuerdo vence '+fdate(b.vtoAc)+'</span>':''}</td><td class="n ${b.saldo<0?'neg':''}">${money(b.saldo)}</td><td class="n">${b.acuerdo?money(b.acuerdo):'—'}</td><td class="n">${b.margen>0?money(b.margen):'—'}</td><td class="n">${b.margen< -1?`<span class="pill l1">${money(-b.margen)}</span>`:'—'}</td><td>${fdate(b.fecha)}</td></tr>`;
-      });
-      html += `<tr class="tot"><td colspan="2"><b>${esc(c.emp)}: total bancos</b>${(c.efectivo||c.cheques)?' <span class="hint">(además: efectivo '+money(c.efectivo)+', cheques en cartera '+money(c.cheques)+')</span>':''}</td><td class="n"><b>${money(c.saldoBancos)}</b></td><td class="n"><b>${money(c.totAcuerdos)}</b></td><td class="n"><b>${money(c.margenLibre)}</b></td><td class="n"><b class="${c.excedido>1?'neg':''}">${c.excedido>1?money(c.excedido):'—'}</b></td><td></td></tr>`;
-    });
-    html += `</tbody></table></div>`;
-    const sc = cajas.flatMap(c=>c.sinCruce.map(a=>({...a})));
-    if(sc.length) html += `<p class="hint">Acuerdos que no encontré en Caja y Bancos (revisar que el nombre de la cuenta sea igual): ${sc.map(a=>esc(a.emp+' · '+a.cuenta+' '+money(a.monto))).join('; ')}.</p>`;
-    const usd = cajas.reduce((s,c)=>s+c.usd,0);
-    if(usd) html += `<p class="hint">Moneda extranjera en Caja y Bancos: USD ${nf0.format(usd)}. No se suma al disponible en pesos.</p>`;
-  }
+  // Caja, bancos y acuerdos
+  html += tablaCaja(emps);
 
   // Alertas de planes y créditos
   const lista = Object.values(planes).filter(p=>empsSel().includes(p.emp) && p.estado!=='ok');
@@ -910,13 +960,13 @@ function renderPrio(){
   const sup = lista.filter(p=>p.estado==='superado').sort((a,b)=>b.montoImp-a.montoImp);
   const cri = lista.filter(p=>p.estado==='critica').sort((a,b)=>a.prox.vto<b.prox.vto?-1:1);
   const pro = lista.filter(p=>p.estado==='pronto' && p.desde<=lim30).sort((a,b)=>a.desde<b.desde?-1:1);
-  html += `<h2>Planes ARCA y créditos bancarios</h2><p class="h2sub">Créditos: pasan a crítico 7 días antes de la cuota siguiente a una impaga. Planes ARCA: 7 días antes del tercer vencimiento impago. Los planes marcados "NO pagar" o caducos no se cuentan.</p>`;
-  const card = (p,cls,stateTxt)=>`<div class="al ${cls}"><div class="t"><span class="name">${esc(p.grupo)}</span><span class="emp">${esc(p.emp)}${p.socio?' ('+esc(p.socio)+')':''}</span></div>
+  html += `<h2>Planes ARCA y créditos bancarios${ii('planes')}</h2><p class="h2sub">Créditos: pasan a crítico 7 días antes de la cuota siguiente a una impaga. Planes ARCA: 7 días antes del tercer vencimiento impago. Los planes marcados "NO pagar" o caducos no se cuentan.</p>`;
+  const card = (p,cls,stateTxt)=>`<div class="al ${cls}"><div class="t"><span class="name">${lnk(p.cat,p.emp,p.grupo,esc(p.grupo))}${iiCat(p.cat)}</span><span class="emp">${esc(p.emp)}${p.socio?' ('+esc(p.socio)+')':''}</span></div>
     <div class="state">${stateTxt}</div>
-    <dl><dt>Cuotas vencidas impagas</dt><dd>${p.imp.length} de ${p.limite} permitidas antes del límite</dd>
-    <dt>Monto impago</dt><dd>${money(p.montoImp)}</dd>
-    ${p.prox?`<dt>Próxima cuota</dt><dd>${fdate(p.prox.vto)} · ${money(p.prox.monto)}</dd>`:''}
-    <dt>Para regularizar</dt><dd>${money(p.montoImp + (p.estado==='superado'?0:(p.prox?p.prox.monto:0)))}</dd></dl></div>`;
+    <dl><dt>Cuotas vencidas impagas${ii('cuotasImp')}</dt><dd>${p.imp.length} de ${p.limite} permitidas antes del límite</dd>
+    <dt>Monto impago${ii('montoImp')}</dt><dd>${money(p.montoImp)}</dd>
+    ${p.prox?`<dt>Próxima cuota${ii('proxCuota')}</dt><dd>${fdate(p.prox.vto)} · ${money(p.prox.monto)}</dd>`:''}
+    <dt>Para regularizar${ii('regularizar')}</dt><dd>${money(p.montoImp + (p.estado==='superado'?0:(p.prox?p.prox.monto:0)))}</dd></dl></div>`;
   const tipo = p=>p.cat==='Planes ARCA'?'Plan ARCA':'Crédito';
   html += `<div class="alerts">`;
   if(!sup.length && !cri.length && !pro.length) html += `<div class="empty">No hay planes ni créditos en zona de riesgo para esta selección.</div>`;
@@ -926,7 +976,7 @@ function renderPrio(){
   html += `</div>`;
 
   // Qué pagar
-  html += `<h2>Qué pagar, en orden</h2><p class="h2sub">Todo lo atrasado más lo que vence en los próximos 7 días, agrupado por acreedor y ordenado por prioridad y fecha.</p>`;
+  html += `<h2>Qué pagar, en orden${ii('quepagar')}</h2><p class="h2sub">Todo lo atrasado más lo que vence en los próximos 7 días, agrupado por acreedor y ordenado por prioridad y fecha.</p>`;
   const grp = {};
   ITEMS.forEach(it=>{
     if(it.tipo!=='egreso' || !empOk(it) || !isPend(it) || it.proyectado || planMuerto(it)) return;
@@ -940,10 +990,10 @@ function renderPrio(){
   const tot=[0,0,0,0,0]; rows.forEach(r=>tot[r.n]+=r.monto);
   html += `<div class="totline">${NIVELES.map(n=>tot[n.id]?`<span class="pill l${n.id}" style="margin-right:6px">${n.nombre}: ${millS(tot[n.id])}</span>`:'').join('')}</div>`;
   PAGAR_ROWS = rows;
-  html += `<div class="tw"><table><thead><tr><th>Prioridad</th><th>Empresa</th><th>Rubro</th><th>Acreedor / concepto</th><th>Desde</th><th class="n">Días</th><th class="n">Ítems</th><th class="n">Monto</th></tr></thead><tbody>`;
+  html += `<div class="tw"><table><thead><tr><th>Prioridad${ii('prioridad')}</th><th>Empresa</th><th>Rubro${ii('rubro')}</th><th>Acreedor / concepto${ii('acreedor')}</th><th>Desde${ii('desde')}</th><th class="n">Días${ii('dias')}</th><th class="n">Ítems${ii('items')}</th><th class="n">Monto${ii('montoGrupo')}</th></tr></thead><tbody>`;
   rows.slice(0,150).forEach((r,i)=>{
     const dd = diffDays(st.hoy, r.fmin);
-    html += `<tr><td><span class="pill l${r.n}">${NIVELES[r.n].nombre}</span></td><td>${esc(r.emp)}${r.socio?' ('+esc(r.socio)+')':''}</td><td>${esc(r.cat)}</td><td class="wrapc">${esc(r.grupo||'—')}</td><td>${fdate(r.fmin)}</td><td class="n ${dd>0?'neg':''}">${dd>0?dd+' atras.':(dd===0?'hoy':'en '+(-dd))}</td><td class="n"><button class="btn" style="padding:2px 8px" data-pg="${i}">${r.cant}</button></td><td class="n"><b>${money(r.monto)}</b></td></tr>`;
+    html += `<tr><td><span class="pill l${r.n}">${NIVELES[r.n].nombre}</span></td><td>${esc(r.emp)}${r.socio?' ('+esc(r.socio)+')':''}</td><td>${txtCat(r.cat)}</td><td class="wrapc">${r.cat==='Excedido de acuerdo'?esc(r.grupo):lnk(r.cat,r.emp,r.grupo,esc(r.grupo||'—'))}</td><td>${fdate(r.fmin)}</td><td class="n ${dd>0?'neg':''}">${dd>0?dd+' atras.':(dd===0?'hoy':'en '+(-dd))}</td><td class="n"><button class="btn" style="padding:2px 8px" data-pg="${i}">${r.cant}</button></td><td class="n"><b>${money(r.monto)}</b></td></tr>`;
   });
   if(!rows.length) html += `<tr><td colspan="8">Nada atrasado ni por vencer esta semana.</td></tr>`;
   html += `</tbody></table></div>${rows.length>150?`<div class="hint">Se muestran los primeros 150 grupos de ${rows.length}. El resto está en "Detalle de deudas".</div>`:''}`;
@@ -951,7 +1001,7 @@ function renderPrio(){
   // Avisos
   const av = (DATA.avisos||[]).filter(a=>st.emp==='Todas'||empsSel().includes(a.emp)||a.emp==='Sin asignar');
   if(av.length){
-    html += `<details class="avisos"><summary>Deudas que no se pueden ubicar en el calendario (${av.length}, ${millS(av.reduce((s,a)=>s+a.monto,0))})</summary>
+    html += `<details class="avisos"><summary>Deudas que no se pueden ubicar en el calendario (${av.length}, ${millS(av.reduce((s,a)=>s+a.monto,0))})${ii('avisos')}</summary>
     <p class="h2sub" style="margin-top:8px">Les falta fecha de vencimiento o empresa en el Excel. Mientras no la tengan, no entran en el cash flow ni en las prioridades.</p>
     <div class="tw"><table><thead><tr><th>Empresa</th><th>Rubro</th><th>Concepto</th><th>Falta</th><th class="n">Monto</th></tr></thead><tbody>
     ${av.map(a=>`<tr><td>${esc(a.emp)}</td><td>${esc(a.cat)}</td><td class="wrapc">${esc(a.det)}</td><td>${esc(a.motivo)}</td><td class="n">${money(a.monto)}</td></tr>`).join('')}
@@ -984,7 +1034,7 @@ function renderCF(){
       if(!isPend(it) || planMuerto(it)) return;
       let ci;
       if(it.fp < st.hoy) ci = 0; else { const c = colOf(it.fp); if(c<0) return; ci = c+1; }
-      if(it.tipo==='ingreso'){ add('ing|'+it.cat, ci, it); add('ing', ci, it); }
+      if(it.tipo==='ingreso'){ add('ing|'+it.cat, ci, it); add('ing', ci, it); if(it.tramo) add('ing|'+it.cat+'|'+it.tramo, ci, it); }
       else {
         const nv = nivelDe(it, planes);
         add('egr', ci, it);
@@ -1002,13 +1052,13 @@ function renderCF(){
 
   const ctrl = `<div class="bar">
     <div class="seg" id="granSeg">${[['dia','Diario'],['semana','Semanal'],['quincena','Quincenal'],['mes','Mensual']].map(([k,l])=>`<button aria-pressed="${gran===k}" data-g="${k}">${l}</button>`).join('')}</div>
-    <div class="seg" id="modoSeg"><button aria-pressed="${proy}" data-m="proy">Lo que viene</button><button aria-pressed="${!proy}" data-m="hist">Lo pagado</button></div>
+    <div class="seg" id="modoSeg"><button aria-pressed="${proy}" data-m="proy">Lo que viene</button><button aria-pressed="${!proy}" data-m="hist">Lo pagado</button></div>${ii('modo')}
     ${proy?`<div class="seg" id="agrSeg"><button aria-pressed="${st.agrupar==='prio'}" data-a="prio">Egresos por prioridad</button><button aria-pressed="${st.agrupar==='rubro'}" data-a="rubro">Egresos por rubro</button></div>`:''}
-    <label class="inline"><input type="checkbox" id="chkProy" ${st.proy?'checked':''}> Incluir OV y OC sin facturar y ventas futuras</label>
-    ${proy?`<label class="inline"><input type="checkbox" id="chkArr" ${st.arrastre?'checked':''}> Descontar lo atrasado del saldo</label>`:''}
+    <label class="inline"><input type="checkbox" id="chkProy" ${st.proy?'checked':''}> Incluir OV y OC sin facturar y ventas futuras${ii('proyectados')}</label>
+    ${proy?`<label class="inline"><input type="checkbox" id="chkArr" ${st.arrastre?'checked':''}> Descontar lo atrasado del saldo${ii('arrastre')}</label>`:''}
   </div>`;
 
-  let head = `<tr><th class="first">En millones de $</th>${proy?`<th class="n lateh">Atrasado</th>`:''}${cols.map(c=>`<th class="n">${periodLabel(c,gran)}</th>`).join('')}</tr>`;
+  let head = `<tr><th class="first">En millones de $${ii(proy?'cfGrilla':'cfPagado')}</th>${proy?`<th class="n lateh">Atrasado${ii('cfAtrasado')}</th>`:''}${cols.map(c=>`<th class="n">${periodLabel(c,gran)}</th>`).join('')}</tr>`;
   const cell = (key, ci, extra='') => { const v = get(key)[ci].m; return `<td class="c ${Math.abs(v)<5000?'z':''} ${extra}" data-k="${esc(key)}" data-c="${ci}">${mill(v)}</td>`; };
   const rowCells = (key, cls='') => { let s=''; for(let ci=0;ci<NC;ci++) s+=cell(key,ci,(proy&&ci===0?'late ':'')+cls); return s; };
   let body = '';
@@ -1026,28 +1076,38 @@ function renderCF(){
       fin[ci] = ini[ci] + (cuenta? ingA[ci] - egrA[ci] : 0);
     }
     const numRow = (label, arr, cls='') => `<tr class="${cls}"><td class="first">${label}</td>${arr.map((v,ci)=>`<td class="n ${v<0?'neg':''} ${cls.includes('saldo')?'c':''} ${ci===0?'late':''}">${mill(v)}</td>`).join('')}</tr>`;
-    body += numRow(`Saldo inicial${disp?' <span class="hint">(acuerdos, efectivo y cheques en cartera, al '+fdate(disp.fecha)+')</span>':''}`, ini);
-    body += `<tr class="sec"><td class="first"><button class="tog" data-open="ing">${sg('ing')}</button>Ingresos</td>${rowCells('ing')}</tr>`;
-    if(st.abiertos.ing) ING_ORDEN.forEach(c=>{ if(!st.proy && (c==='OV sin facturar'||c==='Ventas futuras')) return; body += `<tr class="sub"><td class="first">${c}</td>${rowCells('ing|'+c)}</tr>`; });
-    body += `<tr class="sec"><td class="first"><button class="tog" data-open="egr">${sg('egr')}</button>Egresos</td>${rowCells('egr')}</tr>`;
+    body += `<tr><td class="first"><button class="tog" data-open="ini">${sg('ini')}</button>Saldo inicial${ii('saldoIni')}${disp?' <span class="hint">(Caja y Bancos al '+fdate(disp.fecha)+')</span>':''}</td>${ini.map((v,ci)=>`<td class="n ${v<0?'neg':''} ${ci===0&&proy?'late':''}">${mill(v)}</td>`).join('')}</tr>`;
+    if(st.abiertos.ini) body += filasSaldoInicial(NC);
+    body += `<tr class="sec"><td class="first"><button class="tog" data-open="ing">${sg('ing')}</button>Ingresos${ii('ingresos')}</td>${rowCells('ing')}</tr>`;
+    if(st.abiertos.ing) ING_ORDEN.forEach(c=>{
+      if(c==='Deudores por ventas'){
+        const conT = TRAMOS.filter(t=>cells['ing|'+c+'|'+t]);
+        body += `<tr class="sub"><td class="first">${conT.length?`<button class="tog" data-open="deu">${sg('deu')}</button>`:''}${c}${iiCat(c)}${fuenteTag('cobranzas')}</td>${rowCells('ing|'+c)}</tr>`;
+        if(st.abiertos.deu) conT.forEach(t=>{ body += `<tr class="sub2"><td class="first">${TRAMO_LBL[t]}${ii('tr'+TRAMOS.indexOf(t))}</td>${rowCells('ing|'+c+'|'+t)}</tr>`; });
+        return;
+      }
+      const etapa2 = c==='OV sin facturar' ? 'Etapa 2: Odoo' : 'Etapa 2: Planificación de Ventas';
+      body += `<tr class="sub"><td class="first">${c}${iiCat(c)}<span class="tag2">${etapa2}</span>${st.proy?'':' <span class="hint">(tildá "Incluir OV…" para sumarlo)</span>'}</td>${rowCells('ing|'+c)}</tr>`;
+    });
+    body += `<tr class="sec"><td class="first"><button class="tog" data-open="egr">${sg('egr')}</button>Egresos${ii('egresos')}</td>${rowCells('egr')}</tr>`;
     if(st.abiertos.egr){
       if(st.agrupar==='prio'){
         NIVELES.forEach(nv=>{
           const k='egr|'+nv.id; if(!cells[k]) return;
           const ok = 'n'+nv.id;
-          body += `<tr class="sub"><td class="first"><button class="tog" data-open="${ok}">${sg(ok)}</button><span class="dot d${nv.id}"></span>${nv.nombre}</td>${rowCells(k)}</tr>`;
-          if(st.abiertos[ok]) EGR_ORDEN.forEach(c=>{ const kk=k+'|'+c; if(cells[kk]) body += `<tr class="sub2"><td class="first">${c}</td>${rowCells(kk)}</tr>`; });
+          body += `<tr class="sub"><td class="first"><button class="tog" data-open="${ok}">${sg(ok)}</button><span class="dot d${nv.id}"></span>${nv.nombre}${ii('niv'+nv.id)}</td>${rowCells(k)}</tr>`;
+          if(st.abiertos[ok]) EGR_ORDEN.forEach(c=>{ const kk=k+'|'+c; if(cells[kk]) body += `<tr class="sub2"><td class="first">${c}${iiCat(c)}${c==='Proveedores'?fuenteTag('proveedores'):''}</td>${rowCells(kk)}</tr>`; });
         });
       } else {
-        EGR_ORDEN.forEach(c=>{ const kk='egr|'+c; if(cells[kk]) body += `<tr class="sub"><td class="first"><span class="dot d${BASE[c]??4}"></span>${c}</td>${rowCells(kk)}</tr>`; });
+        EGR_ORDEN.forEach(c=>{ const kk='egr|'+c; if(cells[kk]) body += `<tr class="sub"><td class="first"><span class="dot d${BASE[c]??4}"></span>${c}${iiCat(c)}${c==='Proveedores'?fuenteTag('proveedores'):''}</td>${rowCells(kk)}</tr>`; });
       }
     }
     const net = ingA.map((v,i)=>v-egrA[i]);
-    body += numRow('Neto del período', net, 'tot');
-    body += numRow('Saldo final proyectado', fin, 'saldo');
+    body += numRow('Neto del período'+ii('neto'), net, 'tot');
+    body += numRow('Saldo final proyectado'+ii('saldoFin'), fin, 'saldo');
   } else {
     body += `<tr class="sec"><td class="first">Pagado</td>${rowCells('egr')}</tr>`;
-    EGR_ORDEN.forEach(c=>{ const kk='egr|'+c; if(cells[kk]) body += `<tr class="sub"><td class="first"><span class="dot d${BASE[c]??4}"></span>${c}</td>${rowCells(kk)}</tr>`; });
+    EGR_ORDEN.forEach(c=>{ const kk='egr|'+c; if(cells[kk]) body += `<tr class="sub"><td class="first"><span class="dot d${BASE[c]??4}"></span>${c}${iiCat(c)}</td>${rowCells(kk)}</tr>`; });
   }
 
   const note = proy
@@ -1069,7 +1129,7 @@ function renderCF(){
 }
 function labelKey(k){
   const p=k.split('|');
-  if(p[0]==='ing') return p[1]||'Ingresos';
+  if(p[0]==='ing') return (p[1]||'Ingresos')+(p[2]?' · '+(TRAMO_LBL[p[2]]||p[2]):'');
   if(p.length===1) return 'Egresos';
   if(/^\d$/.test(p[1])) return NIVELES[+p[1]].nombre + (p[2]?' · '+p[2]:'');
   return p[1];
@@ -1100,9 +1160,9 @@ function renderDet(){
     <select id="dniv"><option value="">Todas las prioridades</option>${NIVELES.map(n=>`<option value="${n.id}" ${f.niv===String(n.id)?'selected':''}>${n.nombre}</option>`).join('')}</select>
     <select id="dest"><option value="">Todos los vencimientos</option><option value="venc" ${f.est==='venc'?'selected':''}>Vencido</option><option value="7" ${f.est==='7'?'selected':''}>Vence en 7 días</option><option value="30" ${f.est==='30'?'selected':''}>Vence en 30 días</option></select>
   </div>
-  <div class="totline"><b>${its.length}</b> deudas pendientes por <b>${money(tot)}</b>, de las cuales <b class="neg">${money(totV)}</b> ya vencieron.</div>
-  <div class="tw"><table><thead><tr><th>Prioridad</th><th>Empresa</th><th>Rubro</th><th>Detalle</th><th>Vence</th><th>Pago previsto</th><th class="n">Monto</th><th>Nota</th></tr></thead><tbody>
-  ${its.slice(0,f.lim).map(it=>`<tr><td><span class="pill l${it._n}">${NIVELES[it._n].nombre}</span></td><td>${esc(it.emp)}${it.socio?' ('+esc(it.socio)+')':''}</td><td>${esc(it.cat)}</td><td class="wrapc">${esc(it.det)}</td><td class="${it.vto<st.hoy?'neg':''}">${fdate(it.vto)}</td><td>${fdate(it.fp)}</td><td class="n">${money(it.monto)}</td><td class="wrapc">${esc(it.nota||'')}</td></tr>`).join('')}
+  <div class="totline"><b>${its.length}</b> deudas pendientes por <b>${money(tot)}</b>, de las cuales <b class="neg">${money(totV)}</b> ya vencieron.${ii('detTot')}</div>
+  <div class="tw"><table><thead><tr><th>Prioridad${ii('prioridad')}</th><th>Empresa</th><th>Rubro${ii('rubro')}</th><th>Detalle${ii('detalle')}</th><th>Vence${ii('vence')}</th><th>Pago previsto${ii('pagoPrev')}</th><th class="n">Monto${ii('monto')}</th><th>Nota${ii('nota')}</th></tr></thead><tbody>
+  ${its.slice(0,f.lim).map(it=>`<tr><td><span class="pill l${it._n}">${NIVELES[it._n].nombre}</span></td><td>${esc(it.emp)}${it.socio?' ('+esc(it.socio)+')':''}</td><td>${txtCat(it.cat)}</td><td class="wrapc">${it.sintetico?esc(it.det):lnk(it.cat,it.emp,it.grupo,esc(it.det))}</td><td class="${it.vto<st.hoy?'neg':''}">${fdate(it.vto)}</td><td>${fdate(it.fp)}</td><td class="n">${money(it.monto)}</td><td class="wrapc">${esc(it.nota||'')}</td></tr>`).join('')}
   ${!its.length?'<tr><td colspan="8">No hay deudas pendientes con estos filtros.</td></tr>':''}
   </tbody></table></div>
   ${its.length>f.lim?`<button class="btn more" id="dmore">Mostrar ${Math.min(200,its.length-f.lim)} más (hay ${its.length})</button>`:''}`;
@@ -1115,6 +1175,545 @@ function renderDet(){
   const mb=el.querySelector('#dmore'); if(mb) mb.onclick=()=>{ f.lim+=200; renderDet(); };
 }
 
+/* ====================== ⓘ: de dónde sale y cómo se calcula cada dato ====================== */
+const XL = 'Excel de Cash Flow';
+const INFO = {
+  origen:{t:'Origen de los datos', d:`Movimientos: el ${XL} cargado con "Cargar Excel nuevo" (hojas de deudas, cobros, cheques, etc.). Saldos de caja, bancos, cheques en cartera y moneda extranjera: la solapa Caja y Bancos (se llena con la hoja "Caja y Bancos" del Excel y se puede corregir y cargar a mano). Acuerdos: hoja cuyo nombre contenga "acuerdo", editables en Caja y Bancos.`},
+  fechaAnalisis:{t:'Fecha de análisis', d:'Mueve el "hoy" del panel para ver cómo estaba o va a estar todo otro día: qué estaba atrasado, qué vence en los 7 días siguientes y qué saldo tomar.', c:'No cambia nada guardado ni el recuadro de la portada (que siempre usa la fecha real).'},
+  semana:{t:'Esta semana', d:'Una fila por empresa con caja de hoy, cobros y pagos de los próximos 7 días y lo que quedaría.', c:'Período = fecha de análisis + 6 días. Se cuenta la "fecha prevista de pago" de cada hoja (si está vacía, el vencimiento).'},
+  fechaCaja:{t:'Fecha de los saldos', d:'Último día con algún saldo cargado en Caja y Bancos para esta empresa, hasta la fecha de análisis.'},
+  disp:{t:'Disponible hoy', d:'Solapa Caja y Bancos (hoja "Caja y Bancos" del Excel) + acuerdos.', c:'Efectivo + cheques de terceros en cartera + margen libre de cada banco. Margen de un banco = acuerdo + saldo; si da negativo cuenta 0 (la diferencia va a "Excedido de acuerdo"). La moneda extranjera no se suma. De cada cuenta se toma el último saldo cargado hasta la fecha de análisis.'},
+  entra:{t:'Entra (cobros previstos)', d:'Panel de Cobranzas: facturas de la cartera × % de cobro del objetivo del mes según el tipo de deudor (ver ⓘ de Deudores por ventas).', c:'Suma de lo esperado con fecha entre hoy y 6 días después. No incluye OV sin facturar ni ventas futuras. Los cheques de terceros no se suman acá: ya están en el disponible.'},
+  sale:{t:'Sale (pagos previstos)', d:'Todas las hojas de egresos del Excel (ver el ⓘ de cada rubro) + lo excedido de acuerdos.', c:'Suma de lo pendiente (Cancelado distinto de SI) con fecha prevista de pago entre hoy y 6 días después. La barra de colores muestra cuánto es de cada prioridad. No incluye OC sin facturar.'},
+  queda:{t:'Queda', c:'Disponible hoy + Entra − Sale. En rojo si da negativo: falta plata para cubrir la semana.'},
+  excedido:{t:'Excedido de acuerdo', d:'Caja y Bancos (saldo) + acuerdos.', c:'En cada banco: si el saldo es más negativo que el acuerdo, la diferencia hay que cubrirla y se suma como pago Crítico de hoy. No se compensa con el margen de otro banco.'},
+  atrasado:{t:'Atrasado', c:'Pagos pendientes con fecha prevista anterior a la fecha de análisis. No se mezclan con la semana. "Crítico" = prioridad Crítica o Límite superado.'},
+  cajaTabla:{t:'Caja, bancos y acuerdos', d:'Solapa Caja y Bancos (último saldo de cada cuenta hasta la fecha de análisis) + acuerdos.', c:'Primero Spotsline, después SPL. Bancos, efectivo y cheques en cartera fila por fila; el total en pesos es lo que se usa como "Disponible hoy". La moneda extranjera va abierta al final en US$ y no suma a los pesos.'},
+  cbSaldo:{t:'Saldo', d:'Caja y Bancos: último saldo cargado de la cuenta hasta la fecha de análisis.'},
+  cbAcuerdo:{t:'Acuerdo', d:'Hoja de acuerdos del Excel (o corregido a mano en Caja y Bancos). Monto del descubierto autorizado.'},
+  cbDisp:{t:'Disponible', c:'Bancos: acuerdo + saldo (si da negativo, 0). Efectivo y cheques: el saldo. Total = lo que se usa en "Disponible hoy".'},
+  cbCubrir:{t:'A cubrir', c:'Si el saldo pasó el acuerdo: saldo + acuerdo (en negativo). Es plata que hay que poner sí o sí; se suma como pago Crítico de hoy.'},
+  cbFecha:{t:'Último dato', d:'Día del saldo usado. En naranja si es más viejo que el último día cargado de esa empresa: esa cuenta no se actualizó y se sigue usando el saldo anterior.'},
+  cbUsd:{t:'Moneda extranjera', d:'Filas "MONEDA EXTRANJERA" de Caja y Bancos, en US$.', c:'Se muestran cuenta por cuenta, igual que en la hoja. No se suman al disponible en pesos.'},
+  planes:{t:'Planes ARCA y créditos bancarios', d:'Hojas "Planes ARCA" y "Créditos Bancarios" del Excel.', c:'Créditos: con 2 cuotas vencidas impagas se supera el límite; pasan a crítico 7 días antes de la cuota que llevaría a 2. Planes ARCA: igual con 3 cuotas. No se cuentan los planes con estado caduco/cancelado o nota "NO pagar".'},
+  cuotasImp:{t:'Cuotas vencidas impagas', c:'Cuotas del plan con vencimiento anterior a la fecha de análisis y Cancelado distinto de SI.'},
+  montoImp:{t:'Monto impago', c:'Suma de las cuotas vencidas impagas.'},
+  proxCuota:{t:'Próxima cuota', c:'Primera cuota pendiente con vencimiento desde la fecha de análisis.'},
+  regularizar:{t:'Para regularizar', c:'Monto impago + próxima cuota (si todavía no se superó el límite).'},
+  quepagar:{t:'Qué pagar, en orden', d:'Hojas de egresos del Excel + excedidos de acuerdo.', c:'Todo lo pendiente atrasado más lo que vence en los próximos 7 días, agrupado por empresa, rubro y acreedor. Orden: prioridad, fecha más vieja y monto.'},
+  prioridad:{t:'Prioridad', c:'Límite superado / Crítica: excedidos, cheques propios, sueldos, cargas sociales, y créditos o planes ARCA en riesgo. Alta: créditos, planes ARCA, impuestos, deudas ARCA. Media: tarjetas, servicios, planes de pago. Negociable: proveedores, exterior, OC sin facturar, desvinculaciones.'},
+  rubro:{t:'Rubro', d:'Hoja del Excel de donde sale cada movimiento. Pasá el mouse por el nombre del rubro para ver hoja y columnas.'},
+  acreedor:{t:'Acreedor / concepto', d:'Banco + código, número de plan, proveedor, tarjeta o servicio, según la hoja.'},
+  desde:{t:'Desde', c:'Fecha prevista de pago más vieja del grupo.'},
+  dias:{t:'Días', c:'Días de atraso de la fecha más vieja respecto de la fecha de análisis ("en N" = faltan N días).'},
+  items:{t:'Ítems', c:'Cantidad de cuotas o comprobantes del grupo. Tocá el número para ver el detalle.'},
+  montoGrupo:{t:'Monto', c:'Suma de lo pendiente del grupo.'},
+  avisos:{t:'Sin fecha o sin empresa', d:'Deudas ARCA sin vencimiento y hoja "Deuda OS".', c:'No entran en el cash flow ni en las prioridades hasta que tengan fecha y empresa en el Excel.'},
+  cfGrilla:{t:'Grilla de cash flow', d:`${XL} (movimientos) + Caja y Bancos (saldo inicial).`, c:'Columnas por día, semana, quincena o mes desde la fecha de análisis. En millones de pesos. Tocá un número para ver qué lo compone.'},
+  cfPagado:{t:'Lo pagado', d:'Movimientos con Cancelado = SI en cada hoja, por fecha de pago. Cheques propios: pagados cuando pasa su fecha.'},
+  cfAtrasado:{t:'Atrasado', c:'Pendiente con fecha prevista anterior a la fecha de análisis.'},
+  saldoIni:{t:'Saldo inicial', d:'Caja y Bancos + acuerdos.', c:'Primera columna: el Disponible hoy. Las siguientes: el saldo final de la columna anterior.'},
+  ingresos:{t:'Ingresos', c:'Deudores por ventas (panel de Cobranzas) + OV sin facturar y Ventas futuras (solo con la casilla tildada).'},
+  iniEfe:{t:'Efectivo', d:'Caja y Bancos: filas Efectivo y Otros, último saldo de cada una.'},
+  iniBan:{t:'Bancos (margen de acuerdos)', d:'Caja y Bancos + acuerdos.', c:'Por banco: acuerdo + saldo, si da positivo. Lo que pasa el acuerdo no resta acá: va como egreso Crítico ("Excedido de acuerdo").'},
+  iniChq:{t:'Cheques de terceros en cartera', d:'Caja y Bancos: fila "Cheques en cartera" de cada empresa.'},
+  iniUsd:{t:'Moneda extranjera', d:'Caja y Bancos: filas Moneda extranjera, en US$.', c:'Solo informativo: no suma al saldo inicial en pesos.'},
+  tr0:{t:'Preventivo (a vencer)', d:'Panel de Cobranzas: facturas que todavía no vencieron.', c:'Monto × % Preventivo del objetivo, en la fecha de vencimiento de cada factura.'},
+  tr1:{t:'Mora temprana (1–15 días)', d:'Panel de Cobranzas.', c:'Monto × % Mora temprana del objetivo (o el del vendedor). Como ya venció, se reparte en partes iguales en las semanas que quedan del mes.'},
+  tr2:{t:'Mora media (16–45 días)', d:'Panel de Cobranzas.', c:'Monto × % Mora media del objetivo (o el del vendedor), repartido en las semanas que quedan del mes.'},
+  tr3:{t:'Mora crítica (+45 días)', d:'Panel de Cobranzas.', c:'Monto × % Mora crítica del objetivo (o el del vendedor), repartido en las semanas que quedan del mes.'},
+  egresos:{t:'Egresos', c:'Pagos pendientes por fecha prevista de pago, de todas las hojas de egresos + excedidos de acuerdo.'},
+  niv0:{t:'Límite superado', c:'Créditos con 2+ cuotas impagas y planes ARCA con 3+.'},
+  niv1:{t:'Crítica', c:'Excedido de acuerdo, cheques propios, sueldos, cargas sociales; créditos/planes a 7 días de llegar al límite.'},
+  niv2:{t:'Alta', c:'Créditos bancarios, planes ARCA, impuestos, deudas ARCA.'},
+  niv3:{t:'Media', c:'Tarjetas de crédito, servicios, planes de pago.'},
+  niv4:{t:'Negociable', c:'Proveedores, proveedores del exterior, OC sin facturar, desvinculaciones.'},
+  neto:{t:'Neto del período', c:'Ingresos − Egresos de cada columna.'},
+  saldoFin:{t:'Saldo final proyectado', c:'Saldo inicial + Neto. En la columna Atrasado solo se descuenta si está tildado "Descontar lo atrasado".'},
+  modo:{t:'Lo que viene / Lo pagado', c:'"Lo que viene": pendientes hacia adelante. "Lo pagado": lo marcado como cancelado, hacia atrás.'},
+  arrastre:{t:'Descontar lo atrasado', c:'Tildado: supone que lo atrasado se paga primero y lo resta del saldo inicial. Destildado: muestra solo el flujo de lo que viene.'},
+  proyectados:{t:'Proyecciones comerciales', d:'Hojas "OV sin FC" (total col. N, fecha col. P), "OC sin FC" (total col. J, fecha col. O) y "Ventas futuras" (importe col. H, fecha col. D).'},
+  detalle:{t:'Detalle', d:'Texto armado con las columnas de la hoja (acreedor, plan, cuota, comprobante).'},
+  vence:{t:'Vence', d:'Columna de vencimiento de cada hoja (ver ⓘ del rubro). En rojo si ya venció.'},
+  pagoPrev:{t:'Pago previsto', d:'Columna "fecha de pago" de cada hoja; si está vacía, se usa el vencimiento. Es la fecha que usa el cash flow.'},
+  monto:{t:'Monto', d:'Columna de importe de cada hoja (ver ⓘ del rubro).'},
+  nota:{t:'Nota', d:'Columna de notas u observaciones de la hoja (Planes ARCA col. O, Servicios col. K, Sueldos col. J, Ch Propios col. K).'},
+  estado:{t:'Estado', c:'Pagado si Cancelado = SI (cheques propios: si la fecha ya pasó). Si no, la prioridad.'},
+  detTot:{t:'Totales', c:'Suma de lo pendiente con los filtros elegidos; "ya vencieron" = vencimiento anterior a la fecha de análisis.'},
+  cjDia:{t:'Día que se edita', d:'Columna amarilla: los saldos de ese día. Las de la izquierda son los días anteriores, solo para mirar.', c:'Cada día queda guardado. Un día nuevo arranca vacío: usá "Copiar día anterior" y corregí lo que cambió.'},
+  cjVar:{t:'Variación', c:'Saldo del día − saldo del día anterior cargado de esa cuenta.'},
+  cjTotal:{t:'Total del grupo', c:'Suma de las cuentas del grupo para cada día (en pesos; moneda extranjera en US$).'},
+  cjAcuerdo:{t:'Acuerdo', d:'Hoja de acuerdos del Excel. Si lo cambiás acá queda como manual y un Excel nuevo no lo pisa.'},
+  cjReg:{t:'Registro de cambios', d:'Cada saldo o acuerdo guardado a mano y cada importación del Excel, con quién, cuándo, valor anterior y nuevo.'}
+};
+const INFO_CAT = {
+  'Créditos bancarios':'Hoja "Créditos Bancarios": cuota col. K, vencimiento col. B, fecha de pago col. C, Cancelado col. M, estado col. N. Banco col. E + código col. F.',
+  'Planes ARCA':'Hoja "Planes ARCA": total de la cuota col. J, vencimiento col. K, fecha de pago col. L, Cancelado col. M, estado col. N, nota col. O.',
+  'Planes de pago':'Hoja "Planes de Pago": cuota col. I, vencimiento col. B, fecha de pago col. C, Cancelado col. K, estado col. L.',
+  'Desvinculaciones':'Hoja "Desvinculaciones": cuota col. I, vencimiento col. B, fecha de pago col. C, Cancelado col. K.',
+  'Impuestos':'Hoja "Impuestos": importe col. D, vencimiento col. E, fecha de pago col. F, Cancelado col. G.',
+  'Deudas ARCA':'Hoja "Deudas ARCA": total col. K, vencimiento col. G, fecha de pago col. L, Cancelado col. N. Sin vencimiento va a "sin fecha".',
+  'Tarjetas de crédito':'Hoja "TDC": importe col. C, vencimiento col. D, fecha de pago col. E, Cancelado col. G.',
+  'Servicios':'Hoja "Servicios": importe col. F, vencimiento col. G, fecha de pago col. H, Cancelado col. J, nota col. K.',
+  'Sueldos':'Hoja "Sueldos y CCSS" (concepto col. B sin "carga"): importe col. G, vencimiento col. D, fecha posible col. E, pagado col. H.',
+  'Cargas sociales':'Hoja "Sueldos y CCSS" (concepto col. B con "carga"): importe col. G, vencimiento col. D, fecha posible col. E, pagado col. H.',
+  'Cheques propios':'Hoja "Ch Propios": importe col. H, fecha de pago col. D. Se dan por pagados cuando pasa la fecha (se debitan solos).',
+  'Proveedores':'Panel de Proveedores (facturas impagas de Odoo, "Mayor de Prov"): monto pendiente de cada factura en su vencimiento; lo vencido va a Atrasado. Los saldos a favor (notas de crédito) se descuentan de las facturas más viejas de esa empresa. Si el panel no responde, se usa la hoja "Proveedores" del Excel (col. K, vto col. D, pago col. M).',
+  'OC sin facturar':'Hoja "OC sin FC": total col. J, fecha de pago col. O. Proyección: solo con la casilla de proyecciones.',
+  'Proveedores del exterior':'Hoja "COMEX": pendiente = saldo AR$ col. N con vencimiento col. H; pagado = pago a cuenta AR$ col. M con fecha col. I.',
+  'Deudores por ventas':'Panel de Cobranzas (cartera de Odoo, tabla clientes). Cada factura × % de cobro del objetivo del mes (Cobranzas → Objetivos: % general por tipo de deudor o el del vendedor). Tipo de deudor = días vencida hoy: Preventivo, temprana 1–15, media 16–45, crítica +45. A vencer: en su fecha. Vencidas: lo esperado se reparte parejo en las semanas que quedan del mes. Si Cobranzas no responde, se usa la hoja "Clientes" del Excel.',
+  'Cheques de terceros':'Hoja "Cheques 3º": importe col. I, fecha col. D. No se usa en el flujo: el saldo en cartera sale de Caja y Bancos.',
+  'OV sin facturar':'Etapa 2: se va a traer de Odoo (órdenes de venta sin facturar). Hoy: hoja "OV sin FC" del Excel, total col. N, fecha de cobro col. P. Solo suma con la casilla de proyecciones.',
+  'Ventas futuras':'Etapa 2: se va a traer del panel de Planificación de Ventas. Hoy: hoja "Ventas futuras" del Excel, importe col. H, fecha col. D. Solo suma con la casilla de proyecciones.',
+  'Excedido de acuerdo':'Calculado: en cada banco, saldo (Caja y Bancos) más negativo que el acuerdo. La diferencia es un pago Crítico de hoy.'
+};
+function ii(k){ return `<i class="i" tabindex="0" data-info="${k}" aria-label="Información">i</i>`; }
+function iiCat(c){ return INFO_CAT[c] ? `<i class="i" tabindex="0" data-info="cat:${esc(c)}" aria-label="De dónde sale">i</i>` : ''; }
+function txtCat(c){ return INFO_CAT[c] ? `<span class="infotxt" tabindex="0" data-info="cat:${esc(c)}">${esc(c)}</span>` : esc(c); }
+function infoHtml(k){
+  if(k.startsWith('cat:')){ const c=k.slice(4); return `<div class="tt">${esc(c)}</div><div class="ts">De dónde sale</div>${esc(INFO_CAT[c]||'')}`; }
+  if(k.startsWith('man:')){ return `<div class="tt">Cargado a mano</div>${esc(k.slice(4))}`; }
+  const x = INFO[k]; if(!x) return '';
+  return `<div class="tt">${esc(x.t)}</div>${x.d?`<div class="ts">De dónde sale</div>${esc(x.d)}`:''}${x.c?`<div class="ts">Cómo se calcula</div>${esc(x.c)}`:''}`;
+}
+(function(){
+  const tip = document.getElementById('tip'); let fijo = null, actual = null;
+  function mostrar(el){
+    const html = infoHtml(el.dataset.info); if(!html) return;
+    actual = el; tip.innerHTML = html; tip.style.display = 'block';
+    const r = el.getBoundingClientRect(), w = tip.offsetWidth, hh = tip.offsetHeight;
+    let x = Math.min(Math.max(8, r.left + r.width/2 - w/2), innerWidth - w - 8);
+    let y = r.bottom + 8; if(y + hh > innerHeight - 8) y = Math.max(8, r.top - hh - 8);
+    tip.style.left = x+'px'; tip.style.top = y+'px';
+  }
+  function ocultar(){ tip.style.display='none'; if(fijo){ fijo.classList.remove('on'); fijo=null; } }
+  document.addEventListener('mouseover', e=>{ const el=e.target.closest('[data-info]'); if(el && !fijo) mostrar(el); });
+  document.addEventListener('mouseout', e=>{ const el=e.target.closest('[data-info]'); if(el && !fijo) tip.style.display='none'; });
+  document.addEventListener('focusin', e=>{ const el=e.target.closest('[data-info]'); if(el) mostrar(el); });
+  document.addEventListener('focusout', e=>{ if(e.target.closest('[data-info]') && !fijo) tip.style.display='none'; });
+  document.addEventListener('click', e=>{
+    const el = e.target.closest('[data-info]');
+    if(!el){ ocultar(); return; }
+    e.preventDefault(); e.stopPropagation();
+    if(fijo===el){ ocultar(); return; }
+    ocultar(); fijo = el; el.classList.add('on'); mostrar(el);
+  }, true);
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') ocultar(); });
+  addEventListener('scroll', ()=>{ if(tip.style.display==='block' && actual && actual.isConnected) mostrar(actual); }, true);
+})();
+
+/* ====================== Prioridades: caja, bancos y acuerdos ====================== */
+function tablaCaja(emps){
+  const orden = EMPRESAS.filter(e=>emps.includes(e));
+  const cajas = orden.map(caja).filter(c=>c && c.filas.some(f=>f.u && Math.abs(f.u.monto)>=1));
+  if(!cajas.length) return '';
+  const td = (v,cls='') => `<td class="n ${cls} ${v<0?'neg':''}">${money(v)}</td>`;
+  const fch = (u,c) => u ? `<td class="${u.fecha<c.fecha?'viejo':''}">${fdate(u.fecha)}</td>` : '<td>—</td>';
+  let h = `<h2>Caja, bancos y acuerdos${ii('cajaTabla')}</h2><p class="h2sub">Saldos de la solapa Caja y Bancos, cuenta por cuenta. Disponible de un banco = acuerdo + saldo; si el saldo pasa el acuerdo, la diferencia hay que cubrirla (no se compensa con otro banco).</p>`;
+  h += `<div class="tw"><table class="cb"><thead><tr><th>Cuenta</th><th class="n">Saldo${ii('cbSaldo')}</th><th class="n">Acuerdo${ii('cbAcuerdo')}</th><th class="n">Disponible${ii('cbDisp')}</th><th class="n">A cubrir${ii('cbCubrir')}</th><th>Último dato${ii('cbFecha')}</th></tr></thead><tbody>`;
+  cajas.forEach(c=>{
+    h += `<tr class="emp"><td colspan="6">${esc(c.emp)} · Caja y Bancos al ${fdate(c.fecha)}</td></tr>`;
+    const bancos = c.bancos.filter(b=>Math.abs(b.saldo)>=1||b.acuerdo).sort((a,b)=>a.margen-b.margen);
+    if(bancos.length){
+      h += `<tr class="grp"><td colspan="6">Bancos</td></tr>`;
+      bancos.forEach(b=>{
+        const u = c.filas.find(f=>f.tipo==='BANCOS' && f.cuenta===b.cuenta);
+        h += `<tr><td class="c1">${esc(b.cuenta)}${b.vtoAc?'<br><span class="hint">Acuerdo vence '+fdate(b.vtoAc)+'</span>':''}</td>${td(b.saldo)}<td class="n">${b.acuerdo?money(b.acuerdo):'—'}</td><td class="n">${b.margen>0?money(b.margen):'—'}</td><td class="n ${b.margen<-1?'neg':''}">${b.margen<-1?money(-b.margen):'—'}</td>${fch(u&&u.u,c)}</tr>`;
+      });
+    }
+    const grupo = (tit, tipos) => {
+      const fs = c.filas.filter(f=>tipos.includes(f.tipo) && f.u && Math.abs(f.u.monto)>=1);
+      if(!fs.length) return;
+      h += `<tr class="grp"><td colspan="6">${tit}</td></tr>`;
+      fs.forEach(f=>{ h += `<tr><td class="c1">${esc(f.cuenta)}</td>${td(f.u.monto)}<td class="n">—</td>${td(f.u.monto)}<td class="n">—</td>${fch(f.u,c)}</tr>`; });
+    };
+    grupo('Efectivo', ['EFECTIVO','SALDO INICIAL','OTROS I']);
+    grupo('Cheques de terceros en cartera', ['CHEQUES DE TERCEROS']);
+    h += `<tr class="tot"><td>${esc(c.emp)}: total en pesos</td>${td(c.saldoReal + c.cheques)}<td class="n">${money(c.totAcuerdos)}</td>${td(c.disponible)}<td class="n">${c.excedido>1?money(c.excedido):'—'}</td><td></td></tr>`;
+    const usd = c.filas.filter(f=>f.tipo==='MONEDA EXTRANJERA' && f.u && Math.abs(f.u.monto)>=1);
+    if(usd.length){
+      h += `<tr class="grp"><td colspan="6">Moneda extranjera (US$, no suma a los pesos)${ii('cbUsd')}</td></tr>`;
+      usd.forEach(f=>{ h += `<tr class="usd"><td class="c1">${esc(f.cuenta)}</td><td class="n ${f.u.monto<0?'neg':''}">US$ ${nf0.format(Math.round(f.u.monto))}</td><td class="n">—</td><td class="n">—</td><td class="n">—</td>${fch(f.u,c)}</tr>`; });
+      h += `<tr class="usdt"><td>${esc(c.emp)}: total US$</td><td class="n">US$ ${nf0.format(Math.round(c.usd))}</td><td colspan="4"></td></tr>`;
+    }
+  });
+  h += `</tbody></table></div>`;
+  const sc = cajas.flatMap(c=>c.sinCruce.map(a=>({...a})));
+  if(sc.length) h += `<p class="hint">Acuerdos que no encontré en Caja y Bancos (revisar que el nombre de la cuenta sea igual): ${sc.map(a=>esc(a.emp+' · '+a.cuenta+' '+money(a.monto))).join('; ')}.</p>`;
+  return h;
+}
+
+/* ====================== Caja y Bancos: base editable con historial ======================
+   Fila "caja_v1" de la tabla cashflow: {cuentas:[{id,emp,tipo,cuenta,serie:{fecha:monto}}], acuerdos:[...],
+   manual:{"id|fecha" ó "ac|emp|cuenta": {por,en}}, registro:[{en,por,dia,emp,cuenta,antes,despues,origen}]}.
+   Los días no se borran nunca. Un Excel nuevo completa y actualiza lo que vino del Excel, pero no pisa
+   lo cargado a mano. */
+const ROW_CAJA = 'caja_v1';
+const TIPOS_CAJA = ['EFECTIVO','SALDO INICIAL','OTROS I','BANCOS','CHEQUES DE TERCEROS','MONEDA EXTRANJERA'];
+const TIPO_NOM = {'EFECTIVO':'Efectivo','SALDO INICIAL':'Saldo inicial','OTROS I':'Otros','BANCOS':'Bancos','CHEQUES DE TERCEROS':'Cheques de terceros en cartera','MONEDA EXTRANJERA':'Moneda extranjera (US$)'};
+let CAJA = null;
+const CJ = {dia:null, pend:{}, pendAc:{}, nuevas:[], dias:6, form:false};
+function claveCta(c, n){ return c.emp+'|'+c.tipo+'|'+normCta(c.cuenta)+'|'+n; }
+function conClaves(cuentas){ const cnt={}; return cuentas.map(c=>{ const b=c.emp+'|'+c.tipo+'|'+normCta(c.cuenta); cnt[b]=(cnt[b]||0)+1; return {c, k:b+'|'+cnt[b]}; }); }
+function cajaDesdeExcel(d){
+  return {cuentas:(d.cuentas||[]).map((c,i)=>({id:'c'+(i+1), emp:c.emp, tipo:c.tipo, cuenta:c.cuenta, serie:{...c.serie}})),
+    acuerdos:(d.acuerdos||[]).map(a=>({...a})), manual:{}, registro:[]};
+}
+function aplicarCaja(d){ if(!CAJA) return; d.cuentas = CAJA.cuentas; d.acuerdos = CAJA.acuerdos; }
+async function cargarCaja(d){
+  CAJA = null;
+  if(CONECTADO){
+    try{ CAJA = await sbLeer(ROW_CAJA); }catch(e){ console.error('caja', e); }
+    if(!CAJA){
+      CAJA = cajaDesdeExcel(d);
+      CAJA.registro.push({en:new Date().toISOString(), por:USUARIO.nombre||'', origen:'Excel', dia:'', emp:'', cuenta:'Caja y Bancos inicial desde '+((d.meta||{}).archivo||'el Excel'), antes:null, despues:null});
+      if(PERM.editar){ try{ await sbGuardar(ROW_CAJA, CAJA); }catch(e){ console.error(e); } }
+    }
+  } else CAJA = cajaDesdeExcel(d);
+  CAJA.manual = CAJA.manual||{}; CAJA.registro = CAJA.registro||[];
+  aplicarCaja(d);
+}
+// Excel nuevo → se suma a Caja y Bancos sin pisar lo manual. Devuelve un texto para el aviso.
+async function mezclarCajaExcel(d){
+  let base = CAJA;
+  if(CONECTADO){ try{ base = (await sbLeer(ROW_CAJA)) || CAJA; }catch(e){} }
+  if(!base) base = {cuentas:[], acuerdos:[], manual:{}, registro:[]};
+  base.manual = base.manual||{}; base.registro = base.registro||[];
+  const idx = {}; conClaves(base.cuentas).forEach(x=>idx[x.k]=x.c);
+  let nuevas=0, cambios=0, protegidos=0;
+  conClaves(d.cuentas||[]).forEach(x=>{
+    let c = idx[x.k];
+    if(!c){ c = {id:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), emp:x.c.emp, tipo:x.c.tipo, cuenta:x.c.cuenta, serie:{}}; base.cuentas.push(c); idx[x.k]=c; nuevas++; }
+    Object.entries(x.c.serie).forEach(([f,v])=>{
+      if(base.manual[c.id+'|'+f]){ if(c.serie[f]!==v) protegidos++; return; }
+      if(c.serie[f]!==v){ c.serie[f]=v; cambios++; }
+    });
+  });
+  (d.acuerdos||[]).forEach(a=>{
+    const k='ac|'+a.emp+'|'+normCta(a.cuenta);
+    const e = base.acuerdos.find(x=>x.emp===a.emp && normCta(x.cuenta)===normCta(a.cuenta));
+    if(base.manual[k]) return;
+    if(e){ e.monto=a.monto; e.vto=a.vto; } else base.acuerdos.push({...a});
+  });
+  base.registro.push({en:new Date().toISOString(), por:USUARIO.nombre||'', origen:'Excel', dia:'', emp:'', cuenta:'Importación '+((d.meta||{}).archivo||''), antes:null, despues:cambios+' saldos actualizados, '+nuevas+' cuentas nuevas'+(protegidos?', '+protegidos+' manuales respetados':'')});
+  base.registro = base.registro.slice(-1500);
+  CAJA = base; aplicarCaja(d);
+  if(CONECTADO){ await sbGuardar(ROW_CAJA, CAJA); }
+  return ' · Caja y Bancos: '+cambios+' saldos'+(protegidos?' ('+protegidos+' cargados a mano se respetaron)':'');
+}
+function diasCaja(){ const s=new Set(); (CAJA?CAJA.cuentas:[]).forEach(c=>Object.keys(c.serie).forEach(f=>s.add(f))); Object.keys(CJ.pend).forEach(k=>s.add(k.split('|')[1])); return [...s].sort(); }
+function parseNum(t){
+  let s=String(t||'').trim().replace(/\$|US\$|\s/g,''); if(s==='') return null;
+  if(/,\d{1,2}$/.test(s) || (s.includes(',') && s.includes('.'))) s=s.replace(/\./g,'').replace(',','.');
+  else if(/^-?\d{1,3}(\.\d{3})+$/.test(s)) s=s.replace(/\./g,'');
+  const n=parseFloat(s); return isNaN(n)? NaN : n;
+}
+const fmtIn = v => v==null||v===''? '' : (Math.round(v*100)/100).toLocaleString('es-AR',{maximumFractionDigits:2});
+function valorDia(c, f){ const k=c.id+'|'+f; if(k in CJ.pend) return CJ.pend[k]; return c.serie[f]; }
+function prevDia(c, f){ const ks=Object.keys(c.serie).filter(k=>k<f).sort(); return ks.length? {f:ks[ks.length-1], v:c.serie[ks[ks.length-1]]} : null; }
+function hayPend(){ return Object.keys(CJ.pend).length + Object.keys(CJ.pendAc).length + CJ.nuevas.length; }
+
+function renderCaja(){
+  const el = document.getElementById('tab-caja');
+  if(!CAJA){ el.innerHTML='<div class="empty">Todavía no hay datos de Caja y Bancos.</div>'; return; }
+  const puede = PERM.editar;
+  const dias = diasCaja();
+  if(!CJ.dia) CJ.dia = dias.filter(f=>f<=st.hoy).pop() || dias[dias.length-1] || st.hoy;
+  const ant = dias.filter(f=>f<CJ.dia).slice(-CJ.dias);
+  const emps = EMPRESAS.filter(e=>empsSel().includes(e));
+  const ctas = CAJA.cuentas.concat(CJ.nuevas).filter(c=>emps.includes(c.emp));
+  const n = hayPend();
+  let h = `<div class="cjbar">
+    <label class="inline">Día${ii('cjDia')} <select id="cjSel">${(dias.includes(CJ.dia)?dias:dias.concat(CJ.dia).sort()).slice().reverse().map(f=>`<option value="${f}" ${f===CJ.dia?'selected':''}>${DIA[D(f).getUTCDay()]} ${fdate(f)}</option>`).join('')}</select></label>
+    ${puede?`<label class="inline">Nuevo día <input type="date" id="cjNuevo" value=""></label>
+    <button class="btn" id="cjCopiar" type="button" title="Completa las celdas vacías del día con el último saldo de cada cuenta">Copiar día anterior</button>
+    <button class="btn" id="cjAgregar" type="button">+ Cuenta</button>`:''}
+    <label class="inline">Ver <select id="cjN">${[3,6,10,15].map(k=>`<option ${k===CJ.dias?'selected':''}>${k}</option>`).join('')}</select> días anteriores</label>
+    <span class="sp"></span>
+    ${puede?`<span class="pendn" id="cjPend">${n?n+' cambio(s) sin guardar':''}</span>
+    <button class="btn" id="cjDesc" type="button" ${n?'':'disabled'}>Descartar</button>
+    <button class="btn primary" id="cjGuardar" type="button" ${n?'':'disabled'}>Guardar cambios</button>`:'<span class="hint">Solo lectura: para cargar saldos hace falta permiso de edición.</span>'}
+  </div>`;
+  if(CJ.form && puede) h += `<div class="cjform"><b>Cuenta nueva</b>
+    <select id="nfEmp">${['Spotsline','SPL'].map(e=>`<option>${e}</option>`).join('')}</select>
+    <select id="nfTipo">${TIPOS_CAJA.map(t=>`<option value="${t}">${TIPO_NOM[t]}</option>`).join('')}</select>
+    <input id="nfNom" placeholder="Nombre de la cuenta (ej. Galicia CC 123)" style="min-width:240px">
+    <button class="btn primary" id="nfOk" type="button">Agregar</button><button class="btn" id="nfNo" type="button">Cancelar</button></div>`;
+  const cols = 2 + ant.length + 1 + 1 + 1;
+  h += `<div class="tw"><table class="cj"><thead><tr><th>Cuenta</th>${ant.map(f=>`<th class="n">${DIA[D(f).getUTCDay()]} ${fdate(f).slice(0,5)}</th>`).join('')}<th class="n dsel">${DIA[D(CJ.dia).getUTCDay()]} ${fdate(CJ.dia)}${ii('cjDia')}</th><th class="n">Variación${ii('cjVar')}</th><th class="n">Acuerdo${ii('cjAcuerdo')}</th></tr></thead><tbody>`;
+  emps.forEach(e=>{
+    const ce = ctas.filter(c=>c.emp===e); if(!ce.length) return;
+    h += `<tr class="emp"><td colspan="${cols}">${esc(e)}</td></tr>`;
+    TIPOS_CAJA.forEach(t=>{
+      const ct = ce.filter(c=>c.tipo===t); if(!ct.length) return;
+      const usd = t==='MONEDA EXTRANJERA';
+      h += `<tr class="grp"><td colspan="${cols}">${TIPO_NOM[t]}</td></tr>`;
+      const tot = ant.map(()=>0), totSel=[0], totVar=[0];
+      ct.forEach(c=>{
+        const v = valorDia(c, CJ.dia), pv = prevDia(c, CJ.dia);
+        const k = c.id+'|'+CJ.dia, man = CAJA.manual[k];
+        ant.forEach((f,i)=>{ tot[i]+= +c.serie[f]||0; });
+        totSel[0] += +v||0;
+        const vr = (v!=null && v!=='' && pv) ? v - pv.v : null; if(vr!=null) totVar[0]+=vr;
+        const ac = t==='BANCOS' ? (CJ.pendAc[c.emp+'|'+normCta(c.cuenta)] ?? ((CAJA.acuerdos.find(a=>a.emp===c.emp && normCta(a.cuenta)===normCta(c.cuenta))||{}).monto)) : null;
+        const acMan = CAJA.manual['ac|'+c.emp+'|'+normCta(c.cuenta)];
+        h += `<tr><td class="c1">${esc(c.cuenta)}${c.nueva?' <span class="pendn">nueva</span>':''}</td>
+          ${ant.map(f=>`<td class="n old ${(+c.serie[f]||0)<0?'neg':''}">${c.serie[f]==null?'':(usd?nf0.format(Math.round(c.serie[f])):money(c.serie[f]))}</td>`).join('')}
+          <td class="sel n"><input class="v ${k in CJ.pend?'chg':''} ${man?'man':''}" data-k="${k}" inputmode="decimal" value="${fmtIn(v)}" placeholder="${pv?fmtIn(pv.v):''}" ${puede?'':'disabled'} ${man?`title="Cargado a mano por ${esc(man.por||'')} el ${fdate((man.en||'').slice(0,10))}"`:''} aria-label="${esc(c.cuenta)} ${fdate(CJ.dia)}"></td>
+          <td class="n var ${vr==null?'':vr<0?'neg':vr>0?'pos':''}">${vr==null||Math.abs(vr)<1?'—':(vr>0?'+':'')+(usd?nf0.format(Math.round(vr)):money(vr))}</td>
+          <td class="n">${t==='BANCOS'?`<input class="v ${(c.emp+'|'+normCta(c.cuenta)) in CJ.pendAc?'chg':''} ${acMan?'man':''}" data-ac="${esc(c.emp+'|'+normCta(c.cuenta))}" data-acn="${esc(c.cuenta)}" inputmode="decimal" value="${fmtIn(ac)}" ${puede?'':'disabled'} style="width:120px">`:''}</td></tr>`;
+      });
+      const f$ = v => usd? 'US$ '+nf0.format(Math.round(v)) : money(v);
+      h += `<tr class="st ${usd?'usd':''}"><td>Total ${TIPO_NOM[t].toLowerCase()}${ii('cjTotal')}</td>${tot.map(v=>`<td class="n">${f$(v)}</td>`).join('')}<td class="n">${f$(totSel[0])}</td><td class="n">${Math.abs(totVar[0])<1?'—':(totVar[0]>0?'+':'')+f$(totVar[0])}</td><td></td></tr>`;
+    });
+  });
+  h += `</tbody></table></div>
+  <div class="leyc"><span><i class="sw2" style="background:#2a230a;border-color:var(--yellow)"></i>Cambio sin guardar</span><span><i class="sw2" style="box-shadow:inset 3px 0 0 var(--celeste-ink)"></i>Cargado a mano (un Excel nuevo no lo pisa)</span><span>Celda vacía con número gris = último saldo anterior, todavía sin cargar ese día</span></div>`;
+  const reg = (CAJA.registro||[]).slice().reverse().slice(0,300);
+  h += `<details class="reg"><summary>Registro de cambios (${(CAJA.registro||[]).length})${ii('cjReg')}</summary>
+    <div class="tw" style="margin-top:10px"><table><thead><tr><th>Cuándo</th><th>Quién</th><th>Origen</th><th>Día</th><th>Empresa</th><th>Cuenta</th><th class="n">Antes</th><th class="n">Después</th></tr></thead><tbody>
+    ${reg.map(r=>`<tr><td>${esc(new Date(r.en).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}))}</td><td>${esc(r.por||'—')}</td><td>${esc(r.origen||'')}</td><td>${r.dia?fdate(r.dia):''}</td><td>${esc(r.emp||'')}</td><td class="wrapc">${esc(r.cuenta||'')}</td><td class="n">${typeof r.antes==='number'?money(r.antes):esc(r.antes??'')}</td><td class="n">${typeof r.despues==='number'?money(r.despues):esc(r.despues??'')}</td></tr>`).join('') || '<tr><td colspan="8">Sin cambios todavía.</td></tr>'}
+    </tbody></table></div></details>`;
+  el.innerHTML = h;
+
+  el.querySelector('#cjSel').onchange = e=>{ CJ.dia = e.target.value; renderCaja(); };
+  el.querySelector('#cjN').onchange = e=>{ CJ.dias = +e.target.value; renderCaja(); };
+  if(!puede) return;
+  el.querySelector('#cjNuevo').onchange = e=>{ if(e.target.value){ CJ.dia = e.target.value; renderCaja(); } };
+  el.querySelector('#cjCopiar').onclick = ()=>{
+    let n=0; ctas.forEach(c=>{ const v=valorDia(c,CJ.dia); if(v!=null && v!=='') return; const pv=prevDia(c,CJ.dia); if(pv){ CJ.pend[c.id+'|'+CJ.dia]=pv.v; n++; } });
+    toast(n? n+' saldos copiados del día anterior. Corregí lo que cambió y guardá.' : 'No había celdas vacías para completar.'); renderCaja();
+  };
+  el.querySelector('#cjAgregar').onclick = ()=>{ CJ.form = true; renderCaja(); };
+  const ok = el.querySelector('#nfOk');
+  if(ok){
+    ok.onclick = ()=>{ const nom = el.querySelector('#nfNom').value.trim(); if(!nom){ toast('Poné el nombre de la cuenta'); return; }
+      CJ.nuevas.push({id:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), emp:el.querySelector('#nfEmp').value, tipo:el.querySelector('#nfTipo').value, cuenta:nom, serie:{}, nueva:true});
+      CJ.form = false; renderCaja(); };
+    el.querySelector('#nfNo').onclick = ()=>{ CJ.form = false; renderCaja(); };
+  }
+  el.querySelectorAll('input.v[data-k]').forEach(inp=>inp.onchange = ()=>{
+    const k = inp.dataset.k, val = parseNum(inp.value);
+    if(Number.isNaN(val)){ toast('Número no válido: '+inp.value); inp.value=''; return; }
+    const id = k.split('|')[0], c = ctas.find(x=>x.id===id), orig = c.serie[CJ.dia];
+    if((val==null && orig==null) || val===orig) delete CJ.pend[k]; else CJ.pend[k] = val;
+    actualizarPend();
+    inp.classList.toggle('chg', k in CJ.pend); inp.value = fmtIn(val);
+    setTimeout(()=>{ const a=document.activeElement, fk=a&&a.dataset?(a.dataset.k||a.dataset.ac):null, isAc=a&&a.dataset&&a.dataset.ac;
+      renderCaja();
+      if(fk){ const n=document.querySelector(isAc?`#tab-caja input[data-ac="${CSS.escape(fk)}"]`:`#tab-caja input[data-k="${CSS.escape(fk)}"]`); if(n){ n.focus(); n.select(); } } }, 0);
+  });
+  el.querySelectorAll('input.v[data-ac]').forEach(inp=>inp.onchange = ()=>{
+    const k = inp.dataset.ac, val = parseNum(inp.value);
+    if(Number.isNaN(val)){ toast('Número no válido: '+inp.value); return; }
+    CJ.pendAc[k] = Math.abs(val||0); actualizarPend(); inp.classList.add('chg');
+  });
+  el.querySelector('#cjDesc').onclick = ()=>{ CJ.pend={}; CJ.pendAc={}; CJ.nuevas=[]; renderCaja(); };
+  el.querySelector('#cjGuardar').onclick = guardarCaja;
+}
+function actualizarPend(){
+  const n = hayPend(), el = document.getElementById('tab-caja');
+  el.querySelector('#cjPend').textContent = n? n+' cambio(s) sin guardar' : '';
+  el.querySelector('#cjGuardar').disabled = !n; el.querySelector('#cjDesc').disabled = !n;
+}
+async function guardarCaja(){
+  const btn = document.getElementById('cjGuardar'); btn.disabled = true; btn.textContent = 'Guardando…';
+  try{
+    let base = CAJA;
+    if(CONECTADO){ try{ base = (await sbLeer(ROW_CAJA)) || CAJA; }catch(e){} }
+    base.manual = base.manual||{}; base.registro = base.registro||[];
+    const ahora = new Date().toISOString(), por = USUARIO.nombre||'';
+    CJ.nuevas.forEach(c=>{ const x={...c}; delete x.nueva; base.cuentas.push(x);
+      base.registro.push({en:ahora, por, origen:'Manual', dia:'', emp:c.emp, cuenta:'Cuenta nueva: '+c.cuenta+' ('+TIPO_NOM[c.tipo]+')', antes:null, despues:null}); });
+    Object.entries(CJ.pend).forEach(([k,v])=>{
+      const [id, dia] = k.split('|'); const c = base.cuentas.find(x=>x.id===id); if(!c) return;
+      const antes = c.serie[dia] ?? null;
+      if(v==null) delete c.serie[dia]; else c.serie[dia] = v;
+      base.manual[k] = {por, en:ahora};
+      base.registro.push({en:ahora, por, origen:'Manual', dia, emp:c.emp, cuenta:c.cuenta, antes, despues:v});
+    });
+    Object.entries(CJ.pendAc).forEach(([k,v])=>{
+      const [emp, nc] = k.split('|'); let a = base.acuerdos.find(x=>x.emp===emp && normCta(x.cuenta)===nc);
+      const cta = (base.cuentas.find(x=>x.emp===emp && normCta(x.cuenta)===nc)||{}).cuenta || nc;
+      const antes = a? a.monto : null;
+      if(a) a.monto = v; else base.acuerdos.push({emp, cuenta:cta, monto:v, vto:null});
+      base.manual['ac|'+k] = {por, en:ahora};
+      base.registro.push({en:ahora, por, origen:'Manual (acuerdo)', dia:'', emp, cuenta:'Acuerdo '+cta, antes, despues:v});
+    });
+    base.registro = base.registro.slice(-1500);
+    if(CONECTADO) await sbGuardar(ROW_CAJA, base);
+    else toast('Sin conexión: los cambios quedan solo en esta pantalla hasta recargar.');
+    CAJA = base; CJ.pend={}; CJ.pendAc={}; CJ.nuevas=[];
+    aplicarCaja(DATA); renderAll();
+    if(CONECTADO){ actualizarResumen(true); toast('Caja y Bancos guardado para todos.'); }
+  }catch(e){
+    console.error(e); toast('No se pudo guardar: '+e.message);
+    btn.disabled = false; btn.textContent = 'Guardar cambios';
+  }
+}
+addEventListener('beforeunload', e=>{ if(hayPend()){ e.preventDefault(); e.returnValue=''; } });
+
+/* ====================== Datos de otros paneles: Cobranzas y Proveedores ======================
+   Se leen igual que en la portada (tablas clientes, objetivos_cobranza y proveedores; candado.js las redirige
+   al Supabase del portal con la sesión). Si no responden, se usan las hojas Clientes / Proveedores del Excel. */
+const TRAMOS = ['Preventivo','Mora temprana','Mora media','Mora crítica'];
+const TRAMO_LBL = {'Preventivo':'Preventivo (a vencer)','Mora temprana':'Mora temprana 1–15d','Mora media':'Mora media 16–45d','Mora crítica':'Mora crítica +45d'};
+const PCT_DEF = {'Preventivo':100,'Mora temprana':70,'Mora media':40,'Mora crítica':15};
+const PANELES = {cob:null, prov:null, pct:null, pctOrigen:'', errCob:'', errProv:'', cache:{}};
+function tramoDias(d){ return d<=0?'Preventivo':d<=15?'Mora temprana':d<=45?'Mora media':'Mora crítica'; }
+function empCorta(e){ e=String(e||'').toUpperCase(); return !e?'':e.includes('SPOTSLINE')?'Spotsline':e.includes('SPL')?'SPL':''; }
+function jsonArr(v){ if(typeof v==='string'){ try{ v=JSON.parse(v); }catch(e){ v=[]; } } return Array.isArray(v)?v:[]; }
+function isoFecha(v){ const s=String(v||'').slice(0,10); return /^\d{4}-\d{2}-\d{2}$/.test(s)?s:null; }
+async function leerTabla(q){ const r=await fetch(`${SUPABASE_URL}/rest/v1/${q}`,{headers:sbHeaders()}); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }
+async function cargarPaneles(){
+  PANELES.cache = {};
+  try{
+    const rows = await leerTabla('clientes?select=nombre,vendedor,empresa,facturas');
+    if(!rows || !rows.length) throw new Error('sin datos (¿tu usuario tiene el panel de Cobranzas?)');
+    PANELES.cob = rows.map(r=>({nombre:r.nombre||'', vendedor:r.vendedor||'', empresa:r.empresa||'', facturas:jsonArr(r.facturas)}));
+    PANELES.errCob = '';
+    const mes = isoLocal(new Date()).slice(0,7);
+    let pct = null;
+    try{ const f = await leerTabla(`objetivos_cobranza?id=eq.foto_${mes}&select=valor`); if(f&&f[0]&&f[0].valor&&f[0].valor.pct){ pct=f[0].valor.pct; PANELES.pctOrigen='objetivo fijado de '+mes; } }catch(e){}
+    if(!pct){ try{ const p = await leerTabla('objetivos_cobranza?id=eq.porcentajes_mora&select=valor'); if(p&&p[0]&&p[0].valor){ pct=p[0].valor; PANELES.pctOrigen='% de cobro por tipo de deudor (base)'; } }catch(e){} }
+    if(pct && !pct.general && !pct.vendedores) pct = {general:{}, vendedores:pct};
+    PANELES.pct = pct || {general:{}, vendedores:{}};
+    if(!pct) PANELES.pctOrigen = '% por defecto (100/70/40/15)';
+  }catch(e){ PANELES.cob=null; PANELES.errCob = e.message; console.warn('cashflow: Cobranzas', e); }
+  try{
+    const rows = await leerTabla('proveedores?select=nombre,empresa,facturas,creditos');
+    if(!rows || !rows.length) throw new Error('sin datos (¿tu usuario tiene el panel de Proveedores?)');
+    PANELES.prov = rows.map(r=>({nombre:r.nombre||'', empresa:r.empresa||'', facturas:jsonArr(r.facturas), creditos:jsonArr(r.creditos)}));
+    PANELES.errProv = '';
+  }catch(e){ PANELES.prov=null; PANELES.errProv = e.message; console.warn('cashflow: Proveedores', e); }
+}
+function pctDe(vendedor, tramo){
+  const cfg = PANELES.pct||{general:{},vendedores:{}}, ok = x=>x!==undefined&&x!==null&&x!==''&&!isNaN(parseFloat(x));
+  const v = (cfg.vendedores||{})[vendedor]; if(v && ok(v[tramo])) return parseFloat(v[tramo]);
+  const g = (cfg.general||{})[tramo]; return ok(g)? parseFloat(g) : PCT_DEF[tramo];
+}
+function fuenteTag(p){
+  if(p==='cobranzas') return PANELES.cob ? `<span class="tag2 ok">Panel de Cobranzas</span>` : `<span class="tag2 warn" title="${esc(PANELES.errCob)}">Excel (Cobranzas no respondió)</span>`;
+  if(p==='proveedores') return PANELES.prov ? `<span class="tag2 ok">Panel de Proveedores</span>` : `<span class="tag2 warn" title="${esc(PANELES.errProv)}">Excel (Proveedores no respondió)</span>`;
+  return '';
+}
+// Facturas de clientes → cobros esperados. Las vencidas se reparten en las semanas que quedan del mes de la fecha de análisis.
+function itemsCobranzas(hoy){
+  const out = [];
+  const finMes = addDays(I(new Date(Date.UTC(+hoy.slice(0,4), +hoy.slice(5,7), 1))), -1);
+  const partes = []; for(let f=hoy; f<=finMes; f=addDays(f,7)) partes.push(f);
+  PANELES.cob.forEach(c=>{
+    c.facturas.forEach(f=>{
+      const monto = +f.monto||0; if(monto<=0) return;
+      const emp = empCorta(f.emp) || empCorta(c.empresa); if(!emp) return;
+      const vto = isoFecha(f.vto);
+      const dias = vto ? diffDays(hoy, vto) : 0;
+      const tramo = tramoDias(dias), pct = pctDe(c.vendedor, tramo), esp = monto*pct/100;
+      if(esp<1) return;
+      const base = {emp, socio:'', tipo:'ingreso', cat:'Deudores por ventas', grupo:c.nombre, vto:vto||hoy, pagado:false, estado:'', origen:'cobranzas', tramo, pct, montoFac:monto, num:String(f.num||''),
+        nota:(c.vendedor?'Vendedor: '+c.vendedor+' · ':'')+'factura '+money(monto)+' × '+pct+'%'};
+      if(tramo==='Preventivo') out.push({...base, det:'Fc '+(f.num||'s/n')+' · '+pct+'% de '+money(monto), fp:vto||hoy, monto:esp});
+      else partes.forEach((fp,i)=>out.push({...base, det:'Fc '+(f.num||'s/n')+' · '+dias+' días vencida · parte '+(i+1)+'/'+partes.length, fp, monto:esp/partes.length}));
+    });
+  });
+  return out;
+}
+// Facturas de proveedores → pagos en su vencimiento. Saldos a favor descuentan las facturas más viejas de la misma empresa.
+function itemsProveedores(hoy){
+  const out = [];
+  PANELES.prov.forEach(p=>{
+    const fs = p.facturas.map(f=>({num:f.num, monto:+f.monto||0, vto:isoFecha(f.vto), emp:empCorta(f.emp)||empCorta(p.empresa)||'Spotsline'})).filter(f=>f.monto>0)
+      .sort((a,b)=>(a.vto||'0')<(b.vto||'0')?-1:1);
+    const cred = {}; p.creditos.forEach(c=>{ const e=empCorta(c.emp)||empCorta(p.empresa)||'Spotsline'; cred[e]=(cred[e]||0)+(+c.monto||0); });
+    fs.forEach(f=>{ const c=cred[f.emp]||0; if(c>0){ const u=Math.min(c,f.monto); f.monto-=u; cred[f.emp]=c-u; } });
+    fs.forEach(f=>{ if(f.monto<1) return;
+      out.push({emp:f.emp, socio:'', tipo:'egreso', cat:'Proveedores', grupo:p.nombre, det:'Fc '+(f.num||'s/n'), vto:f.vto||hoy, fp:f.vto||hoy, monto:f.monto, pagado:false, estado:'', nota:'', origen:'proveedores', num:String(f.num||'')});
+    });
+  });
+  return out;
+}
+function construirItems(){
+  const k = st.hoy+'|'+(PANELES.cob?1:0)+(PANELES.prov?1:0);
+  if(!PANELES.cache[k]) PANELES.cache = {[k]:[].concat(PANELES.cob?itemsCobranzas(st.hoy):[], PANELES.prov?itemsProveedores(st.hoy):[])};
+  const base = DATA.items.filter(it=>it.cat!=='Cheques de terceros'
+    && !(PANELES.cob && it.cat==='Deudores por ventas') && !(PANELES.prov && it.cat==='Proveedores'));
+  return base.concat(PANELES.cache[k], sinteticos());
+}
+
+/* ---------- Saldo inicial abierto por Caja y Bancos ---------- */
+function filasSaldoInicial(NC){
+  const cajas = EMPRESAS.filter(e=>empsSel().includes(e)).map(caja).filter(Boolean);
+  const varias = cajas.length>1;
+  const nom = (f,e)=> esc(f) + (varias?` <span class="hint">${esc(e)}</span>`:'');
+  const vacias = n => '<td></td>'.repeat(n);
+  const G = [
+    {k:'efe', t:'Efectivo', i:'iniEfe', f:cajas.flatMap(c=>c.filas.filter(x=>['EFECTIVO','SALDO INICIAL','OTROS I'].includes(x.tipo)&&x.u&&Math.abs(x.u.monto)>=1).map(x=>({n:x.cuenta,e:c.emp,v:x.u.monto})))},
+    {k:'ban', t:'Bancos (margen de acuerdos)', i:'iniBan', f:cajas.flatMap(c=>c.bancos.filter(b=>b.margen>=1).map(b=>({n:b.cuenta,e:c.emp,v:b.margen,x:'saldo '+money(b.saldo)+(b.acuerdo?' + acuerdo '+money(b.acuerdo):'')}))) },
+    {k:'chq', t:'Cheques de terceros en cartera', i:'iniChq', f:cajas.flatMap(c=>c.filas.filter(x=>x.tipo==='CHEQUES DE TERCEROS'&&x.u&&Math.abs(x.u.monto)>=1).map(x=>({n:x.cuenta,e:c.emp,v:x.u.monto})))}
+  ];
+  let s = '';
+  G.forEach(g=>{
+    const tot = g.f.reduce((a,b)=>a+b.v,0), ok='ini|'+g.k;
+    s += `<tr class="sub"><td class="first">${g.f.length?`<button class="tog" data-open="${ok}">${st.abiertos[ok]?'▾':'▸'}</button>`:''}${g.t}${ii(g.i)}</td><td class="n ini ${tot<0?'neg':''}">${mill(tot)}</td>${vacias(NC-1)}</tr>`;
+    if(st.abiertos[ok]) g.f.sort((a,b)=>b.v-a.v).forEach(x=>{ s += `<tr class="sub3"><td class="first" title="${esc(x.x||'')}">${nom(x.n,x.e)}</td><td class="n ${x.v<0?'neg':''}">${mill(x.v)}</td>${vacias(NC-1)}</tr>`; });
+  });
+  const usd = cajas.flatMap(c=>c.filas.filter(x=>x.tipo==='MONEDA EXTRANJERA'&&x.u&&Math.abs(x.u.monto)>=1).map(x=>({n:x.cuenta,e:c.emp,v:x.u.monto})));
+  if(usd.length){
+    const tot = usd.reduce((a,b)=>a+b.v,0);
+    s += `<tr class="sub"><td class="first"><button class="tog" data-open="ini|usd">${st.abiertos['ini|usd']?'▾':'▸'}</button>Moneda extranjera <span class="hint">(no suma)</span>${ii('iniUsd')}</td><td class="n" style="color:var(--pos)">US$ ${nf0.format(Math.round(tot))}</td>${vacias(NC-1)}</tr>`;
+    if(st.abiertos['ini|usd']) usd.forEach(x=>{ s += `<tr class="sub3"><td class="first">${nom(x.n,x.e)}</td><td class="n" style="color:var(--pos)">US$ ${nf0.format(Math.round(x.v))}</td>${vacias(NC-1)}</tr>`; });
+  }
+  return s;
+}
+
+/* ---------- Ver un plan / acreedor / cliente completo ---------- */
+function lnk(cat, emp, grupo, html){
+  if(!grupo) return html;
+  return `<a href="#" class="lnk" data-cat="${esc(cat)}" data-emp="${esc(emp)}" data-gr="${esc(grupo)}" title="Ver todo: ${esc(grupo)}">${html}</a>`;
+}
+document.addEventListener('click', e=>{
+  const a = e.target.closest('a.lnk'); if(!a) return;
+  e.preventDefault(); verGrupo(a.dataset.cat, a.dataset.emp, a.dataset.gr);
+});
+function verGrupo(cat, emp, grupo){
+  const planes = evaluarPlanes();
+  let its, titulo = grupo, fuente = '';
+  if(cat==='Deudores por ventas' && PANELES.cob){
+    const c = PANELES.cob.find(x=>x.nombre===grupo);
+    its = (c?c.facturas:[]).filter(f=>(+f.monto||0)>0 && (empCorta(f.emp)||empCorta(c.empresa))===emp).map(f=>{ const vto=isoFecha(f.vto), d=vto?diffDays(st.hoy,vto):0, t=tramoDias(d);
+      return {det:'Fc '+(f.num||'s/n'), vto, fp:vto, monto:+f.monto, pagado:false, tipo:'ingreso', nota:TRAMO_LBL[t]+' · se espera '+pctDe(c.vendedor,t)+'% = '+money(+f.monto*pctDe(c.vendedor,t)/100)}; });
+    fuente = 'Panel de Cobranzas'+(c&&c.vendedor?' · vendedor '+c.vendedor:'');
+  } else if(cat==='Proveedores' && PANELES.prov){
+    its = ITEMS.filter(i=>i.cat===cat && i.emp===emp && i.grupo===grupo);
+    fuente = 'Panel de Proveedores (facturas impagas, neto de saldos a favor)';
+  } else {
+    its = DATA.items.filter(i=>i.cat===cat && i.emp===emp && i.grupo===grupo);
+    fuente = 'Excel de Cash Flow · '+(INFO_CAT[cat]||cat);
+  }
+  its = its.slice().sort((a,b)=>(a.vto||'')<(b.vto||'')?-1:(a.vto||'')>(b.vto||'')?1:0);
+  const pag = its.filter(i=>i.pagado===true || (i.auto && i.fp<st.hoy));
+  const pen = its.filter(i=>!pag.includes(i) && !planMuerto(i));
+  const ven = pen.filter(i=>i.vto && i.vto<st.hoy);
+  const prox = pen.find(i=>i.vto>=st.hoy);
+  const sum = a=>a.reduce((s,i)=>s+(+i.monto||0),0);
+  const pl = planes[cat+'|'+emp+'|'+grupo];
+  const estPlan = pl ? ({superado:'Límite superado', critica:'Crítico', pronto:'Pasa a crítico el '+fdate(pl.desde), ok:'Al día'}[pl.estado]||'') : '';
+  const estado = i => pag.includes(i) ? 'Pagado' : planMuerto(i) ? 'No se paga' : (i.vto&&i.vto<st.hoy ? `<span class="neg">Vencida (${diffDays(st.hoy,i.vto)} d)</span>` : 'A vencer');
+  document.getElementById('mTitle').textContent = cat+' · '+titulo+' ('+emp+')';
+  document.getElementById('mBody').innerHTML = `<p class="hint" style="margin-top:0">Fuente: ${esc(fuente)}${estPlan?' · Estado: <b>'+estPlan+'</b>':''}</p>
+  <div class="plres">
+    <div><small>Total</small><b>${money(sum(its))}</b><br><span class="hint">${its.length} cuota(s) / comprobante(s)</span></div>
+    <div><small>Pagado</small><b>${money(sum(pag))}</b><br><span class="hint">${pag.length}</span></div>
+    <div><small>Deuda</small><b>${money(sum(pen))}</b><br><span class="hint">${pen.length} pendiente(s)</span></div>
+    <div><small>Vencido impago</small><b class="${ven.length?'neg':''}">${money(sum(ven))}</b><br><span class="hint">${ven.length}</span></div>
+    <div><small>Próxima</small><b>${prox?fdate(prox.vto):'—'}</b><br><span class="hint">${prox?money(prox.monto):''}</span></div>
+  </div>
+  <div class="tw"><table><thead><tr><th>Detalle</th><th>Vence</th><th>Pago previsto</th><th class="n">Monto</th><th>Estado</th><th>Nota</th></tr></thead><tbody>
+  ${its.map(i=>`<tr class="${pag.includes(i)?'pag':''}"><td class="wrapc">${esc(i.det)}</td><td>${fdate(i.vto)}</td><td>${fdate(i.fp)}</td><td class="n">${money(i.monto)}</td><td>${estado(i)}</td><td class="wrapc">${esc(i.nota||i.estado||'')}</td></tr>`).join('') || '<tr><td colspan="6">Sin movimientos.</td></tr>'}
+  </tbody></table></div>`;
+  const m = document.getElementById('modal'); if(!m.open) m.showModal(); m.querySelector('.mb').scrollTop = 0;
+}
+
 /* ---------- Ayuda / instructivo ---------- */
 function renderAyuda(){
   const el = document.getElementById('tab-ayuda');
@@ -1122,6 +1721,7 @@ function renderAyuda(){
   el.dataset.ok = '1';
   el.innerHTML = `
   <h2>Cómo se usa este panel</h2>
+  <p>Cada número y título tiene un <span class="i" style="cursor:default">i</span>: pasá el mouse (o tocalo en el celular) para ver <b>de dónde sale</b> el dato (hoja y columna del Excel) y <b>cómo se calcula</b>. Los nombres de rubro subrayados con puntos también lo muestran.</p>
   <p>Muestra la plata que hay hoy, lo que entra y lo que sale en las próximas semanas, y en qué orden conviene pagar. Todo sale del Excel de Cash Flow (el mismo que usa Situación Patrimonial en "Importar Cash Flow").</p>
   <h3>Cargar los datos</h3>
   <ol>
@@ -1129,6 +1729,7 @@ function renderAyuda(){
     <li>Queda guardado en la base compartida: todos los que tienen el panel ven lo mismo, en cualquier PC. Arriba dice el archivo, la fecha y quién lo cargó.</li>
     <li>El chip <b>Base compartida</b> en verde confirma la conexión. Si aparece en amarillo, se está viendo la copia guardada dentro del archivo (puede estar vieja).</li>
     <li>Cargar Excel: administradores del portal (o usuarios con permiso "importar"). El resto solo ve.</li>
+    <li>Al cargar un Excel, la hoja "Caja y Bancos" se suma a la solapa Caja y Bancos sin borrar días anteriores ni pisar lo cargado a mano.</li>
   </ol>
   <p class="muted">La <b>Fecha de análisis</b> sirve para mirar "como si fuera" otro día. No cambia lo guardado ni el recuadro de la portada, que siempre se calcula con la fecha de hoy.</p>
 
@@ -1139,7 +1740,7 @@ function renderAyuda(){
     <tr><td><b>Sale</b></td><td>Pagos pendientes con fecha prevista en esos 7 días, de todas las hojas de egresos. La barra muestra cuánto es de cada prioridad. No incluye OC sin facturar.</td></tr>
     <tr><td><b>Queda</b></td><td>Disponible hoy + Entra − Sale.</td></tr>
     <tr><td><b>Atrasado</b></td><td>Pagos pendientes con fecha anterior a hoy. Se muestra aparte para no mezclarlo con la semana.</td></tr>
-    <tr><td><b>Bancos y acuerdos</b></td><td>Cuenta por cuenta: saldo, acuerdo (hoja cuyo nombre contenga "acuerdo"), disponible y lo que hay que cubrir si el saldo pasó el acuerdo.</td></tr>
+    <tr><td><b>Caja, bancos y acuerdos</b></td><td>Primero Spotsline y después SPL. Fila por fila: bancos (saldo, acuerdo, disponible, a cubrir), efectivo y cheques en cartera, el total en pesos y, aparte, la moneda extranjera abierta cuenta por cuenta en US$. La fecha en naranja avisa que esa cuenta no se actualizó el último día.</td></tr>
   </tbody></table></div>
 
   <h3>Prioridades de pago</h3>
@@ -1154,6 +1755,24 @@ function renderAyuda(){
 
   <h3>Solapa Cash flow</h3>
   <p>Grilla por día, semana, quincena o mes con ingresos, egresos y saldo acumulado arrancando del disponible. Hacé clic en un número para ver los movimientos que lo forman. Las columnas en rojo son lo atrasado.</p>
+  <ul>
+    <li><b>Saldo inicial</b> se abre (▸) en Efectivo, Bancos (margen de acuerdos), Cheques en cartera y Moneda extranjera, y cada uno en sus cuentas, igual que la tabla de Prioridades.</li>
+    <li><b>Deudores por ventas</b> sale del <b>panel de Cobranzas</b>: cada factura × el % de cobro del objetivo del mes según su tipo de deudor (o el % del vendedor). Lo que todavía no venció va en su fecha; lo vencido se reparte parejo en las semanas que quedan del mes. Se abre por tipo de deudor.</li>
+    <li><b>OV sin facturar</b> (etapa 2: Odoo) y <b>Ventas futuras</b> (etapa 2: Planificación de Ventas) ya figuran; por ahora toman las hojas del Excel y solo suman con la casilla de proyecciones.</li>
+    <li><b>Proveedores</b> sale del <b>panel de Proveedores</b>: facturas impagas en su vencimiento (lo vencido va a Atrasado), descontando saldos a favor.</li>
+    <li>Si Cobranzas o Proveedores no responden (o tu usuario no tiene ese panel), se usa la hoja del Excel y la fila lo avisa en amarillo.</li>
+  </ul>
+  <h3>Ver un plan completo</h3>
+  <p>Los nombres subrayados con rayas (planes ARCA, créditos, proveedores, clientes…) se pueden tocar: abren todo ese plan o acreedor, con lo pagado, la deuda, lo vencido, la próxima cuota y cada cuota con su estado. Están en Prioridades, en el detalle de cada número del cash flow y en Detalle de deudas.</p>
+  <h3>Solapa Caja y Bancos</h3>
+  <p>Los saldos de cada cuenta, día por día, como en la hoja "Caja y Bancos" del Excel. Hoy se llenan solos al cargar el Excel; también se pueden cargar y corregir a mano.</p>
+  <ol>
+    <li>Elegí el día en <b>Día</b> o creá uno con <b>Nuevo día</b>. La columna amarilla es la que se edita; las de la izquierda son los días anteriores.</li>
+    <li><b>Copiar día anterior</b> completa las celdas vacías con el último saldo de cada cuenta. Corregí lo que cambió.</li>
+    <li>Los acuerdos de cada banco se corrigen en la última columna. <b>+ Cuenta</b> agrega una cuenta nueva.</li>
+    <li><b>Guardar cambios</b>. Queda para todos y se recalcula el panel y el recuadro de la portada.</li>
+  </ol>
+  <p class="muted">Los días anteriores no se borran nunca. Lo cargado a mano queda marcado con una línea celeste y un Excel nuevo no lo pisa (actualiza solo lo que vino del Excel). Cada cambio queda en el <b>Registro de cambios</b> con quién, cuándo, valor anterior y nuevo. Cargar saldos: administradores o usuarios con permiso "editar" o "importar".</p>
   <h3>Solapa Detalle de deudas</h3>
   <p>Todos los movimientos con buscador y filtros por rubro, prioridad y estado.</p>
   <h3>Lo que no entra</h3>
@@ -1176,8 +1795,8 @@ function showItems(title, items, planes){
   const tot = its.reduce((s,i)=>s+(i.tipo==='ingreso'?i.monto:i.monto),0);
   document.getElementById('mTitle').textContent = title;
   document.getElementById('mBody').innerHTML = `<div class="totline"><b>${its.length}</b> movimientos, total <b>${money(tot)}</b></div>
-  <div class="tw"><table><thead><tr><th>Empresa</th><th>Rubro</th><th>Detalle</th><th>Vence</th><th>Pago previsto</th><th class="n">Monto</th><th>Estado</th></tr></thead><tbody>
-  ${its.map(it=>{ const nv = it.tipo==='egreso'? nivelDe(it,planes):null; return `<tr><td>${esc(it.emp)}${it.socio?' ('+esc(it.socio)+')':''}</td><td>${esc(it.cat)}</td><td class="wrapc">${esc(it.det)}${it.nota?'<br><span class="hint">'+esc(it.nota)+'</span>':''}</td><td class="${isPend(it)&&it.vto<st.hoy?'neg':''}">${fdate(it.vto)}</td><td>${fdate(it.fp)}</td><td class="n">${money(it.monto)}</td><td>${isPaid(it)?'Pagado':(nv!==null?`<span class="pill l${nv}">${NIVELES[nv].nombre}</span>`:'Pendiente')}</td></tr>`; }).join('')}
+  <div class="tw"><table><thead><tr><th>Empresa</th><th>Rubro${ii('rubro')}</th><th>Detalle${ii('detalle')}</th><th>Vence${ii('vence')}</th><th>Pago previsto${ii('pagoPrev')}</th><th class="n">Monto${ii('monto')}</th><th>Estado${ii('estado')}</th></tr></thead><tbody>
+  ${its.map(it=>{ const nv = it.tipo==='egreso'? nivelDe(it,planes):null; return `<tr><td>${esc(it.emp)}${it.socio?' ('+esc(it.socio)+')':''}</td><td>${txtCat(it.cat)}</td><td class="wrapc">${it.sintetico?esc(it.det):lnk(it.cat,it.emp,it.grupo,esc(it.det))}${it.nota?'<br><span class="hint">'+esc(it.nota)+'</span>':''}</td><td class="${isPend(it)&&it.vto<st.hoy?'neg':''}">${fdate(it.vto)}</td><td>${fdate(it.fp)}</td><td class="n">${money(it.monto)}</td><td>${isPaid(it)?'Pagado':(nv!==null?`<span class="pill l${nv}">${NIVELES[nv].nombre}</span>`:'Pendiente')}</td></tr>`; }).join('')}
   </tbody></table></div>`;
   document.getElementById('modal').showModal();
 }
