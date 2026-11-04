@@ -29,7 +29,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:"Public Sans",sy
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--brand);outline-offset:2px}
-.wrap{max-width:1320px;margin:0 auto;padding:20px 20px 60px}
+.wrap{max-width:1680px;margin:0 auto;padding:20px clamp(14px,2vw,28px) 60px}
 header.top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:18px}
 h1{font-size:28px;line-height:1.1;margin:0;font-weight:800;letter-spacing:-.02em}
 .sub{color:var(--muted);font-size:13px;margin-top:6px}
@@ -123,17 +123,26 @@ details.avisos{margin-top:28px;background:var(--surface);border:1px solid var(--
 details.avisos summary{font-weight:700;cursor:pointer}
 
 /* Modal */
-dialog{border:1px solid var(--line);border-radius:12px;padding:0;max-width:min(920px,94vw);width:100%;background:var(--surface);color:var(--ink)}
+dialog{border:1px solid var(--line);border-radius:12px;padding:0;width:min(1100px,96vw);max-width:100vw;height:min(82vh,900px);max-height:100vh;min-width:340px;min-height:260px;background:var(--surface);color:var(--ink);resize:both;overflow:hidden}
+dialog[open]{display:flex;flex-direction:column}
+dialog.chico{width:min(760px,96vw);height:min(60vh,640px)}
+dialog.full{width:100vw;height:100vh;border-radius:0;margin:0;resize:none}
 dialog::backdrop{background:rgba(10,15,20,.45)}
 .mh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);gap:12px}
 .mh h3{margin:0;font-size:17px}
-.mb{padding:12px 18px 18px;max-height:70vh;overflow:auto}
+.mb{padding:12px 18px 18px;flex:1;min-height:0;overflow:auto}
+.mbtn{display:flex;gap:4px;align-items:center;flex:none}
+.x.t{font-size:16px;width:30px;height:30px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center}
+.x.t:hover,.x.t[aria-pressed="true"]{background:#262626;color:var(--yellow)}
+dialog::after{content:"";position:absolute;right:3px;bottom:3px;width:10px;height:10px;border-right:2px solid #555;border-bottom:2px solid #555;pointer-events:none}
+dialog.full::after{display:none}
+.mh{flex:none}
 .x{border:0;background:transparent;font-size:22px;line-height:1;color:var(--muted)}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:14px;display:none;z-index:50}
 .hidden{display:none}
 
 /* ===== Look corporativo amarillo y negro (igual al Estado de Resultados) ===== */
-header.top{padding:14px 18px;margin:-20px -20px 18px;background:#141414;border-bottom:1px solid var(--line);align-items:center}
+header.top{padding:14px 18px;margin:-20px calc(-1*clamp(14px,2vw,28px)) 18px;background:#141414;border-bottom:1px solid var(--line);align-items:center}
 .brand{display:flex;gap:14px;align-items:center}
 .logo{width:34px;height:34px;border-radius:8px;background:var(--yellow);flex:none}
 .brand h1{font-size:clamp(18px,2vw,22px);letter-spacing:-.01em;font-weight:800;margin:0;line-height:1.1}
@@ -262,10 +271,13 @@ table.pr tr.rub td{background:#262626;color:#fff;font-weight:800;cursor:pointer}
 table.pr tr.rub td:first-child{box-shadow:inset 4px 0 0 var(--yellow)}
 table.pr tr.tot td{background:var(--yellow-soft);color:var(--yellow);font-weight:800;border-top:2px solid var(--yellow)}
 table.pr tr.pr td:first-child{padding-left:26px}
-table.pr input.ap{width:130px;text-align:right;background:var(--bg);border:1px solid #3a3a3a;border-radius:6px;padding:4px 7px;font-variant-numeric:tabular-nums;font-size:13px}
+table.pr input.ap{width:118px;text-align:right;background:var(--bg);border:1px solid #3a3a3a;border-radius:6px;padding:4px 7px;font-variant-numeric:tabular-nums;font-size:13px}
 table.pr input.ap:focus{border-color:var(--yellow);outline:none}
 table.pr input.ap.chg{border-color:var(--yellow);color:var(--yellow)}
-table.pr td.regla{white-space:normal;min-width:230px;font-size:12.5px;color:#bdbdbd}
+table.pr td.nom{white-space:normal;min-width:240px}
+table.pr .regla{font-size:11.5px;color:#9a9a9a;line-height:1.35;margin-top:2px;max-width:520px}
+table.pr td,table.pr th{padding:6px 8px}
+table.pr input.ap{width:118px}
 .cuo{font-weight:700}.cuo.lim{color:var(--neg)}.cuo.casi{color:var(--p2)}
 
 .seg{flex-wrap:wrap;max-width:100%}
@@ -283,7 +295,7 @@ input[type=checkbox]{accent-color:var(--yellow)}
 .ayuda table{font-size:13px}
 .ayuda td,.ayuda th{white-space:normal;vertical-align:top}
 .ayuda tbody tr:hover td{background:none}
-@media (max-width:760px){header.top{margin:-20px -20px 14px}.actions{width:100%}}
+@media (max-width:760px){header.top{margin:-20px calc(-1*clamp(14px,2vw,28px)) 14px}.actions{width:100%}}
 @media (max-width:760px){
   .wk{grid-template-columns:1fr}
   .late{grid-column:1}
@@ -330,7 +342,7 @@ input[type=checkbox]{accent-color:var(--yellow)}
   <section id="tab-ayuda" class="hidden ayuda"></section>
 </div>
 
-<dialog id="modal"><div class="mh"><h3 id="mTitle"></h3><button class="x" id="mClose" aria-label="Cerrar">×</button></div><div class="mb" id="mBody"></div></dialog>
+<dialog id="modal"><div class="mh"><h3 id="mTitle"></h3><div class="mbtn"><button class="x t" id="mChico" type="button" title="Achicar" aria-label="Achicar ventana">−</button><button class="x t" id="mNormal" type="button" title="Tamaño normal" aria-label="Tamaño normal">▢</button><button class="x t" id="mFull" type="button" title="Pantalla completa" aria-label="Pantalla completa">⤢</button><button class="x" id="mClose" aria-label="Cerrar">×</button></div></div><div class="mb" id="mBody"></div></dialog>
 <div class="toast" id="toast"></div>
 <div id="tip" role="tooltip"></div>
 
@@ -1872,18 +1884,18 @@ function renderPresu(){
   // tabla por rubro
   const porCat = {}; grupos.forEach(x=>{ (porCat[x.cat]=porCat[x.cat]||[]).push(x); });
   const cats = Object.keys(porCat).sort((a,b)=>Math.min(...porCat[a].map(x=>x.niv))-Math.min(...porCat[b].map(x=>x.niv)) || EGR_ORDEN.indexOf(a)-EGR_ORDEN.indexOf(b));
-  h += `<div class="tw"><table class="pr"><thead><tr><th>Rubro / plan · acreedor</th><th>Empresa</th><th>Prioridad${ii('prioridad')}</th><th class="n">Atrasado${ii('prAtr')}</th><th class="n">Vence${ii('prVence')}</th><th class="n">Total${ii('prTotal')}</th><th class="n">Cuotas impagas${ii('prCuotas')}</th><th class="n">Mínimo${ii('prMinimo')}</th><th class="n">A pagar${ii('prApagar')}</th><th>Regla${ii('prRegla')}</th></tr></thead><tbody>`;
+  h += `<div class="tw"><table class="pr"><thead><tr><th>Rubro / plan · acreedor${ii('prRegla')}</th><th>Empresa</th><th>Prioridad${ii('prioridad')}</th><th class="n">Atrasado${ii('prAtr')}</th><th class="n">Vence${ii('prVence')}</th><th class="n">Total${ii('prTotal')}</th><th class="n">Cuotas${ii('prCuotas')}</th><th class="n">Mínimo${ii('prMinimo')}</th><th class="n">A pagar${ii('prApagar')}</th></tr></thead><tbody>`;
   cats.forEach(c=>{
     const xs = porCat[c], abierto = !(c in PR.cerrados ? PR.cerrados[c] : !xs.some(x=>x.min>0));
     const s = f => xs.reduce((a,x)=>a+f(x),0), nmin = Math.min(...xs.map(x=>x.niv));
-    h += `<tr class="rub" data-rub="${esc(c)}"><td>${abierto?'▾':'▸'} ${esc(c)}${iiCat(c)} <span class="hint">(${xs.length})</span></td><td></td><td><span class="pill l${nmin}">${NIVELES[nmin].nombre}</span></td><td class="n">${money(s(x=>x.atr))}</td><td class="n">${money(s(x=>x.per))}</td><td class="n">${money(s(x=>x.tot))}</td><td></td><td class="n">${money(s(x=>x.min))}</td><td class="n">${money(s(x=>x.apagar))}</td><td></td></tr>`;
+    h += `<tr class="rub" data-rub="${esc(c)}"><td>${abierto?'▾':'▸'} ${esc(c)}${iiCat(c)} <span class="hint">(${xs.length})</span></td><td></td><td><span class="pill l${nmin}">${NIVELES[nmin].nombre}</span></td><td class="n">${money(s(x=>x.atr))}</td><td class="n">${money(s(x=>x.per))}</td><td class="n">${money(s(x=>x.tot))}</td><td></td><td class="n">${money(s(x=>x.min))}</td><td class="n">${money(s(x=>x.apagar))}</td></tr>`;
     if(abierto) xs.sort((a,b)=>a.niv-b.niv || b.min-a.min || b.tot-a.tot).forEach(x=>{
       const cuo = x.lim ? `<span class="cuo ${x.cuotas>=x.lim?'lim':x.cuotas===x.lim-1?'casi':''}">${x.cuotas} de ${x.lim}</span>` : '—';
-      h += `<tr class="pr"><td>${x.sint?esc(x.grupo):lnk(x.cat,x.emp,x.grupo,esc(x.grupo||'—'))}</td><td>${esc(x.emp)}</td><td><span class="pill l${x.niv}">${NIVELES[x.niv].nombre}</span></td><td class="n ${x.atr?'neg':''}">${x.atr?money(x.atr):'—'}</td><td class="n">${x.per?money(x.per):'—'}</td><td class="n">${money(x.tot)}</td><td class="n">${cuo}</td><td class="n">${x.min?money(x.min):'—'}</td><td class="n"><input class="ap ${x.k in PR.montos?'chg':''}" data-k="${esc(x.k)}" inputmode="decimal" value="${fmtIn(x.apagar)}" aria-label="A pagar ${esc(x.grupo)}"></td><td class="regla">${esc(x.regla)}</td></tr>`;
+      h += `<tr class="pr"><td class="nom">${x.sint?esc(x.grupo):lnk(x.cat,x.emp,x.grupo,esc(x.grupo||'—'))}<div class="regla">${esc(x.regla)}</div></td><td>${esc(x.emp)}</td><td><span class="pill l${x.niv}">${NIVELES[x.niv].nombre}</span></td><td class="n ${x.atr?'neg':''}">${x.atr?money(x.atr):'—'}</td><td class="n">${x.per?money(x.per):'—'}</td><td class="n">${money(x.tot)}</td><td class="n">${cuo}</td><td class="n">${x.min?money(x.min):'—'}</td><td class="n"><input class="ap ${x.k in PR.montos?'chg':''}" data-k="${esc(x.k)}" inputmode="decimal" value="${fmtIn(x.apagar)}" aria-label="A pagar ${esc(x.grupo)}"></td></tr>`;
     });
   });
-  if(!cats.length) h += `<tr><td colspan="10">No hay obligaciones pendientes hasta el ${fdate(PR.hasta)}.</td></tr>`;
-  h += `<tr class="tot"><td>Total</td><td></td><td></td><td class="n">${money(atr)}</td><td class="n">${money(per)}</td><td class="n">${money(atr+per)}</td><td></td><td class="n">${money(min)}</td><td class="n">${money(ap)}</td><td></td></tr>`;
+  if(!cats.length) h += `<tr><td colspan="9">No hay obligaciones pendientes hasta el ${fdate(PR.hasta)}.</td></tr>`;
+  h += `<tr class="tot"><td>Total</td><td></td><td></td><td class="n">${money(atr)}</td><td class="n">${money(per)}</td><td class="n">${money(atr+per)}</td><td></td><td class="n">${money(min)}</td><td class="n">${money(ap)}</td></tr>`;
   h += `</tbody></table></div><p class="hint">Tocá un rubro para abrirlo o cerrarlo; tocá un plan o acreedor para verlo completo. Lo que vence después del ${fdate(PR.hasta)} no entra.</p>`;
   el.innerHTML = h;
   el.querySelectorAll('#prRapido button').forEach(b=>b.onclick=()=>{ PR.desde=b.dataset.a; PR.hasta=b.dataset.b; cambiarRango(); });
@@ -2006,6 +2018,20 @@ function showItems(title, items, planes){
   document.getElementById('modal').showModal();
 }
 document.getElementById('mClose').onclick=()=>document.getElementById('modal').close();
+/* ---------- tamaño de las ventanas: − achica, ▢ normal, ⤢ pantalla completa; se estira desde la esquina ---------- */
+(function(){
+  const m = document.getElementById('modal');
+  let modo = 'normal'; try{ modo = localStorage.getItem('cf_modal_tam') || 'normal'; }catch(e){}
+  function poner(x){ modo = x; m.classList.toggle('chico', x==='chico'); m.classList.toggle('full', x==='full'); m.style.width=''; m.style.height='';
+    ['mChico','mNormal','mFull'].forEach(id=>document.getElementById(id).setAttribute('aria-pressed', String({mChico:'chico',mNormal:'normal',mFull:'full'}[id]===x)));
+    try{ localStorage.setItem('cf_modal_tam', x); }catch(e){} }
+  poner(modo);
+  document.getElementById('mChico').onclick = ()=>poner('chico');
+  document.getElementById('mNormal').onclick = ()=>poner('normal');
+  document.getElementById('mFull').onclick = ()=>poner(modo==='full'?'normal':'full');
+  m.addEventListener('dblclick', e=>{ if(e.target.closest('.mh') && !e.target.closest('button')) poner(modo==='full'?'normal':'full'); });
+})();
+
 document.getElementById('modal').addEventListener('click',e=>{ if(e.target.id==='modal') e.target.close(); });
 
 initData();
