@@ -905,8 +905,12 @@ function ultimo(serie){
   return ks.length? {fecha:ks[ks.length-1], monto:serie[ks[ks.length-1]]} : null;
 }
 // Estado de caja de una empresa: cuenta por cuenta, con acuerdos
+// Si en Caja y Bancos hay dos cuentas con el mismo nombre, empresa y tipo, cuenta solo la primera (la de más arriba en el Excel).
+// Caso real: Spotsline tiene dos filas "Saldo Caja" en Efectivo; la buena es la primera.
+function idsRepetidas(lista){ const vis=new Set(), rep=new Set(); (lista||[]).forEach(c=>{ const k=c.emp+'|'+c.tipo+'|'+normCta(c.cuenta); if(vis.has(k)) rep.add(c.id); else vis.add(k); }); return rep; }
 function caja(emp){
-  const cs = (DATA.cuentas||[]).filter(c=>c.emp===emp);
+  const REP = idsRepetidas(DATA.cuentas);
+  const cs = (DATA.cuentas||[]).filter(c=>c.emp===emp && !REP.has(c.id));
   const acs = (DATA.acuerdos||[]).filter(a=>a.emp===emp);
   if(!cs.length && !acs.length) return null;
   let efectivo=0, usd=0, cheques=0, fecha=null; const bancos=[];
@@ -1496,6 +1500,7 @@ function renderCaja(){
   const ant = dias.filter(f=>f<CJ.dia).slice(-CJ.dias);
   const emps = EMPRESAS.filter(e=>empsSel().includes(e));
   const ctas = CAJA.cuentas.concat(CJ.nuevas).filter(c=>emps.includes(c.emp));
+  const REPC = idsRepetidas(CAJA.cuentas);
   const n = hayPend();
   let h = `<div class="cjbar">
     <label class="inline">Día${ii('cjDia')} <select id="cjSel">${(dias.includes(CJ.dia)?dias:dias.concat(CJ.dia).sort()).slice().reverse().map(f=>`<option value="${f}" ${f===CJ.dia?'selected':''}>${DIA[D(f).getUTCDay()]} ${fdate(f)}</option>`).join('')}</select></label>
@@ -1526,12 +1531,13 @@ function renderCaja(){
       ct.forEach(c=>{
         const v = valorDia(c, CJ.dia), pv = prevDia(c, CJ.dia);
         const k = c.id+'|'+CJ.dia, man = CAJA.manual[k];
-        ant.forEach((f,i)=>{ tot[i]+= +c.serie[f]||0; });
-        totSel[0] += +v||0;
-        const vr = (v!=null && v!=='' && pv) ? v - pv.v : null; if(vr!=null) totVar[0]+=vr;
+        const rep = REPC.has(c.id);
+        if(!rep) ant.forEach((f,i)=>{ tot[i]+= +c.serie[f]||0; });
+        if(!rep) totSel[0] += +v||0;
+        const vr = (v!=null && v!=='' && pv) ? v - pv.v : null; if(vr!=null && !rep) totVar[0]+=vr;
         const ac = t==='BANCOS' ? (CJ.pendAc[c.emp+'|'+normCta(c.cuenta)] ?? ((CAJA.acuerdos.find(a=>a.emp===c.emp && normCta(a.cuenta)===normCta(c.cuenta))||{}).monto)) : null;
         const acMan = CAJA.manual['ac|'+c.emp+'|'+normCta(c.cuenta)];
-        h += `<tr><td class="c1">${esc(c.cuenta)}${c.nueva?' <span class="pendn">nueva</span>':''}</td>
+        h += `<tr><td class="c1" ${rep?'style="opacity:.55" title="Hay otra cuenta con el mismo nombre más arriba: esta no se suma en el panel."':''}>${esc(c.cuenta)}${c.nueva?' <span class="pendn">nueva</span>':''}${rep?' <span class="hint">repetida · no suma</span>':''}</td>
           ${ant.map(f=>`<td class="n old ${(+c.serie[f]||0)<0?'neg':''}">${c.serie[f]==null?'':(usd?nf0.format(Math.round(c.serie[f])):money(c.serie[f]))}</td>`).join('')}
           <td class="sel n"><input class="v ${k in CJ.pend?'chg':''} ${man?'man':''}" data-k="${k}" inputmode="decimal" value="${fmtIn(v)}" placeholder="${pv?fmtIn(pv.v):''}" ${puede?'':'disabled'} ${man?`title="Cargado a mano por ${esc(man.por||'')} el ${fdate((man.en||'').slice(0,10))}"`:''} aria-label="${esc(c.cuenta)} ${fdate(CJ.dia)}"></td>
           <td class="n var ${vr==null?'':vr<0?'neg':vr>0?'pos':''}">${vr==null||Math.abs(vr)<1?'—':(vr>0?'+':'')+(usd?nf0.format(Math.round(vr)):money(vr))}</td>
