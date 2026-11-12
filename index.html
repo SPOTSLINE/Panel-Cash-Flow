@@ -284,6 +284,11 @@ details.tg{background:var(--surface);border:1px solid var(--line);border-radius:
 details.tg summary{cursor:pointer;font-weight:800}
 details.tg table{margin-top:8px}
 details.tg tr.off td{color:#6a6a6a}
+details.tg input.tgm{width:130px;text-align:right;background:var(--bg);border:1px solid #3a3a3a;border-radius:6px;padding:4px 7px;font-variant-numeric:tabular-nums;font-size:13px;color:var(--ink)}
+details.tg input.tgm.chg{border-color:var(--yellow)}
+details.tg .orgm{color:#e6b800}
+details.tg .orgaj{color:var(--yellow)}
+details.tg input.tgn{width:100%;min-width:220px;background:var(--bg);border:1px solid #3a3a3a;border-radius:6px;padding:4px 7px;color:var(--ink)}
 details.tg tr.emp td{background:#262626;font-weight:800;color:#fff}
 details.tg input[type=checkbox]{width:16px;height:16px;accent-color:var(--yellow);cursor:pointer}
 table.pr tr.pr.off td .regla{opacity:.6}
@@ -917,14 +922,14 @@ function caja(emp){
     if(ac) usados.add(ac);
     const acuerdo = ac? ac.monto : 0;
     const margen = saldo + acuerdo;
-    bancos.push({cuenta:c.cuenta, saldo, acuerdo, vtoAc: ac?ac.vto:null, margen, fecha:u?u.fecha:null});
+    bancos.push({id:c.id, cuenta:c.cuenta, saldo, acuerdo, vtoAc: ac?ac.vto:null, margen, fecha:u?u.fecha:null});
   });
   const sinCruce = acs.filter(a=>!usados.has(a) && a.monto);
   const saldoBancos = bancos.reduce((s,b)=>s+b.saldo,0);
   const totAcuerdos = bancos.reduce((s,b)=>s+b.acuerdo,0);
   const margenLibre = bancos.reduce((s,b)=>s+Math.max(b.margen,0),0);
   const excedido = bancos.reduce((s,b)=>s+Math.max(-b.margen,0),0);
-  return {emp, fecha, filas: cs.map(c=>({tipo:c.tipo, cuenta:c.cuenta, u:ultimo(c.serie)})), efectivo, usd, cheques, bancos, sinCruce, saldoBancos, totAcuerdos, margenLibre, excedido,
+  return {emp, fecha, filas: cs.map(c=>({id:c.id, tipo:c.tipo, cuenta:c.cuenta, u:ultimo(c.serie)})), efectivo, usd, cheques, bancos, sinCruce, saldoBancos, totAcuerdos, margenLibre, excedido,
     saldoReal: efectivo + saldoBancos,
     disponible: efectivo + margenLibre + cheques};
 }
@@ -1307,6 +1312,7 @@ const INFO = {
   prTotal:{t:'Total', c:'Atrasado + Vence.'},
   prCuotas:{t:'Cuotas impagas', c:'Solo créditos y planes ARCA: cuotas impagas con vencimiento hasta el "hasta", sobre el máximo permitido (créditos 2, ARCA 3). En rojo: ya se cae; en naranja: al borde.'},
   prMinimo:{t:'Mínimo', c:'Créditos y planes ARCA: lo justo para no llegar al límite de cuotas impagas (se pagan las más viejas hasta quedar en el máximo − 1). Crítica (sueldos, cargas, cheques propios, excedidos de acuerdo): todo. Alta (impuestos, deudas ARCA): lo que vence en el período. Media y negociable: 0.'},
+  prOrigen:{t:'De dónde sale cada saldo', c:'Es el saldo de esa cuenta para la fecha de análisis (hoy) en la solapa Caja y Bancos. Si ese día no tiene saldo cargado va 0: no se arrastra el de días anteriores (se muestra cuál era, como referencia). Ese saldo puede venir de la hoja "Caja y Bancos" del Excel o haber sido cargado a mano en la solapa (en ese caso dice quién y cuándo; el detalle de cada cambio está en el historial de esa solapa). Si cambiás el monto acá, vale solo para este presupuesto: Caja y Bancos no se toca.'},
   prTengoSel:{t:'Con qué cuento', c:'Cuenta por cuenta (bancos con su margen de acuerdo, efectivo, cheques de terceros) y los cobros esperados. Tildá solo lo que se puede usar para pagar. Los cobros esperados arrancan sin tildar: sirven para proyectar, no para ejecutar. Se guarda con el presupuesto.'},
   prSiNo:{t:'¿Pagar? Sí / No', c:'Sí: entra en el presupuesto (el mínimo; si el mínimo es 0, el total). No: queda en 0 sin borrar el monto. En la fila del rubro marca o desmarca todo el rubro. "Volver al mínimo" vuelve a las marcas de entrada.'},
   prApagar:{t:'A pagar', c:'Arranca en el mínimo. Se puede escribir otro monto en cada fila. "Pagar todo lo que vence" pone el total; "Volver al mínimo" lo reinicia.'},
@@ -1829,7 +1835,7 @@ OBS_ORDEN.observe(document.body, {childList:true, subtree:true});
 /* ====================== Presupuesto del día ======================
    Para un día (o varios): qué está atrasado, qué vence, cuánto es lo mínimo para no caer en
    situación límite, cuánto tengo y cuánto falta. "A pagar" arranca en el mínimo y se puede cambiar. */
-const PR = {desde:null, hasta:null, montos:{}, sel:{}, tengo:{}, tgAbierto:false, cerrados:{}, guardado:null};
+const PR = {desde:null, hasta:null, montos:{}, sel:{}, tengo:{}, tgMonto:{}, tgExtra:[], tgAbierto:false, cerrados:{}, guardado:null};
 const ROW_PRESU = 'presupuestos_v1';
 let PRESU_DB = null;
 function prClave(){ return PR.desde+'_'+PR.hasta+'_'+st.emp; }
@@ -1866,16 +1872,30 @@ function presuGrupos(){
   });
 }
 // Lo que hay para pagar: cuenta por cuenta, cada una se puede tildar o no. Cobros esperados arranca sin tildar.
+// Saldo del día: solo lo cargado para la fecha de análisis. Si ese día no tiene saldo, va 0 (no se arrastra el anterior).
+function saldoDelDia(id){ const c=(DATA.cuentas||[]).find(x=>x.id===id); if(!c) return {v:null, ult:null};
+  const v = c.serie[st.hoy]; const ks=Object.keys(c.serie).filter(k=>k<st.hoy && c.serie[k]!=null).sort();
+  return {v:(v==null||v==='')?null:+v, ult: ks.length? {f:ks[ks.length-1], v:c.serie[ks[ks.length-1]]} : null}; }
+function origenSaldo(id, sd){
+  if(sd.v==null) return {txt:'⚠ no hay saldo cargado del '+fdate(st.hoy).slice(0,5)+' en Caja y Bancos → va 0'+(sd.ult?' (el último fue '+money(sd.ult.v)+' del '+fdate(sd.ult.f).slice(0,5)+')':''), man:false, falta:true};
+  const m = CAJA && CAJA.manual && CAJA.manual[id+'|'+st.hoy];
+  return m ? {txt:'Caja y Bancos del '+fdate(st.hoy).slice(0,5)+', cargado a mano por '+(m.por||'—')+' el '+new Date(m.en).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}), man:true}
+           : {txt:'Caja y Bancos del '+fdate(st.hoy).slice(0,5)+', vino del Excel', man:false};
+}
 function tengoLineas(cobros){
   const L = [];
   empsSel().forEach(e=>{ const c = caja(e); if(!c) return;
-    c.bancos.forEach(b=>{ const v=Math.max(b.margen,0); if(v<1) return; L.push({k:'b|'+e+'|'+b.cuenta, emp:e, nom:b.cuenta, tipo:'Banco', det:b.acuerdo?('saldo '+money(b.saldo)+' + acuerdo '+money(b.acuerdo)):'saldo', monto:v, def:true}); });
-    c.filas.forEach(f=>{ if(f.tipo==='BANCOS'||f.tipo==='MONEDA EXTRANJERA') return; const v=f.u?f.u.monto:0; if(!v) return;
+    c.bancos.forEach(b=>{ const sd=saldoDelDia(b.id); if(sd.v==null && (!sd.ult || (+sd.ult.v||0)+b.acuerdo<1)) return;
+      const v = sd.v==null ? 0 : Math.max(sd.v + b.acuerdo, 0); if(sd.v!=null && v<1) return;
+      L.push({k:'b|'+e+'|'+b.cuenta, emp:e, nom:b.cuenta, tipo:'Banco', det:sd.v==null?'':(b.acuerdo?('saldo '+money(sd.v)+' + acuerdo '+money(b.acuerdo)):'saldo'), org:origenSaldo(b.id, sd), monto:v, def:true}); });
+    c.filas.forEach(f=>{ if(f.tipo==='BANCOS'||f.tipo==='MONEDA EXTRANJERA') return; const sd=saldoDelDia(f.id);
+      if(!sd.v && !(sd.ult && sd.ult.v)) return;
       const ch = f.tipo==='CHEQUES DE TERCEROS';
-      L.push({k:(ch?'ch|':'e|')+e+'|'+f.cuenta, emp:e, nom:f.cuenta, tipo:ch?'Cheques de terceros':'Efectivo', det:f.u&&f.u.fecha?'al '+fdate(f.u.fecha):'', monto:v, def:true}); });
+      L.push({k:(ch?'ch|':'e|')+e+'|'+f.cuenta, emp:e, nom:f.cuenta, tipo:ch?'Cheques de terceros':'Efectivo', det:'', org:origenSaldo(f.id, sd), monto:sd.v||0, def:true}); });
   });
-  L.push({k:'cobros', emp:'', nom:'Cobros esperados hasta el '+fdate(PR.hasta), tipo:'Proyección', det:'sirve para proyectar, no para ejecutar', monto:cobros, def:false});
-  L.forEach(l=>{ l.on = (l.k in PR.tengo) ? PR.tengo[l.k] : l.def; });
+  PR.tgExtra.forEach((x,i)=>L.push({k:'x|'+x.id, emp:'Agregado en el presupuesto', nom:x.nom||'Ingreso', tipo:'Agregado', det:'', org:{txt:'cargado acá'+(x.por?' por '+x.por:''), man:true}, monto:x.monto||0, def:true, extra:x}));
+  L.push({k:'cobros', emp:'', nom:'Cobros esperados hasta el '+fdate(PR.hasta), tipo:'Proyección', det:'', org:{txt:'panel de Cobranzas · sirve para proyectar, no para ejecutar'}, monto:cobros, def:false});
+  L.forEach(l=>{ l.on = (l.k in PR.tengo) ? PR.tengo[l.k] : l.def; l.orig = l.monto; if(!l.extra && l.k!=='cobros' && (l.k in PR.tgMonto)){ l.monto = PR.tgMonto[l.k]; l.aj = true; } });
   return L;
 }
 async function cargarPresuDB(){ if(PRESU_DB || !CONECTADO) return PRESU_DB; try{ PRESU_DB = (await sbLeer(ROW_PRESU)) || {}; }catch(e){ PRESU_DB = {}; } return PRESU_DB; }
@@ -1907,7 +1927,7 @@ function renderPresu(){
   </div>
   ${g?`<p class="hint" style="margin-top:-6px">Presupuesto guardado por ${esc(g.por||'—')} el ${esc(new Date(g.en).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}))}.</p>`:''}
   <div class="prk">
-    <div class="k"><div class="t">Tengo${ii('prTengo')}</div><div class="v ${tengo<0?'neg':''}">${millS(tengo)}</div><div class="s">${dispOn<d0-1?'Tildado '+millS(dispOn)+' de '+millS(d0):'Disponible '+millS(d0)}${cobOn?' + cobros '+millS(cobros):' · sin cobros esperados'}</div></div>
+    <div class="k"><div class="t">Tengo${ii('prTengo')}</div><div class="v ${tengo<0?'neg':''}">${millS(tengo)}</div><div class="s">${Math.abs(dispOn-d0)>1?'Saldos del día '+millS(dispOn):'Disponible '+millS(d0)}${cobOn?' + cobros '+millS(cobros):' · sin cobros esperados'}</div></div>
     <div class="k"><div class="t">Atrasado${ii('prAtr')}</div><div class="v neg">${millS(atr)}</div><div class="s">impago antes del ${fdate(PR.desde).slice(0,5)}</div></div>
     <div class="k"><div class="t">Vence ${PR.desde===PR.hasta?'ese día':'en el período'}${ii('prVence')}</div><div class="v">${millS(per)}</div><div class="s">${rango}</div></div>
     <div class="k"><div class="t">Mínimo a pagar${ii('prMinimo')}</div><div class="v">${millS(min)}</div><div class="s">para no caer en límite + obligatorios</div></div>
@@ -1915,10 +1935,12 @@ function renderPresu(){
     <div class="k ${res<0?'mal':'bien'}"><div class="t">${res<0?'Falta':'Sobra'}${ii('prFalta')}</div><div class="v">${millS(Math.abs(res))}</div><div class="s">Con el mínimo: ${resMin<0?'falta '+millS(-resMin):'sobra '+millS(resMin)}</div></div>
   </div>
   <details class="tg" id="prTg" ${PR.tgAbierto?'open':''}><summary>Con qué cuento para pagar: ${millS(tengo)} <span class="hint">(${TL.filter(l=>l.on).length} de ${TL.length} tildados · tocá para elegir)</span>${ii('prTengoSel')}</summary>
-  <table class="nosort"><thead><tr><th></th><th>Cuenta</th><th>Tipo</th><th>Detalle</th><th class="n">Monto</th></tr></thead><tbody>
+  <table class="nosort"><thead><tr><th></th><th>Cuenta</th><th>Tipo</th><th>De dónde sale${ii('prOrigen')}</th><th class="n">Monto (editable)</th></tr></thead><tbody>
   ${(()=>{ let o='', ue=null; TL.forEach(l=>{ if(l.emp!==ue){ ue=l.emp; o+=`<tr class="emp"><td></td><td colspan="4">${l.emp?esc(l.emp):'Proyección'}</td></tr>`; }
-    o+=`<tr class="${l.on?'':'off'}"><td><input type="checkbox" data-tk="${esc(l.k)}" ${l.on?'checked':''} aria-label="Contar ${esc(l.nom)}"></td><td>${esc(l.nom)}</td><td>${esc(l.tipo)}</td><td class="hint">${esc(l.det)}</td><td class="n">${money(l.monto)}</td></tr>`; }); return o; })()}
-  <tr class="tot"><td></td><td colspan="3"><button class="btn" type="button" id="tgTodo">Tildar todo menos cobros</button> <button class="btn" type="button" id="tgNada">Destildar todo</button></td><td class="n"><b>${money(tengo)}</b></td></tr>
+    const nom = l.extra ? `<input class="tgn" data-xid="${esc(l.extra.id)}" value="${esc(l.extra.nom||'')}" placeholder="Concepto (ej. efectivo que entró)">` : esc(l.nom);
+    const edit = l.k!=='cobros';
+    o+=`<tr class="${l.on?'':'off'}"><td><input type="checkbox" data-tk="${esc(l.k)}" ${l.on?'checked':''} aria-label="Contar ${esc(l.nom)}"></td><td>${nom}</td><td>${esc(l.tipo)}</td><td class="hint">${l.det?esc(l.det)+'<br>':''}<span class="${l.org&&l.org.falta?'neg':l.org&&l.org.man?'orgm':''}">${esc(l.org?l.org.txt:'')}</span>${l.aj?`<br><b class="orgaj">Ajustado en el presupuesto (Caja y Bancos dice ${money(l.orig)})</b> <a href="#" data-tdes="${esc(l.k)}">deshacer</a>`:''}</td><td class="n">${edit?`<input class="tgm ${l.aj||l.extra?'chg':''}" data-tm="${esc(l.k)}" inputmode="decimal" value="${fmtIn(l.monto)}" aria-label="Monto ${esc(l.nom)}">`:money(l.monto)}${l.extra?` <button class="btn" type="button" data-xdel="${esc(l.extra.id)}" title="Quitar">✕</button>`:''}</td></tr>`; }); return o; })()}
+  <tr class="tot"><td></td><td colspan="3"><button class="btn" type="button" id="tgTodo">Tildar todo menos cobros</button> <button class="btn" type="button" id="tgNada">Destildar todo</button> <button class="btn primary" type="button" id="tgAdd">+ Agregar ingreso (efectivo que entró, etc.)</button></td><td class="n"><b>${money(tengo)}</b></td></tr>
   </tbody></table></details>`;
   // tabla por rubro
   const porCat = {}; grupos.forEach(x=>{ (porCat[x.cat]=porCat[x.cat]||[]).push(x); });
@@ -1945,6 +1967,15 @@ function renderPresu(){
   el.querySelectorAll('tr.rub').forEach(tr=>tr.onclick=e=>{ if(e.target.closest('[data-info],a,.sn')) return; const c=tr.dataset.rub, xs=porCat[c]; const ab = !(c in PR.cerrados ? PR.cerrados[c] : !xs.some(x=>x.min>0)); PR.cerrados[c]=ab; renderPresu(); });
   const tg = el.querySelector('#prTg'); tg.ontoggle = ()=>{ PR.tgAbierto = tg.open; };
   el.querySelectorAll('input[data-tk]').forEach(c=>c.onchange=()=>{ PR.tengo[c.dataset.tk]=c.checked; PR.tgAbierto=true; renderPresu(); });
+  el.querySelectorAll('input[data-tm]').forEach(inp=>inp.onchange=()=>{ const v=parseNum(inp.value); if(Number.isNaN(v)){ toast('Número no válido'); return; }
+    const k=inp.dataset.tm; PR.tgAbierto=true;
+    if(k.startsWith('x|')){ const x=PR.tgExtra.find(z=>'x|'+z.id===k); if(x) x.monto=v||0; }
+    else { const l=TL.find(z=>z.k===k); if(l && Math.abs((v||0)-l.orig)<0.005) delete PR.tgMonto[k]; else PR.tgMonto[k]=v||0; }
+    renderPresu(); });
+  el.querySelectorAll('input.tgn').forEach(inp=>inp.onchange=()=>{ const x=PR.tgExtra.find(z=>z.id===inp.dataset.xid); if(x) x.nom=inp.value.trim(); PR.tgAbierto=true; renderPresu(); });
+  el.querySelectorAll('[data-tdes]').forEach(a=>a.onclick=e=>{ e.preventDefault(); delete PR.tgMonto[a.dataset.tdes]; PR.tgAbierto=true; renderPresu(); });
+  el.querySelectorAll('[data-xdel]').forEach(b=>b.onclick=()=>{ PR.tgExtra=PR.tgExtra.filter(z=>z.id!==b.dataset.xdel); PR.tgAbierto=true; renderPresu(); });
+  el.querySelector('#tgAdd').onclick = ()=>{ PR.tgExtra.push({id:Date.now().toString(36), nom:'', monto:0, por:USUARIO.nombre||''}); PR.tgAbierto=true; renderPresu(); setTimeout(()=>{ const n=[...el.querySelectorAll('input.tgn')].pop(); if(n) n.focus(); },0); };
   el.querySelector('#tgTodo').onclick = ()=>{ TL.forEach(l=>{ PR.tengo[l.k] = l.k!=='cobros'; }); PR.tgAbierto=true; renderPresu(); };
   el.querySelector('#tgNada').onclick = ()=>{ TL.forEach(l=>{ PR.tengo[l.k] = false; }); PR.tgAbierto=true; renderPresu(); };
   el.querySelectorAll('.sn[data-k] button').forEach(b=>b.onclick=()=>{ PR.sel[b.parentNode.dataset.k] = b.dataset.v==='1'; renderPresu(); });
@@ -1955,7 +1986,7 @@ function renderPresu(){
     bg.disabled = true;
     try{
       const db = CONECTADO ? ((await sbLeer(ROW_PRESU).catch(()=>null)) || {}) : {};
-      const reg = {desde:PR.desde, hasta:PR.hasta, emp:st.emp, montos:{}, sel:{}, tengo:{}, por:USUARIO.nombre||'', en:new Date().toISOString(),
+      const reg = {desde:PR.desde, hasta:PR.hasta, emp:st.emp, montos:{}, sel:{}, tengo:{}, tgMonto:{...PR.tgMonto}, tgExtra:PR.tgExtra.map(x=>({...x})), por:USUARIO.nombre||'', en:new Date().toISOString(),
         totales:{tengo, atrasado:atr, vence:per, minimo:min, apagar:ap}};
       TL.forEach(l=>{ reg.tengo[l.k] = l.on; });
       grupos.forEach(x=>{ reg.sel[x.k] = x.si; if(x.si) reg.montos[x.k] = x.apagar; else if(x.k in PR.montos) reg.montos[x.k] = PR.montos[x.k]; });
@@ -1968,10 +1999,11 @@ function renderPresu(){
 function cargarGuardado(g){
   PR.montos = {...(g.montos||{})};
   PR.tengo = {...(g.tengo||{})};
+  PR.tgMonto = {...(g.tgMonto||{})}; PR.tgExtra = (g.tgExtra||[]).map(x=>({...x}));
   if(g.sel) PR.sel = {...g.sel};
   else { PR.sel = {}; Object.entries(PR.montos).forEach(([k,v])=>{ PR.sel[k] = v>0; }); }
 }
-function cambiarRango(){ PR.montos={}; PR.sel={}; PR.tengo={}; const g = PRESU_DB && PRESU_DB[prClave()]; if(g) cargarGuardado(g); PR.guardado=g||null; renderPresu(); }
+function cambiarRango(){ PR.montos={}; PR.sel={}; PR.tengo={}; PR.tgMonto={}; PR.tgExtra=[]; const g = PRESU_DB && PRESU_DB[prClave()]; if(g) cargarGuardado(g); PR.guardado=g||null; renderPresu(); }
 
 /* ---------- Ayuda / instructivo ---------- */
 function renderAyuda(){
@@ -2015,7 +2047,7 @@ function renderAyuda(){
   <h3>Solapa Presupuesto del día</h3>
   <p>Para armar los pagos de un día (o de varios): elegí <b>Hoy</b>, <b>Mañana</b>, <b>Hasta el viernes</b>, <b>Próximos 7 días</b> o las fechas que quieras.</p>
   <ul>
-    <li><b>Con qué cuento para pagar</b>: tildá las cuentas que se pueden usar (bancos, efectivo, cheques). Los cobros esperados vienen sin tildar porque todavía no están; tildalos solo si querés proyectar.</li>
+    <li><b>Con qué cuento para pagar</b>: tildá las cuentas que se pueden usar (bancos, efectivo, cheques). Cada una dice de dónde sale el saldo. Podés corregir el monto o tocar <b>+ Agregar ingreso</b> si entró efectivo; eso queda en el presupuesto y no cambia Caja y Bancos. Los cobros esperados vienen sin tildar porque todavía no están; tildalos solo si querés proyectar.</li>
     <li>Arriba: <b>Tengo</b> (lo tildado), <b>Atrasado</b>, lo que <b>Vence</b>, el <b>Mínimo</b> a pagar, lo que elegiste <b>A pagar</b> y cuánto <b>Falta o Sobra</b>.</li>
     <li>Abajo, por rubro con subtotales y plan por plan. En créditos y planes ARCA el mínimo es lo justo para no caer: si al 12/11 un plan ARCA tendría 4 cuotas impagas, el mínimo son las 2 más viejas (queda en 2, una menos que el límite de 3).</li>
     <li>Sueldos, cargas, cheques propios y excedidos de acuerdo van completos; impuestos y deudas ARCA, lo que vence; el resto queda en 0 para decidir.</li>
