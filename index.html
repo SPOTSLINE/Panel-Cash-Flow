@@ -273,6 +273,20 @@ table.pr tr.tot td{background:var(--yellow-soft);color:var(--yellow);font-weight
 table.pr tr.pr td:first-child{padding-left:26px}
 table.pr input.ap{width:118px;text-align:right;background:var(--bg);border:1px solid #3a3a3a;border-radius:6px;padding:4px 7px;font-variant-numeric:tabular-nums;font-size:13px}
 table.pr input.ap:focus{border-color:var(--yellow);outline:none}
+table.pr input.ap:disabled{opacity:.35}
+.sn{display:inline-flex;border:1px solid #3a3a3a;border-radius:7px;overflow:hidden;vertical-align:middle}
+.sn button{border:0;background:transparent;color:var(--muted);font-weight:700;font-size:12px;padding:4px 10px;cursor:pointer}
+.sn button.on.si{background:var(--pos);color:#06210f}
+.sn button.on.no{background:#4a4a4a;color:#fff}
+.sn.mix button{color:var(--ink)}
+table.pr tr.pr.off td{color:#6a6a6a}
+details.tg{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:0 0 16px}
+details.tg summary{cursor:pointer;font-weight:800}
+details.tg table{margin-top:8px}
+details.tg tr.off td{color:#6a6a6a}
+details.tg tr.emp td{background:#262626;font-weight:800;color:#fff}
+details.tg input[type=checkbox]{width:16px;height:16px;accent-color:var(--yellow);cursor:pointer}
+table.pr tr.pr.off td .regla{opacity:.6}
 table.pr input.ap.chg{border-color:var(--yellow);color:var(--yellow)}
 table.pr td.nom{white-space:normal;min-width:240px}
 table.pr .regla{font-size:11.5px;color:#9a9a9a;line-height:1.35;margin-top:2px;max-width:520px}
@@ -1287,12 +1301,14 @@ const INFO = {
   cjTotal:{t:'Total del grupo', c:'Suma de las cuentas del grupo para cada día (en pesos; moneda extranjera en US$).'},
   cjAcuerdo:{t:'Acuerdo', d:'Hoja de acuerdos del Excel. Si lo cambiás acá queda como manual y un Excel nuevo no lo pisa.'},
   prPeriodo:{t:'Período', d:'Elegí un día o un rango. "Atrasado" es lo impago con vencimiento anterior al "desde"; "Vence" es lo que vence entre "desde" y "hasta". Lo que vence después no entra.'},
-  prTengo:{t:'Tengo', d:'Caja y Bancos + panel de Cobranzas.', c:'Disponible hoy (efectivo + margen de acuerdos + cheques en cartera) + cobros esperados desde la fecha de análisis hasta el "hasta". No descuenta pagos de días anteriores al "desde": esos figuran como atrasado.'},
+  prTengo:{t:'Tengo', d:'Caja y Bancos + panel de Cobranzas.', c:'Suma de lo tildado en "Con qué cuento para pagar": por defecto, disponible hoy (efectivo + margen de acuerdos + cheques en cartera), sin cobros esperados. Si tildás los cobros esperados se suman los que van desde la fecha de análisis hasta el "hasta". No descuenta pagos de días anteriores al "desde": esos figuran como atrasado.'},
   prAtr:{t:'Atrasado', c:'Pendiente (Cancelado distinto de SI) con vencimiento anterior al "desde".'},
   prVence:{t:'Vence', c:'Pendiente con vencimiento entre "desde" y "hasta".'},
   prTotal:{t:'Total', c:'Atrasado + Vence.'},
   prCuotas:{t:'Cuotas impagas', c:'Solo créditos y planes ARCA: cuotas impagas con vencimiento hasta el "hasta", sobre el máximo permitido (créditos 2, ARCA 3). En rojo: ya se cae; en naranja: al borde.'},
   prMinimo:{t:'Mínimo', c:'Créditos y planes ARCA: lo justo para no llegar al límite de cuotas impagas (se pagan las más viejas hasta quedar en el máximo − 1). Crítica (sueldos, cargas, cheques propios, excedidos de acuerdo): todo. Alta (impuestos, deudas ARCA): lo que vence en el período. Media y negociable: 0.'},
+  prTengoSel:{t:'Con qué cuento', c:'Cuenta por cuenta (bancos con su margen de acuerdo, efectivo, cheques de terceros) y los cobros esperados. Tildá solo lo que se puede usar para pagar. Los cobros esperados arrancan sin tildar: sirven para proyectar, no para ejecutar. Se guarda con el presupuesto.'},
+  prSiNo:{t:'¿Pagar? Sí / No', c:'Sí: entra en el presupuesto (el mínimo; si el mínimo es 0, el total). No: queda en 0 sin borrar el monto. En la fila del rubro marca o desmarca todo el rubro. "Volver al mínimo" vuelve a las marcas de entrada.'},
   prApagar:{t:'A pagar', c:'Arranca en el mínimo. Se puede escribir otro monto en cada fila. "Pagar todo lo que vence" pone el total; "Volver al mínimo" lo reinicia.'},
   prFalta:{t:'Falta / Sobra', c:'Tengo − A pagar. Abajo, lo mismo si se paga solo el mínimo.'},
   prRegla:{t:'Regla', d:'Por qué el mínimo da ese número.'},
@@ -1813,7 +1829,7 @@ OBS_ORDEN.observe(document.body, {childList:true, subtree:true});
 /* ====================== Presupuesto del día ======================
    Para un día (o varios): qué está atrasado, qué vence, cuánto es lo mínimo para no caer en
    situación límite, cuánto tengo y cuánto falta. "A pagar" arranca en el mínimo y se puede cambiar. */
-const PR = {desde:null, hasta:null, montos:{}, cerrados:{}, guardado:null};
+const PR = {desde:null, hasta:null, montos:{}, sel:{}, tengo:{}, tgAbierto:false, cerrados:{}, guardado:null};
 const ROW_PRESU = 'presupuestos_v1';
 let PRESU_DB = null;
 function prClave(){ return PR.desde+'_'+PR.hasta+'_'+st.emp; }
@@ -1844,19 +1860,36 @@ function presuGrupos(){
       else if(x.niv===2){ x.min = x.per; x.regla = 'Se paga lo que vence en el período; lo atrasado queda a decidir.'; }
       else { x.min = 0; x.regla = x.niv===3 ? 'A decidir: se puede postergar.' : 'Negociable.'; }
     }
-    x.apagar = (x.k in PR.montos) ? PR.montos[x.k] : x.min;
+    x.si = (x.k in PR.sel) ? PR.sel[x.k] : x.min>0;
+    x.apagar = !x.si ? 0 : (x.k in PR.montos) ? PR.montos[x.k] : (x.min>0 ? x.min : x.tot);
     return x;
   });
+}
+// Lo que hay para pagar: cuenta por cuenta, cada una se puede tildar o no. Cobros esperados arranca sin tildar.
+function tengoLineas(cobros){
+  const L = [];
+  empsSel().forEach(e=>{ const c = caja(e); if(!c) return;
+    c.bancos.forEach(b=>{ const v=Math.max(b.margen,0); if(v<1) return; L.push({k:'b|'+e+'|'+b.cuenta, emp:e, nom:b.cuenta, tipo:'Banco', det:b.acuerdo?('saldo '+money(b.saldo)+' + acuerdo '+money(b.acuerdo)):'saldo', monto:v, def:true}); });
+    c.filas.forEach(f=>{ if(f.tipo==='BANCOS'||f.tipo==='MONEDA EXTRANJERA') return; const v=f.u?f.u.monto:0; if(!v) return;
+      const ch = f.tipo==='CHEQUES DE TERCEROS';
+      L.push({k:(ch?'ch|':'e|')+e+'|'+f.cuenta, emp:e, nom:f.cuenta, tipo:ch?'Cheques de terceros':'Efectivo', det:f.u&&f.u.fecha?'al '+fdate(f.u.fecha):'', monto:v, def:true}); });
+  });
+  L.push({k:'cobros', emp:'', nom:'Cobros esperados hasta el '+fdate(PR.hasta), tipo:'Proyección', det:'sirve para proyectar, no para ejecutar', monto:cobros, def:false});
+  L.forEach(l=>{ l.on = (l.k in PR.tengo) ? PR.tengo[l.k] : l.def; });
+  return L;
 }
 async function cargarPresuDB(){ if(PRESU_DB || !CONECTADO) return PRESU_DB; try{ PRESU_DB = (await sbLeer(ROW_PRESU)) || {}; }catch(e){ PRESU_DB = {}; } return PRESU_DB; }
 function renderPresu(){
   const el = document.getElementById('tab-presu');
   if(!PR.desde){ PR.desde = st.hoy; PR.hasta = st.hoy; }
-  if(PRESU_DB===null && CONECTADO){ cargarPresuDB().then(()=>{ const g=PRESU_DB[prClave()]; if(g && !Object.keys(PR.montos).length){ PR.montos={...g.montos}; } PR.guardado=g||null; renderPresu(); }); PRESU_DB = undefined; }
+  if(PRESU_DB===null && CONECTADO){ cargarPresuDB().then(()=>{ const g=PRESU_DB[prClave()]; if(g && !Object.keys(PR.montos).length){ cargarGuardado(g); } PR.guardado=g||null; renderPresu(); }); PRESU_DB = undefined; }
   const grupos = presuGrupos();
   const disp = dispSel(); const d0 = disp? disp.monto : 0;
   const cobros = ITEMS.filter(it=>it.tipo==='ingreso' && empOk(it) && isPend(it) && (!it.proyectado || st.proy) && it.fp>=st.hoy && it.fp<=PR.hasta).reduce((s,i)=>s+i.monto,0);
-  const tengo = d0 + cobros;
+  const TL = tengoLineas(cobros);
+  const tengo = TL.filter(l=>l.on).reduce((s,l)=>s+l.monto,0);
+  const cobOn = TL.find(l=>l.k==='cobros').on;
+  const dispOn = TL.filter(l=>l.on && l.k!=='cobros').reduce((s,l)=>s+l.monto,0);
   const S = f => grupos.reduce((s,x)=>s+f(x),0);
   const atr=S(x=>x.atr), per=S(x=>x.per), min=S(x=>x.min), ap=S(x=>x.apagar);
   const res = tengo - ap, resMin = tengo - min;
@@ -1874,52 +1907,71 @@ function renderPresu(){
   </div>
   ${g?`<p class="hint" style="margin-top:-6px">Presupuesto guardado por ${esc(g.por||'—')} el ${esc(new Date(g.en).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}))}.</p>`:''}
   <div class="prk">
-    <div class="k"><div class="t">Tengo${ii('prTengo')}</div><div class="v ${tengo<0?'neg':''}">${millS(tengo)}</div><div class="s">Disponible ${millS(d0)} + cobros hasta el ${fdate(PR.hasta).slice(0,5)} ${millS(cobros)}</div></div>
+    <div class="k"><div class="t">Tengo${ii('prTengo')}</div><div class="v ${tengo<0?'neg':''}">${millS(tengo)}</div><div class="s">${dispOn<d0-1?'Tildado '+millS(dispOn)+' de '+millS(d0):'Disponible '+millS(d0)}${cobOn?' + cobros '+millS(cobros):' · sin cobros esperados'}</div></div>
     <div class="k"><div class="t">Atrasado${ii('prAtr')}</div><div class="v neg">${millS(atr)}</div><div class="s">impago antes del ${fdate(PR.desde).slice(0,5)}</div></div>
     <div class="k"><div class="t">Vence ${PR.desde===PR.hasta?'ese día':'en el período'}${ii('prVence')}</div><div class="v">${millS(per)}</div><div class="s">${rango}</div></div>
     <div class="k"><div class="t">Mínimo a pagar${ii('prMinimo')}</div><div class="v">${millS(min)}</div><div class="s">para no caer en límite + obligatorios</div></div>
     <div class="k hero"><div class="t">A pagar (elegido)${ii('prApagar')}</div><div class="v">${millS(ap)}</div><div class="s">${Math.abs(ap-min)<1?'= mínimo':(ap>min?'+ ':'− ')+millS(Math.abs(ap-min))+' vs mínimo'}</div></div>
     <div class="k ${res<0?'mal':'bien'}"><div class="t">${res<0?'Falta':'Sobra'}${ii('prFalta')}</div><div class="v">${millS(Math.abs(res))}</div><div class="s">Con el mínimo: ${resMin<0?'falta '+millS(-resMin):'sobra '+millS(resMin)}</div></div>
-  </div>`;
+  </div>
+  <details class="tg" id="prTg" ${PR.tgAbierto?'open':''}><summary>Con qué cuento para pagar: ${millS(tengo)} <span class="hint">(${TL.filter(l=>l.on).length} de ${TL.length} tildados · tocá para elegir)</span>${ii('prTengoSel')}</summary>
+  <table class="nosort"><thead><tr><th></th><th>Cuenta</th><th>Tipo</th><th>Detalle</th><th class="n">Monto</th></tr></thead><tbody>
+  ${(()=>{ let o='', ue=null; TL.forEach(l=>{ if(l.emp!==ue){ ue=l.emp; o+=`<tr class="emp"><td></td><td colspan="4">${l.emp?esc(l.emp):'Proyección'}</td></tr>`; }
+    o+=`<tr class="${l.on?'':'off'}"><td><input type="checkbox" data-tk="${esc(l.k)}" ${l.on?'checked':''} aria-label="Contar ${esc(l.nom)}"></td><td>${esc(l.nom)}</td><td>${esc(l.tipo)}</td><td class="hint">${esc(l.det)}</td><td class="n">${money(l.monto)}</td></tr>`; }); return o; })()}
+  <tr class="tot"><td></td><td colspan="3"><button class="btn" type="button" id="tgTodo">Tildar todo menos cobros</button> <button class="btn" type="button" id="tgNada">Destildar todo</button></td><td class="n"><b>${money(tengo)}</b></td></tr>
+  </tbody></table></details>`;
   // tabla por rubro
   const porCat = {}; grupos.forEach(x=>{ (porCat[x.cat]=porCat[x.cat]||[]).push(x); });
   const cats = Object.keys(porCat).sort((a,b)=>Math.min(...porCat[a].map(x=>x.niv))-Math.min(...porCat[b].map(x=>x.niv)) || EGR_ORDEN.indexOf(a)-EGR_ORDEN.indexOf(b));
-  h += `<div class="tw"><table class="pr"><thead><tr><th>Rubro / plan · acreedor${ii('prRegla')}</th><th>Empresa</th><th>Prioridad${ii('prioridad')}</th><th class="n">Atrasado${ii('prAtr')}</th><th class="n">Vence${ii('prVence')}</th><th class="n">Total${ii('prTotal')}</th><th class="n">Cuotas${ii('prCuotas')}</th><th class="n">Mínimo${ii('prMinimo')}</th><th class="n">A pagar${ii('prApagar')}</th></tr></thead><tbody>`;
+  h += `<div class="tw"><table class="pr"><thead><tr><th>Rubro / plan · acreedor${ii('prRegla')}</th><th>Empresa</th><th>Prioridad${ii('prioridad')}</th><th class="n">Atrasado${ii('prAtr')}</th><th class="n">Vence${ii('prVence')}</th><th class="n">Total${ii('prTotal')}</th><th class="n">Cuotas${ii('prCuotas')}</th><th class="n">Mínimo${ii('prMinimo')}</th><th>¿Pagar?${ii('prSiNo')}</th><th class="n">A pagar${ii('prApagar')}</th></tr></thead><tbody>`;
   cats.forEach(c=>{
     const xs = porCat[c], abierto = !(c in PR.cerrados ? PR.cerrados[c] : !xs.some(x=>x.min>0));
     const s = f => xs.reduce((a,x)=>a+f(x),0), nmin = Math.min(...xs.map(x=>x.niv));
-    h += `<tr class="rub" data-rub="${esc(c)}"><td>${abierto?'▾':'▸'} ${esc(c)}${iiCat(c)} <span class="hint">(${xs.length})</span></td><td></td><td><span class="pill l${nmin}">${NIVELES[nmin].nombre}</span></td><td class="n">${money(s(x=>x.atr))}</td><td class="n">${money(s(x=>x.per))}</td><td class="n">${money(s(x=>x.tot))}</td><td></td><td class="n">${money(s(x=>x.min))}</td><td class="n">${money(s(x=>x.apagar))}</td></tr>`;
+    h += `<tr class="rub" data-rub="${esc(c)}"><td>${abierto?'▾':'▸'} ${esc(c)}${iiCat(c)} <span class="hint">(${xs.length})</span></td><td></td><td><span class="pill l${nmin}">${NIVELES[nmin].nombre}</span></td><td class="n">${money(s(x=>x.atr))}</td><td class="n">${money(s(x=>x.per))}</td><td class="n">${money(s(x=>x.tot))}</td><td></td><td class="n">${money(s(x=>x.min))}</td><td>${(()=>{ const nsi=xs.filter(x=>x.si).length; return `<span class="sn ${nsi&&nsi<xs.length?'mix':''}" data-rubsn="${esc(c)}"><button type="button" class="si ${nsi===xs.length?'on':''}" data-v="1" title="Pagar todo el rubro">Sí</button><button type="button" class="no ${nsi===0?'on':''}" data-v="0" title="No pagar nada del rubro">No</button></span>`; })()}</td><td class="n">${money(s(x=>x.apagar))}</td></tr>`;
     if(abierto) xs.sort((a,b)=>a.niv-b.niv || b.min-a.min || b.tot-a.tot).forEach(x=>{
       const cuo = x.lim ? `<span class="cuo ${x.cuotas>=x.lim?'lim':x.cuotas===x.lim-1?'casi':''}">${x.cuotas} de ${x.lim}</span>` : '—';
-      h += `<tr class="pr"><td class="nom">${x.sint?esc(x.grupo):lnk(x.cat,x.emp,x.grupo,esc(x.grupo||'—'))}<div class="regla">${esc(x.regla)}</div></td><td>${esc(x.emp)}</td><td><span class="pill l${x.niv}">${NIVELES[x.niv].nombre}</span></td><td class="n ${x.atr?'neg':''}">${x.atr?money(x.atr):'—'}</td><td class="n">${x.per?money(x.per):'—'}</td><td class="n">${money(x.tot)}</td><td class="n">${cuo}</td><td class="n">${x.min?money(x.min):'—'}</td><td class="n"><input class="ap ${x.k in PR.montos?'chg':''}" data-k="${esc(x.k)}" inputmode="decimal" value="${fmtIn(x.apagar)}" aria-label="A pagar ${esc(x.grupo)}"></td></tr>`;
+      h += `<tr class="pr ${x.si?'':'off'}"><td class="nom">${x.sint?esc(x.grupo):lnk(x.cat,x.emp,x.grupo,esc(x.grupo||'—'))}<div class="regla">${esc(x.regla)}</div></td><td>${esc(x.emp)}</td><td><span class="pill l${x.niv}">${NIVELES[x.niv].nombre}</span></td><td class="n ${x.atr?'neg':''}">${x.atr?money(x.atr):'—'}</td><td class="n">${x.per?money(x.per):'—'}</td><td class="n">${money(x.tot)}</td><td class="n">${cuo}</td><td class="n">${x.min?money(x.min):'—'}</td><td><span class="sn" data-k="${esc(x.k)}"><button type="button" class="si ${x.si?'on':''}" data-v="1">Sí</button><button type="button" class="no ${x.si?'':'on'}" data-v="0">No</button></span></td><td class="n"><input class="ap ${x.k in PR.montos?'chg':''}" data-k="${esc(x.k)}" inputmode="decimal" value="${fmtIn(x.apagar)}" ${x.si?'':'disabled'} aria-label="A pagar ${esc(x.grupo)}"></td></tr>`;
     });
   });
-  if(!cats.length) h += `<tr><td colspan="9">No hay obligaciones pendientes hasta el ${fdate(PR.hasta)}.</td></tr>`;
-  h += `<tr class="tot"><td>Total</td><td></td><td></td><td class="n">${money(atr)}</td><td class="n">${money(per)}</td><td class="n">${money(atr+per)}</td><td></td><td class="n">${money(min)}</td><td class="n">${money(ap)}</td></tr>`;
+  if(!cats.length) h += `<tr><td colspan="10">No hay obligaciones pendientes hasta el ${fdate(PR.hasta)}.</td></tr>`;
+  h += `<tr class="tot"><td>Total</td><td></td><td></td><td class="n">${money(atr)}</td><td class="n">${money(per)}</td><td class="n">${money(atr+per)}</td><td></td><td class="n">${money(min)}</td><td class="hint">${grupos.filter(x=>x.si).length} de ${grupos.length} en Sí</td><td class="n">${money(ap)}</td></tr>`;
   h += `</tbody></table></div><p class="hint">Tocá un rubro para abrirlo o cerrarlo; tocá un plan o acreedor para verlo completo. Lo que vence después del ${fdate(PR.hasta)} no entra.</p>`;
   el.innerHTML = h;
   el.querySelectorAll('#prRapido button').forEach(b=>b.onclick=()=>{ PR.desde=b.dataset.a; PR.hasta=b.dataset.b; cambiarRango(); });
   el.querySelector('#prD').onchange = e=>{ if(e.target.value){ PR.desde=e.target.value; if(PR.hasta<PR.desde) PR.hasta=PR.desde; cambiarRango(); } };
   el.querySelector('#prH').onchange = e=>{ if(e.target.value){ PR.hasta=e.target.value; if(PR.hasta<PR.desde) PR.desde=PR.hasta; cambiarRango(); } };
-  el.querySelector('#prMin').onclick = ()=>{ PR.montos={}; renderPresu(); };
-  el.querySelector('#prTodo').onclick = ()=>{ grupos.forEach(x=>{ PR.montos[x.k]=x.tot; }); renderPresu(); };
-  el.querySelectorAll('tr.rub').forEach(tr=>tr.onclick=e=>{ if(e.target.closest('[data-info],a')) return; const c=tr.dataset.rub, xs=porCat[c]; const ab = !(c in PR.cerrados ? PR.cerrados[c] : !xs.some(x=>x.min>0)); PR.cerrados[c]=ab; renderPresu(); });
+  el.querySelector('#prMin').onclick = ()=>{ PR.montos={}; PR.sel={}; renderPresu(); };
+  el.querySelector('#prTodo').onclick = ()=>{ grupos.forEach(x=>{ PR.montos[x.k]=x.tot; PR.sel[x.k]=true; }); renderPresu(); };
+  el.querySelectorAll('tr.rub').forEach(tr=>tr.onclick=e=>{ if(e.target.closest('[data-info],a,.sn')) return; const c=tr.dataset.rub, xs=porCat[c]; const ab = !(c in PR.cerrados ? PR.cerrados[c] : !xs.some(x=>x.min>0)); PR.cerrados[c]=ab; renderPresu(); });
+  const tg = el.querySelector('#prTg'); tg.ontoggle = ()=>{ PR.tgAbierto = tg.open; };
+  el.querySelectorAll('input[data-tk]').forEach(c=>c.onchange=()=>{ PR.tengo[c.dataset.tk]=c.checked; PR.tgAbierto=true; renderPresu(); });
+  el.querySelector('#tgTodo').onclick = ()=>{ TL.forEach(l=>{ PR.tengo[l.k] = l.k!=='cobros'; }); PR.tgAbierto=true; renderPresu(); };
+  el.querySelector('#tgNada').onclick = ()=>{ TL.forEach(l=>{ PR.tengo[l.k] = false; }); PR.tgAbierto=true; renderPresu(); };
+  el.querySelectorAll('.sn[data-k] button').forEach(b=>b.onclick=()=>{ PR.sel[b.parentNode.dataset.k] = b.dataset.v==='1'; renderPresu(); });
+  el.querySelectorAll('.sn[data-rubsn] button').forEach(b=>b.onclick=e=>{ e.stopPropagation(); const c=b.parentNode.dataset.rubsn, v=b.dataset.v==='1'; porCat[c].forEach(x=>{ PR.sel[x.k]=v; }); renderPresu(); });
   el.querySelectorAll('input.ap').forEach(inp=>inp.onchange=()=>{ const v=parseNum(inp.value); if(Number.isNaN(v)){ toast('Número no válido'); return; } PR.montos[inp.dataset.k]=v||0; setTimeout(()=>{ const a=document.activeElement, k=a&&a.dataset?a.dataset.k:null; renderPresu(); if(k){ const n=el.querySelector(`input.ap[data-k="${CSS.escape(k)}"]`); if(n){ n.focus(); n.select(); } } },0); });
   const bg = el.querySelector('#prGuardar');
   if(bg) bg.onclick = async ()=>{
     bg.disabled = true;
     try{
       const db = CONECTADO ? ((await sbLeer(ROW_PRESU).catch(()=>null)) || {}) : {};
-      const reg = {desde:PR.desde, hasta:PR.hasta, emp:st.emp, montos:{}, por:USUARIO.nombre||'', en:new Date().toISOString(),
+      const reg = {desde:PR.desde, hasta:PR.hasta, emp:st.emp, montos:{}, sel:{}, tengo:{}, por:USUARIO.nombre||'', en:new Date().toISOString(),
         totales:{tengo, atrasado:atr, vence:per, minimo:min, apagar:ap}};
-      grupos.forEach(x=>{ reg.montos[x.k] = x.apagar; });
+      TL.forEach(l=>{ reg.tengo[l.k] = l.on; });
+      grupos.forEach(x=>{ reg.sel[x.k] = x.si; if(x.si) reg.montos[x.k] = x.apagar; else if(x.k in PR.montos) reg.montos[x.k] = PR.montos[x.k]; });
       db[prClave()] = reg;
       if(CONECTADO) await sbGuardar(ROW_PRESU, db);
       PRESU_DB = db; PR.guardado = reg; toast(CONECTADO?'Presupuesto guardado.':'Sin conexión: no se guardó.'); renderPresu();
     }catch(e){ toast('No se pudo guardar: '+e.message); bg.disabled=false; }
   };
 }
-function cambiarRango(){ PR.montos={}; const g = PRESU_DB && PRESU_DB[prClave()]; if(g) PR.montos={...g.montos}; PR.guardado=g||null; renderPresu(); }
+function cargarGuardado(g){
+  PR.montos = {...(g.montos||{})};
+  PR.tengo = {...(g.tengo||{})};
+  if(g.sel) PR.sel = {...g.sel};
+  else { PR.sel = {}; Object.entries(PR.montos).forEach(([k,v])=>{ PR.sel[k] = v>0; }); }
+}
+function cambiarRango(){ PR.montos={}; PR.sel={}; PR.tengo={}; const g = PRESU_DB && PRESU_DB[prClave()]; if(g) cargarGuardado(g); PR.guardado=g||null; renderPresu(); }
 
 /* ---------- Ayuda / instructivo ---------- */
 function renderAyuda(){
@@ -1963,10 +2015,12 @@ function renderAyuda(){
   <h3>Solapa Presupuesto del día</h3>
   <p>Para armar los pagos de un día (o de varios): elegí <b>Hoy</b>, <b>Mañana</b>, <b>Hasta el viernes</b>, <b>Próximos 7 días</b> o las fechas que quieras.</p>
   <ul>
-    <li>Arriba: <b>Tengo</b> (disponible + cobros esperados hasta esa fecha), <b>Atrasado</b>, lo que <b>Vence</b>, el <b>Mínimo</b> a pagar, lo que elegiste <b>A pagar</b> y cuánto <b>Falta o Sobra</b>.</li>
+    <li><b>Con qué cuento para pagar</b>: tildá las cuentas que se pueden usar (bancos, efectivo, cheques). Los cobros esperados vienen sin tildar porque todavía no están; tildalos solo si querés proyectar.</li>
+    <li>Arriba: <b>Tengo</b> (lo tildado), <b>Atrasado</b>, lo que <b>Vence</b>, el <b>Mínimo</b> a pagar, lo que elegiste <b>A pagar</b> y cuánto <b>Falta o Sobra</b>.</li>
     <li>Abajo, por rubro con subtotales y plan por plan. En créditos y planes ARCA el mínimo es lo justo para no caer: si al 12/11 un plan ARCA tendría 4 cuotas impagas, el mínimo son las 2 más viejas (queda en 2, una menos que el límite de 3).</li>
     <li>Sueldos, cargas, cheques propios y excedidos de acuerdo van completos; impuestos y deudas ARCA, lo que vence; el resto queda en 0 para decidir.</li>
-    <li>Cambiá el monto de "A pagar" en la fila que quieras y los totales se recalculan. <b>Guardar presupuesto</b> lo deja guardado para ese día y empresa.</li>
+    <li>Columna <b>¿Pagar?</b>: marcá <b>Sí</b> o <b>No</b> en cada fila (o en el rubro para todo junto). No deja la fila en 0 sin tocar el monto; Sí la vuelve a sumar (el mínimo, o el total si el mínimo es 0).</li>
+    <li>Si querés un pago parcial, cambiá el monto de "A pagar" en la fila y los totales se recalculan. <b>Guardar presupuesto</b> lo deja guardado para ese día y empresa.</li>
   </ul>
   <h3>Ordenar tablas</h3>
   <p>Tocá el título de cualquier columna para ordenar de menor a mayor; otra vez, de mayor a menor. En las tablas con grupos (empresa, rubro) se ordena dentro de cada grupo. La grilla del cash flow no se ordena porque va por fechas.</p>
