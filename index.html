@@ -323,6 +323,17 @@ table.pr tr.pr.ex .rm{padding:2px 7px;font-size:12px;margin-left:4px}
 .trl label.on{color:var(--ink);background:var(--yellow-soft)}
 .trl .cm{text-align:right;font-variant-numeric:tabular-nums;min-width:100px}
 td.trc{white-space:nowrap;font-size:12px}td.trc label{cursor:pointer}
+/* v13: pagado */
+td.pg{white-space:nowrap;font-size:12px;min-width:150px}
+td.pg .btn{padding:3px 10px;font-size:12px}
+td.pg .ok{color:var(--pos);font-weight:800}
+td.pg input.pgm{width:110px;text-align:right;background:var(--bg);border:1px solid var(--pos);border-radius:6px;padding:3px 6px;color:var(--pos);font-variant-numeric:tabular-nums;font-size:13px}
+td.pg .q{color:var(--p2);font-weight:700}
+td.pg .who{color:#8a8a8a;font-size:11px}
+td.pg a{color:#8a8a8a}
+table.pr tr.pr.pagado td{background:rgba(46,160,90,.07)}
+table.pr tr.pr.pagado td.nom > a,table.pr tr.pr.pagado td.nom input.exn{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.35)}
+.prk .k.pg .v{color:var(--pos)}
 
 .seg{flex-wrap:wrap;max-width:100%}
 input[type=checkbox]{accent-color:var(--yellow)}
@@ -1350,6 +1361,7 @@ const INFO = {
   prCuotaSel:{t:'Elegir cuotas', c:'Abrí "Elegir cuotas" en un plan o acreedor para tildar justo las cuotas que vas a pagar (no hace falta pagar todo lo adeudado). "A pagar" pasa a ser la suma de lo tildado. Aparecen las cuotas atrasadas, las que vencen en el período y hasta 3 próximas por si querés adelantar. En créditos y planes ARCA avisa cuántas quedarían impagas y si el plan se cae. Si escribís un monto a mano, se deja de usar la selección de cuotas.'},
   prTraer:{t:'Traer de la deuda', c:'Para pagar algo que todavía no vence en el período (por ejemplo una cuota de una desvinculación, un plan o un proveedor): tocá "+ Traer de la deuda" y tildá las cuotas, o tildá "Traer" en la solapa Detalle de deudas. Entran en su plan o acreedor con Sí y suman en "A pagar" (no en el Mínimo, porque son adelantos que elegiste). Se sacan destildándolas o con "sacar". Se guardan con el presupuesto; la deuda no cambia.'},
   prExtras:{t:'Egresos extra a mano', c:'Pagos que no están en ninguna hoja del Excel ni en los paneles: retiro de socios, moto, limpieza, panadería, etc. Concepto, empresa, monto y nota. Al escribir el concepto te sugiere los que ya usaste y, si ya lo cargaste antes, trae el último monto y empresa. Los que están en Sí suman en "A pagar" y en el "Mínimo" (porque los cargaste para pagarlos). Se guardan con el presupuesto; no cambian la deuda ni Caja y Bancos.'},
+  prPagado:{t:'Pagado', c:'A medida que pagás, tocá "Marcar pagado" en la fila: queda en verde con quién y cuándo, y se guarda solo (guarda todo el presupuesto). Toma el monto de "A pagar"; si pagaste menos, corregí el número y la fila muestra lo que falta. "deshacer" lo vuelve a pendiente. Arriba, "Pagado" suma lo marcado y "Queda por pagar" es A pagar − pagado. "Ocultar pagados" deja a la vista solo lo pendiente. Es un registro del presupuesto: no cambia la deuda ni Caja y Bancos (eso se sigue actualizando con el Excel).'},
   prSiNo:{t:'¿Pagar? Sí / No', c:'Sí: entra en el presupuesto (el mínimo; si el mínimo es 0, el total). No: queda en 0 sin borrar el monto. En la fila del rubro marca o desmarca todo el rubro. "Volver al mínimo" vuelve a las marcas de entrada.'},
   prApagar:{t:'A pagar', c:'Arranca en el mínimo. Se puede escribir otro monto en cada fila. "Pagar todo lo que vence" pone el total; "Volver al mínimo" lo reinicia.'},
   prFalta:{t:'Falta / Sobra', c:'Tengo − A pagar. Abajo, lo mismo si se paga solo el mínimo.'},
@@ -1873,7 +1885,7 @@ OBS_ORDEN.observe(document.body, {childList:true, subtree:true});
 /* ====================== Presupuesto del día ======================
    Para un día (o varios): qué está atrasado, qué vence, cuánto es lo mínimo para no caer en
    situación límite, cuánto tengo y cuánto falta. "A pagar" arranca en el mínimo y se puede cambiar. */
-const PR = {desde:null, hasta:null, montos:{}, sel:{}, cuo:{}, cuoAb:{}, tengo:{}, tgMonto:{}, tgExtra:[], tgAbierto:false, cerrados:{}, guardado:null, traer:{}, egExtra:[]};
+const PR = {desde:null, hasta:null, montos:{}, sel:{}, cuo:{}, cuoAb:{}, tengo:{}, tgMonto:{}, tgExtra:[], tgAbierto:false, cerrados:{}, guardado:null, traer:{}, egExtra:[], pag:{}, ocultarPag:false, _guardar:null};
 const EX_SUGERIDOS = ['Retiro socios','Moto / mensajería','Limpieza','Panadería','Caja chica','Viáticos','Combustible','Librería'];
 // v12: clave estable de cada cuota/factura de egreso (rubro|empresa|grupo § detalle@vto@centavos) para "traerla" al presupuesto
 function asignarTk(){ const vistos={}; ITEMS.forEach(it=>{ if(it.tipo!=='egreso') return; const b=it.cat+'|'+it.emp+'|'+(it.grupo||'')+'§'+(it.det||'')+'@'+(it.vto||it.fp)+'@'+Math.round((it.monto||0)*100); vistos[b]=(vistos[b]||0)+1; it._tk=b+(vistos[b]>1?'#'+vistos[b]:''); }); }
@@ -2004,6 +2016,17 @@ function renderPresu(){
   const dispOn = TL.filter(l=>l.on && l.k!=='cobros').reduce((s,l)=>s+l.monto,0);
   const S = f => grupos.reduce((s,x)=>s+f(x),0);
   const atr=S(x=>x.atr), per=S(x=>x.per), tra=S(x=>x.tra), min=S(x=>x.min)+exAp, ap=S(x=>x.apagar)+exAp;
+  // v13: pagado (se marca fila por fila; clave del grupo o 'ex|'+id para extras)
+  const pgDe = k => PR.pag[k] ? (+PR.pag[k].m||0) : 0;
+  const filasAp = grupos.filter(x=>x.si && x.apagar>0).map(x=>({k:x.k, ap:x.apagar})).concat(exOn.filter(x=>+x.monto>0).map(x=>({k:'ex|'+x.id, ap:+x.monto})));
+  const pagado = filasAp.reduce((s,f)=>s+Math.min(pgDe(f.k), f.ap),0) + Object.keys(PR.pag).filter(k=>!filasAp.some(f=>f.k===k)).reduce((s,k)=>s+pgDe(k),0);
+  const quedaPag = filasAp.reduce((s,f)=>s+Math.max(f.ap-pgDe(f.k),0),0);
+  const nPend = filasAp.filter(f=>f.ap-pgDe(f.k)>0.5).length, nPag = filasAp.length-nPend;
+  const pgCelda = (k, apv, on)=>{ const r = PR.pag[k];
+    if(!r){ if(!on || !(apv>0)) return '<td class="pg">—</td>'; return `<td class="pg">${PERM.editar?`<button class="btn" type="button" data-pgk="${esc(k)}" data-pga="${apv}">Marcar pagado</button>`:'<span class="hint">pendiente</span>'}</td>`; }
+    const falta = (on?apv:0) - (+r.m||0);
+    return `<td class="pg"><span class="ok">✓</span> <input class="pgm" data-pgm="${esc(k)}" inputmode="decimal" value="${fmtIn(+r.m||0)}" ${PERM.editar?'':'disabled'} aria-label="Pagado">${falta>0.5?`<br><span class="q">falta ${money(falta)}</span>`:''}<br><span class="who">${esc(r.por||'')} ${r.en?new Date(r.en).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):''}</span>${PERM.editar?` · <a href="#" data-pgdes="${esc(k)}">deshacer</a>`:''}</td>`; };
+  const esPag = (k, apv)=> PR.pag[k] && (+PR.pag[k].m||0) >= apv-0.5;
   const res = tengo - ap, resMin = tengo - min;
   const rango = PR.desde===PR.hasta ? fdate(PR.desde) : fdate(PR.desde)+' al '+fdate(PR.hasta);
   const viernes = (()=>{ let f=st.hoy; while(D(f).getUTCDay()!==5) f=addDays(f,1); return f; })();
@@ -2015,6 +2038,7 @@ function renderPresu(){
     <span style="flex:1"></span>
     <button class="btn" id="prTraer" type="button" title="Sumar cuotas que vencen después (desvinculaciones, planes, proveedores…)">+ Traer de la deuda</button>
     <button class="btn" id="prExAdd2" type="button" title="Socios, moto, limpieza, panadería…">+ Egreso extra</button>
+    <button class="btn" id="prOcPag" type="button" aria-pressed="${PR.ocultarPag}">${PR.ocultarPag?'Mostrar pagados':'Ocultar pagados'}</button>
     <button class="btn" id="prMin" type="button">Volver al mínimo</button>
     <button class="btn" id="prTodo" type="button">Pagar todo lo que vence</button>
     ${PERM.editar?`<button class="btn primary" id="prGuardar" type="button">Guardar presupuesto</button>`:''}
@@ -2026,6 +2050,7 @@ function renderPresu(){
     <div class="k"><div class="t">Vence ${PR.desde===PR.hasta?'ese día':'en el período'}${ii('prVence')}</div><div class="v">${millS(per)}</div><div class="s">${rango}</div></div>
     <div class="k"><div class="t">Mínimo a pagar${ii('prMinimo')}</div><div class="v">${millS(min)}</div><div class="s">para no caer en límite + obligatorios</div></div>
     <div class="k hero"><div class="t">A pagar (elegido)${ii('prApagar')}</div><div class="v">${millS(ap)}</div><div class="s">${Math.abs(ap-min)<1?'= mínimo':(ap>min?'+ ':'− ')+millS(Math.abs(ap-min))+' vs mínimo'}${tra?' · traído '+chicoS(tra):''}${exAp?' · extras '+chicoS(exAp):''}</div></div>
+    <div class="k pg"><div class="t">Pagado${ii('prPagado')}</div><div class="v">${millS(pagado)}</div><div class="s">${nPag} de ${filasAp.length} filas · queda por pagar <b>${chicoS(quedaPag)}</b>${nPend?' ('+nPend+')':''}</div></div>
     <div class="k ${res<0?'mal':'bien'}"><div class="t">${res<0?'Falta':'Sobra'}${ii('prFalta')}</div><div class="v">${millS(Math.abs(res))}</div><div class="s">Con el mínimo: ${resMin<0?'falta '+millS(-resMin):'sobra '+millS(resMin)}</div></div>
   </div>
   <details class="tg" id="prTg" ${PR.tgAbierto?'open':''}><summary>Con qué cuento para pagar: ${millS(tengo)} <span class="hint">(${TL.filter(l=>l.on).length} de ${TL.length} tildados · tocá para elegir)</span>${ii('prTengoSel')}</summary>
@@ -2039,32 +2064,34 @@ function renderPresu(){
   // tabla por rubro
   const porCat = {}; grupos.forEach(x=>{ (porCat[x.cat]=porCat[x.cat]||[]).push(x); });
   const cats = Object.keys(porCat).sort((a,b)=>Math.min(...porCat[a].map(x=>x.niv))-Math.min(...porCat[b].map(x=>x.niv)) || EGR_ORDEN.indexOf(a)-EGR_ORDEN.indexOf(b));
-  h += `<div class="tw"><table class="pr"><thead><tr><th>Rubro / plan · acreedor${ii('prRegla')}</th><th>Empresa</th><th>Prioridad${ii('prioridad')}</th><th class="n">Atrasado${ii('prAtr')}</th><th class="n">Vence${ii('prVence')}</th><th class="n">Total${ii('prTotal')}</th><th class="n">Cuotas${ii('prCuotas')}</th><th class="n">Mínimo${ii('prMinimo')}</th><th>¿Pagar?${ii('prSiNo')}</th><th class="n">A pagar${ii('prApagar')}</th></tr></thead><tbody>`;
+  h += `<div class="tw"><table class="pr"><thead><tr><th>Rubro / plan · acreedor${ii('prRegla')}</th><th>Empresa</th><th>Prioridad${ii('prioridad')}</th><th class="n">Atrasado${ii('prAtr')}</th><th class="n">Vence${ii('prVence')}</th><th class="n">Total${ii('prTotal')}</th><th class="n">Cuotas${ii('prCuotas')}</th><th class="n">Mínimo${ii('prMinimo')}</th><th>¿Pagar?${ii('prSiNo')}</th><th class="n">A pagar${ii('prApagar')}</th><th>Pagado${ii('prPagado')}</th></tr></thead><tbody>`;
   { const exAb = !PR.cerrados['__ex'];
     const dl = [...new Set([...[...conceptosUsados().values()].map(c=>c.nom), ...EX_SUGERIDOS])];
-    h += `<tr class="rub ex" data-rub="__ex"><td>${exAb?'▾':'▸'} Extras a mano${ii('prExtras')} <span class="hint">(${EX.length}) socios, moto, limpieza, panadería…</span></td><td></td><td><span class="pill man">Manual</span></td><td></td><td></td><td class="n">${EX.length?money(exTot):''}</td><td></td><td class="n">${exAp?money(exAp):''}</td><td>${EX.length?(()=>{ const nsi=exOn.length; return `<span class="sn ${nsi&&nsi<EX.length?'mix':''}" data-exrub="1"><button type="button" class="si ${nsi===EX.length?'on':''}" data-v="1">Sí</button><button type="button" class="no ${nsi===0?'on':''}" data-v="0">No</button></span>`; })():''}</td><td class="n">${EX.length?money(exAp):`<button class="btn" type="button" id="prExAdd">+ Agregar</button>`}</td></tr>`;
+    h += `<tr class="rub ex" data-rub="__ex"><td>${exAb?'▾':'▸'} Extras a mano${ii('prExtras')} <span class="hint">(${EX.length}) socios, moto, limpieza, panadería…</span></td><td></td><td><span class="pill man">Manual</span></td><td></td><td></td><td class="n">${EX.length?money(exTot):''}</td><td></td><td class="n">${exAp?money(exAp):''}</td><td>${EX.length?(()=>{ const nsi=exOn.length; return `<span class="sn ${nsi&&nsi<EX.length?'mix':''}" data-exrub="1"><button type="button" class="si ${nsi===EX.length?'on':''}" data-v="1">Sí</button><button type="button" class="no ${nsi===0?'on':''}" data-v="0">No</button></span>`; })():''}</td><td class="n">${EX.length?money(exAp):`<button class="btn" type="button" id="prExAdd">+ Agregar</button>`}</td><td class="pg">${(()=>{ const pg=exOn.reduce((s,x)=>s+Math.min(pgDe('ex|'+x.id),+x.monto||0),0); return pg?`<span class="ok">${money(pg)}</span>`:''; })()}</td></tr>`;
     if(exAb){
-      EX.forEach(x=>{ const on = x.si!==false;
-        h += `<tr class="pr ex ${on?'':'off'}"><td class="nom"><input class="exn" list="exSug" data-exid="${esc(x.id)}" data-f="nom" value="${esc(x.nom||'')}" placeholder="Concepto (ej. Panadería)"><input class="exo" data-exid="${esc(x.id)}" data-f="nota" value="${esc(x.nota||'')}" placeholder="Nota (opcional)"><div class="regla">Cargado a mano${x.por?' por '+esc(x.por):''}</div></td>
+      EX.forEach(x=>{ const on = x.si!==false, kx='ex|'+x.id;
+        if(PR.ocultarPag && on && esPag(kx, +x.monto||0)) return;
+        h += `<tr class="pr ex ${on?'':'off'} ${on&&esPag(kx,+x.monto||0)?'pagado':''}"><td class="nom"><input class="exn" list="exSug" data-exid="${esc(x.id)}" data-f="nom" value="${esc(x.nom||'')}" placeholder="Concepto (ej. Panadería)"><input class="exo" data-exid="${esc(x.id)}" data-f="nota" value="${esc(x.nota||'')}" placeholder="Nota (opcional)"><div class="regla">Cargado a mano${x.por?' por '+esc(x.por):''}</div></td>
           <td><select data-exid="${esc(x.id)}" data-f="emp">${[...new Set([...empsEx, x.emp].filter(Boolean))].map(e=>`<option ${e===x.emp?'selected':''}>${esc(e)}</option>`).join('')}</select></td>
           <td><span class="pill man">Manual</span></td><td class="n">—</td><td class="n">—</td><td class="n">${money(+x.monto||0)}</td><td class="n">—</td><td class="n">${on&&x.monto?money(+x.monto):'—'}</td>
           <td><span class="sn" data-exsn="${esc(x.id)}"><button type="button" class="si ${on?'on':''}" data-v="1">Sí</button><button type="button" class="no ${on?'':'on'}" data-v="0">No</button></span></td>
-          <td class="n"><input class="ap exm ${on?'chg':''}" data-exid="${esc(x.id)}" data-f="monto" inputmode="decimal" value="${fmtIn(+x.monto||0)}" aria-label="Monto ${esc(x.nom||'extra')}"><button class="btn rm" type="button" data-exdel="${esc(x.id)}" title="Quitar">✕</button></td></tr>`; });
-      if(EX.length) h += `<tr class="pr ex"><td colspan="10"><button class="btn" type="button" id="prExAdd">+ Agregar otro egreso extra</button></td></tr>`;
+          <td class="n"><input class="ap exm ${on?'chg':''}" data-exid="${esc(x.id)}" data-f="monto" inputmode="decimal" value="${fmtIn(+x.monto||0)}" aria-label="Monto ${esc(x.nom||'extra')}"><button class="btn rm" type="button" data-exdel="${esc(x.id)}" title="Quitar">✕</button></td>${pgCelda(kx, +x.monto||0, on)}</tr>`; });
+      if(EX.length) h += `<tr class="pr ex"><td colspan="11"><button class="btn" type="button" id="prExAdd">+ Agregar otro egreso extra</button></td></tr>`;
     }
     h += `<datalist id="exSug">${dl.map(n=>`<option value="${esc(n)}">`).join('')}</datalist>`;
   }
   cats.forEach(c=>{
     const xs = porCat[c], abierto = !(c in PR.cerrados ? PR.cerrados[c] : !xs.some(x=>x.min>0 || x.tra>0));
     const s = f => xs.reduce((a,x)=>a+f(x),0), nmin = Math.min(...xs.map(x=>x.niv));
-    h += `<tr class="rub" data-rub="${esc(c)}"><td>${abierto?'▾':'▸'} ${esc(c)}${iiCat(c)} <span class="hint">(${xs.length})</span></td><td></td><td><span class="pill l${nmin}">${NIVELES[nmin].nombre}</span></td><td class="n">${money(s(x=>x.atr))}</td><td class="n">${money(s(x=>x.per))}</td><td class="n">${money(s(x=>x.tot))}</td><td></td><td class="n">${money(s(x=>x.min))}</td><td>${(()=>{ const nsi=xs.filter(x=>x.si).length; return `<span class="sn ${nsi&&nsi<xs.length?'mix':''}" data-rubsn="${esc(c)}"><button type="button" class="si ${nsi===xs.length?'on':''}" data-v="1" title="Pagar todo el rubro">Sí</button><button type="button" class="no ${nsi===0?'on':''}" data-v="0" title="No pagar nada del rubro">No</button></span>`; })()}</td><td class="n">${money(s(x=>x.apagar))}</td></tr>`;
+    h += `<tr class="rub" data-rub="${esc(c)}"><td>${abierto?'▾':'▸'} ${esc(c)}${iiCat(c)} <span class="hint">(${xs.length})</span></td><td></td><td><span class="pill l${nmin}">${NIVELES[nmin].nombre}</span></td><td class="n">${money(s(x=>x.atr))}</td><td class="n">${money(s(x=>x.per))}</td><td class="n">${money(s(x=>x.tot))}</td><td></td><td class="n">${money(s(x=>x.min))}</td><td>${(()=>{ const nsi=xs.filter(x=>x.si).length; return `<span class="sn ${nsi&&nsi<xs.length?'mix':''}" data-rubsn="${esc(c)}"><button type="button" class="si ${nsi===xs.length?'on':''}" data-v="1" title="Pagar todo el rubro">Sí</button><button type="button" class="no ${nsi===0?'on':''}" data-v="0" title="No pagar nada del rubro">No</button></span>`; })()}</td><td class="n">${money(s(x=>x.apagar))}</td><td class="pg">${(()=>{ const pg=s(x=>x.si?Math.min(pgDe(x.k),x.apagar):0), ap0=s(x=>x.apagar); return pg?`<span class="ok">${money(pg)}</span>${ap0-pg>0.5?` <span class="q">falta ${money(ap0-pg)}</span>`:''}`:''; })()}</td></tr>`;
     if(abierto) xs.sort((a,b)=>a.niv-b.niv || b.min-a.min || b.tot-a.tot).forEach(x=>{
+      if(PR.ocultarPag && x.si && x.apagar>0 && esPag(x.k, x.apagar)) return;
       const cuo = x.lim ? `<span class="cuo ${x.cuotas>=x.lim?'lim':x.cuotas===x.lim-1?'casi':''}">${x.cuotas} de ${x.lim}</span>` : '—';
-      h += `<tr class="pr ${x.si?'':'off'}"><td class="nom">${x.sint?esc(x.grupo):lnk(x.cat,x.emp,x.grupo,esc(x.grupo||'—'))}<div class="regla">${esc(x.regla)}</div>${cuoHtml(x)}</td><td>${esc(x.emp)}</td><td><span class="pill l${x.niv}">${NIVELES[x.niv].nombre}</span></td><td class="n ${x.atr?'neg':''}">${x.atr?money(x.atr):'—'}</td><td class="n">${x.per?money(x.per):'—'}</td><td class="n">${money(x.tot)}</td><td class="n">${cuo}</td><td class="n">${x.min?money(x.min):'—'}</td><td><span class="sn" data-k="${esc(x.k)}"><button type="button" class="si ${x.si?'on':''}" data-v="1">Sí</button><button type="button" class="no ${x.si?'':'on'}" data-v="0">No</button></span></td><td class="n"><input class="ap ${x.k in PR.montos?'chg':''}" data-k="${esc(x.k)}" inputmode="decimal" value="${fmtIn(x.apagar)}" ${x.si?'':'disabled'} aria-label="A pagar ${esc(x.grupo)}"></td></tr>`;
+      h += `<tr class="pr ${x.si?'':'off'} ${x.si&&x.apagar>0&&esPag(x.k,x.apagar)?'pagado':''}"><td class="nom">${x.sint?esc(x.grupo):lnk(x.cat,x.emp,x.grupo,esc(x.grupo||'—'))}<div class="regla">${esc(x.regla)}</div>${cuoHtml(x)}</td><td>${esc(x.emp)}</td><td><span class="pill l${x.niv}">${NIVELES[x.niv].nombre}</span></td><td class="n ${x.atr?'neg':''}">${x.atr?money(x.atr):'—'}</td><td class="n">${x.per?money(x.per):'—'}</td><td class="n">${money(x.tot)}</td><td class="n">${cuo}</td><td class="n">${x.min?money(x.min):'—'}</td><td><span class="sn" data-k="${esc(x.k)}"><button type="button" class="si ${x.si?'on':''}" data-v="1">Sí</button><button type="button" class="no ${x.si?'':'on'}" data-v="0">No</button></span></td><td class="n"><input class="ap ${x.k in PR.montos?'chg':''}" data-k="${esc(x.k)}" inputmode="decimal" value="${fmtIn(x.apagar)}" ${x.si?'':'disabled'} aria-label="A pagar ${esc(x.grupo)}"></td>${pgCelda(x.k, x.apagar, x.si)}</tr>`;
     });
   });
-  if(!cats.length) h += `<tr><td colspan="10">No hay obligaciones pendientes hasta el ${fdate(PR.hasta)}.</td></tr>`;
-  h += `<tr class="tot"><td>Total</td><td></td><td></td><td class="n">${money(atr)}</td><td class="n">${money(per)}</td><td class="n">${money(atr+per+tra+exTot)}</td><td></td><td class="n">${money(min)}</td><td class="hint">${grupos.filter(x=>x.si).length+exOn.length} de ${grupos.length+EX.length} en Sí</td><td class="n">${money(ap)}</td></tr>`;
+  if(!cats.length) h += `<tr><td colspan="11">No hay obligaciones pendientes hasta el ${fdate(PR.hasta)}.</td></tr>`;
+  h += `<tr class="tot"><td>Total</td><td></td><td></td><td class="n">${money(atr)}</td><td class="n">${money(per)}</td><td class="n">${money(atr+per+tra+exTot)}</td><td></td><td class="n">${money(min)}</td><td class="hint">${grupos.filter(x=>x.si).length+exOn.length} de ${grupos.length+EX.length} en Sí</td><td class="n">${money(ap)}</td><td class="pg"><span class="ok">${money(pagado)}</span>${quedaPag>0.5?`<br><span class="q">queda ${money(quedaPag)}</span>`:''}</td></tr>`;
   h += `</tbody></table></div><p class="hint">Tocá un rubro para abrirlo o cerrarlo; tocá un plan o acreedor para verlo completo. Lo que vence después del ${fdate(PR.hasta)} no entra, salvo que lo traigas con <b>+ Traer de la deuda</b>.</p>`;
   el.innerHTML = h;
   el.querySelectorAll('#prRapido button').forEach(b=>b.onclick=()=>{ PR.desde=b.dataset.a; PR.hasta=b.dataset.b; cambiarRango(); });
@@ -2112,19 +2139,28 @@ function renderPresu(){
   el.querySelectorAll('.sn[data-rubsn] button').forEach(b=>b.onclick=e=>{ e.stopPropagation(); const c=b.parentNode.dataset.rubsn, v=b.dataset.v==='1'; porCat[c].forEach(x=>{ PR.sel[x.k]=v; if(v && PR.cuo[x.k] && !PR.cuo[x.k].length) delete PR.cuo[x.k]; }); renderPresu(); });
   el.querySelectorAll('input.ap:not(.exm)').forEach(inp=>inp.onchange=()=>{ const v=parseNum(inp.value); if(Number.isNaN(v)){ toast('Número no válido'); return; } PR.montos[inp.dataset.k]=v||0; delete PR.cuo[inp.dataset.k]; setTimeout(()=>{ const a=document.activeElement, k=a&&a.dataset?a.dataset.k:null; renderPresu(); if(k){ const n=el.querySelector(`input.ap[data-k="${CSS.escape(k)}"]`); if(n){ n.focus(); n.select(); } } },0); });
   const bg = el.querySelector('#prGuardar');
-  if(bg) bg.onclick = async ()=>{
-    bg.disabled = true;
+  const guardar = async (auto)=>{
+    if(bg) bg.disabled = true;
     try{
       const db = CONECTADO ? ((await sbLeer(ROW_PRESU).catch(()=>null)) || {}) : {};
-      const reg = {desde:PR.desde, hasta:PR.hasta, emp:st.emp, montos:{}, sel:{}, cuo:JSON.parse(JSON.stringify(PR.cuo)), tengo:{}, tgMonto:{...PR.tgMonto}, tgExtra:PR.tgExtra.map(x=>({...x})), traer:{...PR.traer}, egExtra:PR.egExtra.map(x=>({...x})), por:USUARIO.nombre||'', en:new Date().toISOString(),
-        totales:{tengo, atrasado:atr, vence:per, traido:tra, extras:exAp, minimo:min, apagar:ap}};
+      const reg = {desde:PR.desde, hasta:PR.hasta, emp:st.emp, montos:{}, sel:{}, cuo:JSON.parse(JSON.stringify(PR.cuo)), tengo:{}, tgMonto:{...PR.tgMonto}, tgExtra:PR.tgExtra.map(x=>({...x})), traer:{...PR.traer}, egExtra:PR.egExtra.map(x=>({...x})), pag:JSON.parse(JSON.stringify(PR.pag)), por:USUARIO.nombre||'', en:new Date().toISOString(),
+        totales:{tengo, atrasado:atr, vence:per, traido:tra, extras:exAp, minimo:min, apagar:ap, pagado, queda:quedaPag}};
       TL.forEach(l=>{ reg.tengo[l.k] = l.on; });
       grupos.forEach(x=>{ reg.sel[x.k] = x.si; if(x.si) reg.montos[x.k] = x.apagar; else if(x.k in PR.montos) reg.montos[x.k] = PR.montos[x.k]; });
       db[prClave()] = reg;
       if(CONECTADO) await sbGuardar(ROW_PRESU, db);
-      PRESU_DB = db; PR.guardado = reg; toast(CONECTADO?'Presupuesto guardado.':'Sin conexión: no se guardó.'); renderPresu();
-    }catch(e){ toast('No se pudo guardar: '+e.message); bg.disabled=false; }
+      PRESU_DB = db; PR.guardado = reg; toast(CONECTADO?(auto?'Pago registrado y presupuesto guardado.':'Presupuesto guardado.'):'Sin conexión: no se guardó.'); renderPresu();
+    }catch(e){ toast('No se pudo guardar: '+e.message); if(bg) bg.disabled=false; }
   };
+  if(bg) bg.onclick = ()=>guardar(false);
+  PR._guardar = guardar;
+  // v13: pagado
+  el.querySelector('#prOcPag').onclick = ()=>{ PR.ocultarPag = !PR.ocultarPag; renderPresu(); };
+  const pgCambio = ()=>{ renderPresu(); if(PR._guardar) PR._guardar(true); };
+  el.querySelectorAll('[data-pgk]').forEach(b=>b.onclick=()=>{ PR.pag[b.dataset.pgk] = {m:+b.dataset.pga||0, por:USUARIO.nombre||'', en:new Date().toISOString()}; pgCambio(); });
+  el.querySelectorAll('input[data-pgm]').forEach(inp=>inp.onchange=()=>{ const v=parseNum(inp.value); if(Number.isNaN(v)){ toast('Número no válido'); return; } const r=PR.pag[inp.dataset.pgm]; if(!r) return;
+    if(!v){ delete PR.pag[inp.dataset.pgm]; } else { r.m=v; r.por=USUARIO.nombre||r.por; r.en=new Date().toISOString(); } pgCambio(); });
+  el.querySelectorAll('[data-pgdes]').forEach(a=>a.onclick=e=>{ e.preventDefault(); delete PR.pag[a.dataset.pgdes]; pgCambio(); });
 }
 // v12: ventana para elegir cuotas de la deuda que vencen después del "hasta"
 const TR = {q:'', cat:''};
@@ -2167,10 +2203,11 @@ function cargarGuardado(g){
   PR.tengo = {...(g.tengo||{})};
   PR.tgMonto = {...(g.tgMonto||{})}; PR.tgExtra = (g.tgExtra||[]).map(x=>({...x}));
   PR.traer = {...(g.traer||{})}; PR.egExtra = (g.egExtra||[]).map(x=>({...x}));
+  PR.pag = JSON.parse(JSON.stringify(g.pag||{}));
   if(g.sel) PR.sel = {...g.sel};
   else { PR.sel = {}; Object.entries(PR.montos).forEach(([k,v])=>{ PR.sel[k] = v>0; }); }
 }
-function cambiarRango(){ PR.montos={}; PR.sel={}; PR.cuo={}; PR.tengo={}; PR.tgMonto={}; PR.tgExtra=[]; PR.traer={}; PR.egExtra=[]; const g = PRESU_DB && PRESU_DB[prClave()]; if(g) cargarGuardado(g); PR.guardado=g||null; renderPresu(); }
+function cambiarRango(){ PR.montos={}; PR.sel={}; PR.cuo={}; PR.tengo={}; PR.tgMonto={}; PR.tgExtra=[]; PR.traer={}; PR.egExtra=[]; PR.pag={}; const g = PRESU_DB && PRESU_DB[prClave()]; if(g) cargarGuardado(g); PR.guardado=g||null; renderPresu(); }
 
 /* ---------- Ayuda / instructivo ---------- */
 function renderAyuda(){
@@ -2223,6 +2260,7 @@ function renderAyuda(){
     <li><b>+ Traer de la deuda</b>: para pagar algo que vence más adelante (por ejemplo una cuota de una desvinculación). Se abre la lista de todo lo pendiente que vence después del "hasta"; buscá y tildá. También podés tildar <b>traer</b> en la última columna de la solapa Detalle de deudas. Lo traído entra en su plan o acreedor con Sí, suma en "A pagar" (no en el mínimo) y se saca con "sacar" o destildando.</li>
     <li><b>Extras a mano</b> (primera fila de la tabla, o botón <b>+ Egreso extra</b>): pagos que no están en el Excel, como retiro de socios, moto, limpieza o panadería. Poné concepto, empresa, monto y una nota si querés. El concepto te sugiere los que ya usaste y trae el último monto. Los que están en Sí suman en "A pagar" y en el mínimo.</li>
     <li>Lo traído y los extras se guardan con el presupuesto; no cambian la deuda ni Caja y Bancos.</li>
+    <li><b>Pagado</b> (última columna): a medida que pagás, tocá <b>Marcar pagado</b>. La fila queda en verde con quién y cuándo, y el presupuesto se guarda solo. Si pagaste menos, corregí el monto y muestra cuánto falta; "deshacer" la vuelve a pendiente. Arriba, <b>Pagado</b> y <b>Queda por pagar</b>; con <b>Ocultar pagados</b> ves solo lo pendiente. No cambia la deuda: eso se actualiza con el Excel.</li>
     <li>Si querés un pago parcial, cambiá el monto de "A pagar" en la fila y los totales se recalculan. <b>Guardar presupuesto</b> lo deja guardado para ese día y empresa.</li>
   </ul>
   <h3>Ordenar tablas</h3>
