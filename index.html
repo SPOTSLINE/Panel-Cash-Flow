@@ -304,6 +304,25 @@ table.pr input.ap{width:118px}
 .cuol .cm{text-align:right;font-variant-numeric:tabular-nums;min-width:90px}.cuol .cv{white-space:nowrap}
 .cuob{margin-top:4px}.cuob .btn{padding:3px 9px;font-size:12px}.cuow{margin-top:4px;font-weight:600}.cuow.casi{color:var(--p2)}
 .cuo{font-weight:700}.cuo.lim{color:var(--neg)}.cuo.casi{color:var(--p2)}
+/* v12: traer de la deuda + egresos extra */
+.cuol label.tra .cv{color:var(--yellow)}
+.trd{font-size:11.5px;color:var(--yellow);margin-top:2px}.trd a{color:var(--yellow)}
+table.pr tr.rub.ex td:first-child{box-shadow:inset 4px 0 0 #e6b800}
+table.pr tr.pr.ex input.exn{width:100%;min-width:200px;background:var(--bg);border:1px solid #3a3a3a;border-radius:6px;padding:4px 7px;color:var(--ink);font-weight:600}
+table.pr tr.pr.ex input.exo{width:100%;min-width:200px;margin-top:4px;background:var(--bg);border:1px solid #2e2e2e;border-radius:6px;padding:3px 7px;color:#9a9a9a;font-size:12px}
+table.pr tr.pr.ex select{background:var(--bg);border:1px solid #3a3a3a;border-radius:6px;padding:4px 6px;color:var(--ink)}
+table.pr tr.pr.ex .rm{padding:2px 7px;font-size:12px;margin-left:4px}
+.pill.man{background:#3a3214;color:#e6b800}
+.trbox{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 10px}
+.trbox input[type=search],.trbox select{background:var(--bg);border:1px solid #3a3a3a;border-radius:8px;padding:7px 10px;color:var(--ink);font-size:14px}
+.trbox input[type=search]{flex:1;min-width:220px}
+.trl{display:grid;gap:2px}
+.trl .g{margin-top:10px;font-weight:800;color:#fff;border-bottom:1px solid var(--line);padding-bottom:3px}
+.trl .g .hint{font-weight:400}
+.trl label{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;padding:3px 4px;border-radius:6px;cursor:pointer;color:#9a9a9a}
+.trl label.on{color:var(--ink);background:var(--yellow-soft)}
+.trl .cm{text-align:right;font-variant-numeric:tabular-nums;min-width:100px}
+td.trc{white-space:nowrap;font-size:12px}td.trc label{cursor:pointer}
 
 .seg{flex-wrap:wrap;max-width:100%}
 input[type=checkbox]{accent-color:var(--yellow)}
@@ -669,6 +688,7 @@ const nf0 = new Intl.NumberFormat('es-AR',{maximumFractionDigits:0});
 const nf1 = new Intl.NumberFormat('es-AR',{minimumFractionDigits:1,maximumFractionDigits:1});
 function money(v){ return (v<0?'-':'')+'$ '+nf0.format(Math.abs(Math.round(v))); }
 function mill(v){ if(Math.abs(v)<5000) return '–'; return nf1.format(v/1e6); }
+function chicoS(v){ return Math.abs(v)<1e6 ? money(v) : millS(v); }
 function millS(v){ return (v<0?'-':'')+'$ '+nf1.format(Math.abs(v)/1e6)+' M'; }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none',3200); }
@@ -1208,6 +1228,7 @@ function labelKey(k){
 
 /* ---------- Detalle ---------- */
 function renderDet(){
+  presuInit(); asignarTk();
   const planes = evaluarPlanes();
   const f = st.det;
   const cats = [...new Set(ITEMS.filter(i=>i.tipo==='egreso').map(i=>i.cat))].sort((a,b)=>EGR_ORDEN.indexOf(a)-EGR_ORDEN.indexOf(b));
@@ -1232,9 +1253,9 @@ function renderDet(){
     <select id="dest"><option value="">Todos los vencimientos</option><option value="venc" ${f.est==='venc'?'selected':''}>Vencido</option><option value="7" ${f.est==='7'?'selected':''}>Vence en 7 días</option><option value="30" ${f.est==='30'?'selected':''}>Vence en 30 días</option></select>
   </div>
   <div class="totline"><b>${its.length}</b> deudas pendientes por <b>${money(tot)}</b>, de las cuales <b class="neg">${money(totV)}</b> ya vencieron.${ii('detTot')}</div>
-  <div class="tw"><table><thead><tr><th>Prioridad${ii('prioridad')}</th><th>Empresa</th><th>Rubro${ii('rubro')}</th><th>Detalle${ii('detalle')}</th><th>Vence${ii('vence')}</th><th>Pago previsto${ii('pagoPrev')}</th><th class="n">Monto${ii('monto')}</th><th>Nota${ii('nota')}</th></tr></thead><tbody>
-  ${its.slice(0,f.lim).map(it=>`<tr><td><span class="pill l${it._n}">${NIVELES[it._n].nombre}</span></td><td>${esc(it.emp)}${it.socio?' ('+esc(it.socio)+')':''}</td><td>${txtCat(it.cat)}</td><td class="wrapc">${it.sintetico?esc(it.det):lnk(it.cat,it.emp,it.grupo,esc(it.det))}</td><td class="${it.vto<st.hoy?'neg':''}">${fdate(it.vto)}</td><td>${fdate(it.fp)}</td><td class="n">${money(it.monto)}</td><td class="wrapc">${esc(it.nota||'')}</td></tr>`).join('')}
-  ${!its.length?'<tr><td colspan="8">No hay deudas pendientes con estos filtros.</td></tr>':''}
+  <div class="tw"><table><thead><tr><th>Prioridad${ii('prioridad')}</th><th>Empresa</th><th>Rubro${ii('rubro')}</th><th>Detalle${ii('detalle')}</th><th>Vence${ii('vence')}</th><th>Pago previsto${ii('pagoPrev')}</th><th class="n">Monto${ii('monto')}</th><th>Nota${ii('nota')}</th><th>Presupuesto ${PR.desde===PR.hasta?fdate(PR.hasta).slice(0,5):fdate(PR.desde).slice(0,5)+'–'+fdate(PR.hasta).slice(0,5)}${ii('prTraer')}</th></tr></thead><tbody>
+  ${its.slice(0,f.lim).map(it=>`<tr><td><span class="pill l${it._n}">${NIVELES[it._n].nombre}</span></td><td>${esc(it.emp)}${it.socio?' ('+esc(it.socio)+')':''}</td><td>${txtCat(it.cat)}</td><td class="wrapc">${it.sintetico?esc(it.det):lnk(it.cat,it.emp,it.grupo,esc(it.det))}</td><td class="${it.vto<st.hoy?'neg':''}">${fdate(it.vto)}</td><td>${fdate(it.fp)}</td><td class="n">${money(it.monto)}</td><td class="wrapc">${esc(it.nota||'')}</td><td class="trc">${(it.vto||it.fp)<=PR.hasta?'<span class="hint">ya entra</span>':`<label><input type="checkbox" data-dtrk="${esc(it._tk)}" ${PR.traer[it._tk]?'checked':''}> ${PR.traer[it._tk]?'<b>traída</b>':'traer'}</label>`}</td></tr>`).join('')}
+  ${!its.length?'<tr><td colspan="9">No hay deudas pendientes con estos filtros.</td></tr>':''}
   </tbody></table></div>
   ${its.length>f.lim?`<button class="btn more" id="dmore">Mostrar ${Math.min(200,its.length-f.lim)} más (hay ${its.length})</button>`:''}`;
   const dq=el.querySelector('#dq');
@@ -1244,6 +1265,8 @@ function renderDet(){
   el.querySelector('#dniv').onchange=e=>{ f.niv=e.target.value; f.lim=200; renderDet(); };
   el.querySelector('#dest').onchange=e=>{ f.est=e.target.value; f.lim=200; renderDet(); };
   const mb=el.querySelector('#dmore'); if(mb) mb.onclick=()=>{ f.lim+=200; renderDet(); };
+  el.querySelectorAll('input[data-dtrk]').forEach(c=>c.onchange=()=>{ if(c.checked) PR.traer[c.dataset.dtrk]=true; else delete PR.traer[c.dataset.dtrk];
+    toast(c.checked ? 'Traída al presupuesto del '+fdate(PR.hasta).slice(0,5)+'. Andá a Presupuesto del día y tocá Guardar.' : 'Sacada del presupuesto.'); renderDet(); });
 }
 
 /* ====================== ⓘ: de dónde sale y cómo se calcula cada dato ====================== */
@@ -1325,6 +1348,8 @@ const INFO = {
   prOrigen:{t:'De dónde sale cada saldo', c:'Es el saldo de esa cuenta para la fecha de análisis (hoy) en la solapa Caja y Bancos. Si ese día no tiene saldo cargado va 0: no se arrastra el de días anteriores (se muestra cuál era, como referencia). Ese saldo puede venir de la hoja "Caja y Bancos" del Excel o haber sido cargado a mano en la solapa (en ese caso dice quién y cuándo; el detalle de cada cambio está en el historial de esa solapa). Si cambiás el monto acá, vale solo para este presupuesto: Caja y Bancos no se toca.'},
   prTengoSel:{t:'Con qué cuento', c:'Cuenta por cuenta (bancos con su margen de acuerdo, efectivo, cheques de terceros) y los cobros esperados. Tildá solo lo que se puede usar para pagar. Los cobros esperados arrancan sin tildar: sirven para proyectar, no para ejecutar. Se guarda con el presupuesto.'},
   prCuotaSel:{t:'Elegir cuotas', c:'Abrí "Elegir cuotas" en un plan o acreedor para tildar justo las cuotas que vas a pagar (no hace falta pagar todo lo adeudado). "A pagar" pasa a ser la suma de lo tildado. Aparecen las cuotas atrasadas, las que vencen en el período y hasta 3 próximas por si querés adelantar. En créditos y planes ARCA avisa cuántas quedarían impagas y si el plan se cae. Si escribís un monto a mano, se deja de usar la selección de cuotas.'},
+  prTraer:{t:'Traer de la deuda', c:'Para pagar algo que todavía no vence en el período (por ejemplo una cuota de una desvinculación, un plan o un proveedor): tocá "+ Traer de la deuda" y tildá las cuotas, o tildá "Traer" en la solapa Detalle de deudas. Entran en su plan o acreedor con Sí y suman en "A pagar" (no en el Mínimo, porque son adelantos que elegiste). Se sacan destildándolas o con "sacar". Se guardan con el presupuesto; la deuda no cambia.'},
+  prExtras:{t:'Egresos extra a mano', c:'Pagos que no están en ninguna hoja del Excel ni en los paneles: retiro de socios, moto, limpieza, panadería, etc. Concepto, empresa, monto y nota. Al escribir el concepto te sugiere los que ya usaste y, si ya lo cargaste antes, trae el último monto y empresa. Los que están en Sí suman en "A pagar" y en el "Mínimo" (porque los cargaste para pagarlos). Se guardan con el presupuesto; no cambian la deuda ni Caja y Bancos.'},
   prSiNo:{t:'¿Pagar? Sí / No', c:'Sí: entra en el presupuesto (el mínimo; si el mínimo es 0, el total). No: queda en 0 sin borrar el monto. En la fila del rubro marca o desmarca todo el rubro. "Volver al mínimo" vuelve a las marcas de entrada.'},
   prApagar:{t:'A pagar', c:'Arranca en el mínimo. Se puede escribir otro monto en cada fila. "Pagar todo lo que vence" pone el total; "Volver al mínimo" lo reinicia.'},
   prFalta:{t:'Falta / Sobra', c:'Tengo − A pagar. Abajo, lo mismo si se paga solo el mínimo.'},
@@ -1848,13 +1873,29 @@ OBS_ORDEN.observe(document.body, {childList:true, subtree:true});
 /* ====================== Presupuesto del día ======================
    Para un día (o varios): qué está atrasado, qué vence, cuánto es lo mínimo para no caer en
    situación límite, cuánto tengo y cuánto falta. "A pagar" arranca en el mínimo y se puede cambiar. */
-const PR = {desde:null, hasta:null, montos:{}, sel:{}, cuo:{}, cuoAb:{}, tengo:{}, tgMonto:{}, tgExtra:[], tgAbierto:false, cerrados:{}, guardado:null};
+const PR = {desde:null, hasta:null, montos:{}, sel:{}, cuo:{}, cuoAb:{}, tengo:{}, tgMonto:{}, tgExtra:[], tgAbierto:false, cerrados:{}, guardado:null, traer:{}, egExtra:[]};
+const EX_SUGERIDOS = ['Retiro socios','Moto / mensajería','Limpieza','Panadería','Caja chica','Viáticos','Combustible','Librería'];
+// v12: clave estable de cada cuota/factura de egreso (rubro|empresa|grupo § detalle@vto@centavos) para "traerla" al presupuesto
+function asignarTk(){ const vistos={}; ITEMS.forEach(it=>{ if(it.tipo!=='egreso') return; const b=it.cat+'|'+it.emp+'|'+(it.grupo||'')+'§'+(it.det||'')+'@'+(it.vto||it.fp)+'@'+Math.round((it.monto||0)*100); vistos[b]=(vistos[b]||0)+1; it._tk=b+(vistos[b]>1?'#'+vistos[b]:''); }); }
+// Carga lo guardado una sola vez (desde Presupuesto o desde Detalle de deudas) sin perder lo que ya se marcó en pantalla
+function presuInit(){
+  if(!PR.desde){ PR.desde = st.hoy; PR.hasta = st.hoy; }
+  if(PRESU_DB===null && CONECTADO){ PRESU_DB = undefined; cargarPresuDB().then(()=>{ const g=PRESU_DB[prClave()];
+    if(g && !Object.keys(PR.montos).length){ const t={...PR.traer}, ex=PR.egExtra.slice(); cargarGuardado(g); Object.assign(PR.traer,t); ex.forEach(e=>{ if(!PR.egExtra.some(z=>z.id===e.id)) PR.egExtra.push(e); }); }
+    PR.guardado=g||null; if(st.tab==='presu') renderPresu(); else if(st.tab==='det') renderDet(); }); }
+}
+function deudaTraible(it){ return it.tipo==='egreso' && empOk(it) && isPend(it) && !planMuerto(it) && !(it.proyectado && !st.proy) && (it.vto||it.fp); }
+function conceptosUsados(){ const m = new Map(); const add=(x,en)=>{ const n=(x.nom||'').trim(); if(!n) return; const p=m.get(n.toLowerCase()); if(!p || (en||'')>=(p.en||'')) m.set(n.toLowerCase(), {nom:n, monto:x.monto, emp:x.emp, en:en||''}); };
+  Object.values(PRESU_DB||{}).forEach(g=>(g&&g.egExtra||[]).forEach(x=>add(x, g.en)));
+  return m; }
 const ROW_PRESU = 'presupuestos_v1';
 let PRESU_DB = null;
 function prClave(){ return PR.desde+'_'+PR.hasta+'_'+st.emp; }
 function presuGrupos(){
   const d = PR.desde, hst = PR.hasta, g = {}, fut = {}, vistos = {};
+  asignarTk();
   ITEMS.forEach(it=>{
+    it._tra = false;
     if(it.tipo!=='egreso' || !empOk(it) || !isPend(it) || planMuerto(it)) return;
     if(it.proyectado && !st.proy) return;
     const v = it.vto || it.fp; if(!v) return;
@@ -1862,15 +1903,16 @@ function presuGrupos(){
     // clave estable de la cuota (para recordar cuáles se eligieron)
     const ck0 = (it.det||'')+'@'+v+'@'+Math.round((it.monto||0)*100); vistos[ck0]=(vistos[ck0]||0)+1;
     it._ck = ck0+(vistos[ck0]>1?'#'+vistos[ck0]:'');
-    if(v>hst){ (fut[k]=fut[k]||[]).push(it); return; }
-    const x = g[k] = g[k] || {k, cat:it.cat, emp:it.emp, socio:it.socio, grupo:it.grupo, its:[], atr:0, per:0, natr:0, nper:0, sint:!!it.sintetico};
-    x.its.push(it); if(v<d){ x.atr+=it.monto; x.natr++; } else { x.per+=it.monto; x.nper++; }
+    const tra = v>hst && !!PR.traer[it._tk];
+    if(v>hst && !tra){ (fut[k]=fut[k]||[]).push(it); return; }
+    const x = g[k] = g[k] || {k, cat:it.cat, emp:it.emp, socio:it.socio, grupo:it.grupo, its:[], atr:0, per:0, tra:0, natr:0, nper:0, ntra:0, sint:!!it.sintetico};
+    x.its.push(it); if(tra){ it._tra = true; x.tra+=it.monto; x.ntra++; } else if(v<d){ x.atr+=it.monto; x.natr++; } else { x.per+=it.monto; x.nper++; }
   });
   return Object.values(g).map(x=>{
-    x.tot = x.atr + x.per;
+    x.tot = x.atr + x.per + x.tra;
     const r = REGLAS[x.cat];
     if(r){
-      const imp = x.its.slice().sort((a,b)=>(a.vto||a.fp)<(b.vto||b.fp)?-1:1);
+      const imp = x.its.filter(i=>!i._tra).sort((a,b)=>(a.vto||a.fp)<(b.vto||b.fp)?-1:1);
       const n = imp.length, k = Math.max(0, n-(r.limite-1));
       x.cuotas = n; x.lim = r.limite; x.kpag = k;
       x.min = imp.slice(0,k).reduce((s,i)=>s+i.monto,0);
@@ -1879,11 +1921,12 @@ function presuGrupos(){
                   : `Al ${fdate(hst)} tendría ${n} cuota(s) impaga(s) (límite ${r.limite}): no hace falta pagar para no caer${n===r.limite-1?', pero queda al borde':''}.`;
     } else {
       x.niv = BASE[x.cat] ?? 4;
-      if(x.niv<=1){ x.min = x.tot; x.regla = 'Obligatorio: se paga todo (atrasado y lo que vence).'; }
+      if(x.niv<=1){ x.min = x.atr + x.per; x.regla = 'Obligatorio: se paga todo (atrasado y lo que vence).'; }
       else if(x.niv===2){ x.min = x.per; x.regla = 'Se paga lo que vence en el período; lo atrasado queda a decidir.'; }
       else { x.min = 0; x.regla = x.niv===3 ? 'A decidir: se puede postergar.' : 'Negociable.'; }
     }
-    x.si = (x.k in PR.sel) ? PR.sel[x.k] : x.min>0;
+    if(x.ntra) x.regla = (x.natr+x.nper ? x.regla+' ' : '') + `Traída${x.ntra===1?'':'s'} de la deuda: ${x.ntra} cuota${x.ntra===1?'':'s'} que vence${x.ntra===1?'':'n'} después del ${fdate(hst).slice(0,5)}.`;
+    x.si = (x.k in PR.sel) ? PR.sel[x.k] : (x.min>0 || x.tra>0);
     // Cuotas: las del período (más viejas primero) + hasta 3 próximas para adelantar
     const fv = it=>it.vto||it.fp;
     x.lista = x.its.slice().sort((a,b)=>fv(a)<fv(b)?-1:fv(a)>fv(b)?1:0)
@@ -1891,12 +1934,14 @@ function presuGrupos(){
     x.porCuota = x.k in PR.cuo;
     if(x.porCuota){ const s=new Set(PR.cuo[x.k]); x.cuoSel = s; x.apagar = !x.si ? 0 : x.lista.filter(i=>s.has(i._ck)).reduce((a,i)=>a+i.monto,0); }
     else {
-      x.apagar = !x.si ? 0 : (x.k in PR.montos) ? PR.montos[x.k] : (x.min>0 ? x.min : x.tot);
+      x.apagar = !x.si ? 0 : (x.k in PR.montos) ? PR.montos[x.k] : (x.tra>0 ? x.min + x.tra : x.min>0 ? x.min : x.tot);
       // marcas sugeridas: cuotas más viejas del período que entran en el monto a pagar
-      const s=new Set(); let acu=0; for(const i of x.lista){ if(i._fut) break; if(acu+i.monto<=x.apagar+0.5){ s.add(i._ck); acu+=i.monto; } else break; }
+      const s=new Set(); let acu=0; const conTra = x.tra>0 && !(x.k in PR.montos);
+      if(conTra){ x.lista.forEach(i=>{ if(i._tra){ s.add(i._ck); acu+=i.monto; } }); }
+      for(const i of x.lista){ if(i._fut) break; if(conTra && i._tra) continue; if(acu+i.monto<=x.apagar+0.5){ s.add(i._ck); acu+=i.monto; } else break; }
       x.cuoSel = s; x.cuoCalza = Math.abs(acu-x.apagar)<1;
     }
-    if(x.lim){ const quedan = x.its.filter(i=>!(x.si && x.cuoSel.has(i._ck))).length; x.quedan = quedan; }
+    if(x.lim){ const quedan = x.its.filter(i=>!i._tra && !(x.si && x.cuoSel.has(i._ck))).length; x.quedan = quedan; }
     return x;
   });
 }
@@ -1929,26 +1974,28 @@ function tengoLineas(cobros){
 }
 // Lista de cuotas de un plan / acreedor para elegir cuál(es) pagar (pedido #26)
 function cuoHtml(x){
-  if(x.lista.length<2) return '';
+  const trd = x.ntra ? `<div class="trd">↳ Traído de la deuda: ${money(x.tra)} (${x.ntra} cuota${x.ntra===1?'':'s'}) · <a href="#" data-untraerk="${esc(x.k)}">sacar</a>${ii('prTraer')}</div>` : '';
+  if(x.lista.length<2) return trd;
   const ab = !!PR.cuoAb[x.k], nsel = x.si ? x.lista.filter(i=>x.cuoSel.has(i._ck)).length : 0;
   let o = `<div class="cuosel"><a href="#" data-cuoab="${esc(x.k)}">${ab?'▾':'▸'} Elegir cuotas</a> <span class="hint">${x.porCuota?`${nsel} elegida${nsel===1?'':'s'} de ${x.lista.length}`:(x.cuoCalza?'':'monto a mano')}</span>${ii('prCuotaSel')}`;
   if(ab){
     const hoyD = PR.desde;
     o += `<div class="cuol">` + x.lista.map(i=>{ const v=i.vto||i.fp, on = x.si && x.cuoSel.has(i._ck);
-      const et = i._fut ? 'próxima' : (v<hoyD ? 'atrasada' : 'vence');
-      return `<label class="${on?'on':''} ${i._fut?'fut':''}"><input type="checkbox" data-ck="${esc(i._ck)}" data-cuok="${esc(x.k)}" ${on?'checked':''}> <span class="cd">${esc(((i.det||'').startsWith(x.grupo||'\u0000') ? (i.det||'').slice((x.grupo||'').length).replace(/^\s*·\s*/,'') : (i.det||'')) || 'cuota')}</span> <span class="cv ${et==='atrasada'?'neg':''}">${et} ${fdate(v).slice(0,5)}</span> <span class="cm">${money(i.monto)}</span></label>`; }).join('')
+      const et = i._fut ? 'próxima' : i._tra ? 'traída · vence' : (v<hoyD ? 'atrasada' : 'vence');
+      return `<label class="${on?'on':''} ${i._fut?'fut':''} ${i._tra?'tra':''}"><input type="checkbox" data-ck="${esc(i._ck)}" data-cuok="${esc(x.k)}" ${on?'checked':''}> <span class="cd">${esc(((i.det||'').startsWith(x.grupo||'\u0000') ? (i.det||'').slice((x.grupo||'').length).replace(/^\s*·\s*/,'') : (i.det||'')) || 'cuota')}</span> <span class="cv ${et==='atrasada'?'neg':''}">${et} ${fdate(v).slice(0,5)}</span> <span class="cm">${money(i.monto)}</span></label>`; }).join('')
       + `<div class="cuob"><button class="btn" type="button" data-cuotodo="${esc(x.k)}">Todas las del período</button> <button class="btn" type="button" data-cuonada="${esc(x.k)}">Ninguna</button>${x.porCuota?` <a href="#" data-cuoreset="${esc(x.k)}">volver al mínimo</a>`:''}</div>`
       + (x.lim && x.si && x.porCuota ? `<div class="cuow ${x.quedan>=x.lim?'neg':x.quedan===x.lim-1?'casi':''}">Al ${fdate(PR.hasta).slice(0,5)} quedarían ${x.quedan} impaga${x.quedan===1?'':'s'} (límite ${x.lim})${x.quedan>=x.lim?': el plan se cae':x.quedan===x.lim-1?': queda al borde':''}.</div>` : '')
       + `</div>`;
   }
-  return o + `</div>`;
+  return trd + o + `</div>`;
 }
 async function cargarPresuDB(){ if(PRESU_DB || !CONECTADO) return PRESU_DB; try{ PRESU_DB = (await sbLeer(ROW_PRESU)) || {}; }catch(e){ PRESU_DB = {}; } return PRESU_DB; }
 function renderPresu(){
   const el = document.getElementById('tab-presu');
-  if(!PR.desde){ PR.desde = st.hoy; PR.hasta = st.hoy; }
-  if(PRESU_DB===null && CONECTADO){ cargarPresuDB().then(()=>{ const g=PRESU_DB[prClave()]; if(g && !Object.keys(PR.montos).length){ cargarGuardado(g); } PR.guardado=g||null; renderPresu(); }); PRESU_DB = undefined; }
+  presuInit();
   const grupos = presuGrupos();
+  const EX = PR.egExtra, exOn = EX.filter(x=>x.si!==false), exAp = exOn.reduce((s,x)=>s+(+x.monto||0),0), exTot = EX.reduce((s,x)=>s+(+x.monto||0),0);
+  const empsEx = empsSel();
   const disp = dispSel(); const d0 = disp? disp.monto : 0;
   const cobros = ITEMS.filter(it=>it.tipo==='ingreso' && empOk(it) && isPend(it) && (!it.proyectado || st.proy) && it.fp>=st.hoy && it.fp<=PR.hasta).reduce((s,i)=>s+i.monto,0);
   const TL = tengoLineas(cobros);
@@ -1956,7 +2003,7 @@ function renderPresu(){
   const cobOn = TL.find(l=>l.k==='cobros').on;
   const dispOn = TL.filter(l=>l.on && l.k!=='cobros').reduce((s,l)=>s+l.monto,0);
   const S = f => grupos.reduce((s,x)=>s+f(x),0);
-  const atr=S(x=>x.atr), per=S(x=>x.per), min=S(x=>x.min), ap=S(x=>x.apagar);
+  const atr=S(x=>x.atr), per=S(x=>x.per), tra=S(x=>x.tra), min=S(x=>x.min)+exAp, ap=S(x=>x.apagar)+exAp;
   const res = tengo - ap, resMin = tengo - min;
   const rango = PR.desde===PR.hasta ? fdate(PR.desde) : fdate(PR.desde)+' al '+fdate(PR.hasta);
   const viernes = (()=>{ let f=st.hoy; while(D(f).getUTCDay()!==5) f=addDays(f,1); return f; })();
@@ -1966,6 +2013,8 @@ function renderPresu(){
     <label class="inline">Desde <input type="date" id="prD" value="${PR.desde}"></label>
     <label class="inline">Hasta <input type="date" id="prH" value="${PR.hasta}"></label>${ii('prPeriodo')}
     <span style="flex:1"></span>
+    <button class="btn" id="prTraer" type="button" title="Sumar cuotas que vencen después (desvinculaciones, planes, proveedores…)">+ Traer de la deuda</button>
+    <button class="btn" id="prExAdd2" type="button" title="Socios, moto, limpieza, panadería…">+ Egreso extra</button>
     <button class="btn" id="prMin" type="button">Volver al mínimo</button>
     <button class="btn" id="prTodo" type="button">Pagar todo lo que vence</button>
     ${PERM.editar?`<button class="btn primary" id="prGuardar" type="button">Guardar presupuesto</button>`:''}
@@ -1976,7 +2025,7 @@ function renderPresu(){
     <div class="k"><div class="t">Atrasado${ii('prAtr')}</div><div class="v neg">${millS(atr)}</div><div class="s">impago antes del ${fdate(PR.desde).slice(0,5)}</div></div>
     <div class="k"><div class="t">Vence ${PR.desde===PR.hasta?'ese día':'en el período'}${ii('prVence')}</div><div class="v">${millS(per)}</div><div class="s">${rango}</div></div>
     <div class="k"><div class="t">Mínimo a pagar${ii('prMinimo')}</div><div class="v">${millS(min)}</div><div class="s">para no caer en límite + obligatorios</div></div>
-    <div class="k hero"><div class="t">A pagar (elegido)${ii('prApagar')}</div><div class="v">${millS(ap)}</div><div class="s">${Math.abs(ap-min)<1?'= mínimo':(ap>min?'+ ':'− ')+millS(Math.abs(ap-min))+' vs mínimo'}</div></div>
+    <div class="k hero"><div class="t">A pagar (elegido)${ii('prApagar')}</div><div class="v">${millS(ap)}</div><div class="s">${Math.abs(ap-min)<1?'= mínimo':(ap>min?'+ ':'− ')+millS(Math.abs(ap-min))+' vs mínimo'}${tra?' · traído '+chicoS(tra):''}${exAp?' · extras '+chicoS(exAp):''}</div></div>
     <div class="k ${res<0?'mal':'bien'}"><div class="t">${res<0?'Falta':'Sobra'}${ii('prFalta')}</div><div class="v">${millS(Math.abs(res))}</div><div class="s">Con el mínimo: ${resMin<0?'falta '+millS(-resMin):'sobra '+millS(resMin)}</div></div>
   </div>
   <details class="tg" id="prTg" ${PR.tgAbierto?'open':''}><summary>Con qué cuento para pagar: ${millS(tengo)} <span class="hint">(${TL.filter(l=>l.on).length} de ${TL.length} tildados · tocá para elegir)</span>${ii('prTengoSel')}</summary>
@@ -1991,8 +2040,22 @@ function renderPresu(){
   const porCat = {}; grupos.forEach(x=>{ (porCat[x.cat]=porCat[x.cat]||[]).push(x); });
   const cats = Object.keys(porCat).sort((a,b)=>Math.min(...porCat[a].map(x=>x.niv))-Math.min(...porCat[b].map(x=>x.niv)) || EGR_ORDEN.indexOf(a)-EGR_ORDEN.indexOf(b));
   h += `<div class="tw"><table class="pr"><thead><tr><th>Rubro / plan · acreedor${ii('prRegla')}</th><th>Empresa</th><th>Prioridad${ii('prioridad')}</th><th class="n">Atrasado${ii('prAtr')}</th><th class="n">Vence${ii('prVence')}</th><th class="n">Total${ii('prTotal')}</th><th class="n">Cuotas${ii('prCuotas')}</th><th class="n">Mínimo${ii('prMinimo')}</th><th>¿Pagar?${ii('prSiNo')}</th><th class="n">A pagar${ii('prApagar')}</th></tr></thead><tbody>`;
+  { const exAb = !PR.cerrados['__ex'];
+    const dl = [...new Set([...[...conceptosUsados().values()].map(c=>c.nom), ...EX_SUGERIDOS])];
+    h += `<tr class="rub ex" data-rub="__ex"><td>${exAb?'▾':'▸'} Extras a mano${ii('prExtras')} <span class="hint">(${EX.length}) socios, moto, limpieza, panadería…</span></td><td></td><td><span class="pill man">Manual</span></td><td></td><td></td><td class="n">${EX.length?money(exTot):''}</td><td></td><td class="n">${exAp?money(exAp):''}</td><td>${EX.length?(()=>{ const nsi=exOn.length; return `<span class="sn ${nsi&&nsi<EX.length?'mix':''}" data-exrub="1"><button type="button" class="si ${nsi===EX.length?'on':''}" data-v="1">Sí</button><button type="button" class="no ${nsi===0?'on':''}" data-v="0">No</button></span>`; })():''}</td><td class="n">${EX.length?money(exAp):`<button class="btn" type="button" id="prExAdd">+ Agregar</button>`}</td></tr>`;
+    if(exAb){
+      EX.forEach(x=>{ const on = x.si!==false;
+        h += `<tr class="pr ex ${on?'':'off'}"><td class="nom"><input class="exn" list="exSug" data-exid="${esc(x.id)}" data-f="nom" value="${esc(x.nom||'')}" placeholder="Concepto (ej. Panadería)"><input class="exo" data-exid="${esc(x.id)}" data-f="nota" value="${esc(x.nota||'')}" placeholder="Nota (opcional)"><div class="regla">Cargado a mano${x.por?' por '+esc(x.por):''}</div></td>
+          <td><select data-exid="${esc(x.id)}" data-f="emp">${[...new Set([...empsEx, x.emp].filter(Boolean))].map(e=>`<option ${e===x.emp?'selected':''}>${esc(e)}</option>`).join('')}</select></td>
+          <td><span class="pill man">Manual</span></td><td class="n">—</td><td class="n">—</td><td class="n">${money(+x.monto||0)}</td><td class="n">—</td><td class="n">${on&&x.monto?money(+x.monto):'—'}</td>
+          <td><span class="sn" data-exsn="${esc(x.id)}"><button type="button" class="si ${on?'on':''}" data-v="1">Sí</button><button type="button" class="no ${on?'':'on'}" data-v="0">No</button></span></td>
+          <td class="n"><input class="ap exm ${on?'chg':''}" data-exid="${esc(x.id)}" data-f="monto" inputmode="decimal" value="${fmtIn(+x.monto||0)}" aria-label="Monto ${esc(x.nom||'extra')}"><button class="btn rm" type="button" data-exdel="${esc(x.id)}" title="Quitar">✕</button></td></tr>`; });
+      if(EX.length) h += `<tr class="pr ex"><td colspan="10"><button class="btn" type="button" id="prExAdd">+ Agregar otro egreso extra</button></td></tr>`;
+    }
+    h += `<datalist id="exSug">${dl.map(n=>`<option value="${esc(n)}">`).join('')}</datalist>`;
+  }
   cats.forEach(c=>{
-    const xs = porCat[c], abierto = !(c in PR.cerrados ? PR.cerrados[c] : !xs.some(x=>x.min>0));
+    const xs = porCat[c], abierto = !(c in PR.cerrados ? PR.cerrados[c] : !xs.some(x=>x.min>0 || x.tra>0));
     const s = f => xs.reduce((a,x)=>a+f(x),0), nmin = Math.min(...xs.map(x=>x.niv));
     h += `<tr class="rub" data-rub="${esc(c)}"><td>${abierto?'▾':'▸'} ${esc(c)}${iiCat(c)} <span class="hint">(${xs.length})</span></td><td></td><td><span class="pill l${nmin}">${NIVELES[nmin].nombre}</span></td><td class="n">${money(s(x=>x.atr))}</td><td class="n">${money(s(x=>x.per))}</td><td class="n">${money(s(x=>x.tot))}</td><td></td><td class="n">${money(s(x=>x.min))}</td><td>${(()=>{ const nsi=xs.filter(x=>x.si).length; return `<span class="sn ${nsi&&nsi<xs.length?'mix':''}" data-rubsn="${esc(c)}"><button type="button" class="si ${nsi===xs.length?'on':''}" data-v="1" title="Pagar todo el rubro">Sí</button><button type="button" class="no ${nsi===0?'on':''}" data-v="0" title="No pagar nada del rubro">No</button></span>`; })()}</td><td class="n">${money(s(x=>x.apagar))}</td></tr>`;
     if(abierto) xs.sort((a,b)=>a.niv-b.niv || b.min-a.min || b.tot-a.tot).forEach(x=>{
@@ -2001,15 +2064,29 @@ function renderPresu(){
     });
   });
   if(!cats.length) h += `<tr><td colspan="10">No hay obligaciones pendientes hasta el ${fdate(PR.hasta)}.</td></tr>`;
-  h += `<tr class="tot"><td>Total</td><td></td><td></td><td class="n">${money(atr)}</td><td class="n">${money(per)}</td><td class="n">${money(atr+per)}</td><td></td><td class="n">${money(min)}</td><td class="hint">${grupos.filter(x=>x.si).length} de ${grupos.length} en Sí</td><td class="n">${money(ap)}</td></tr>`;
-  h += `</tbody></table></div><p class="hint">Tocá un rubro para abrirlo o cerrarlo; tocá un plan o acreedor para verlo completo. Lo que vence después del ${fdate(PR.hasta)} no entra.</p>`;
+  h += `<tr class="tot"><td>Total</td><td></td><td></td><td class="n">${money(atr)}</td><td class="n">${money(per)}</td><td class="n">${money(atr+per+tra+exTot)}</td><td></td><td class="n">${money(min)}</td><td class="hint">${grupos.filter(x=>x.si).length+exOn.length} de ${grupos.length+EX.length} en Sí</td><td class="n">${money(ap)}</td></tr>`;
+  h += `</tbody></table></div><p class="hint">Tocá un rubro para abrirlo o cerrarlo; tocá un plan o acreedor para verlo completo. Lo que vence después del ${fdate(PR.hasta)} no entra, salvo que lo traigas con <b>+ Traer de la deuda</b>.</p>`;
   el.innerHTML = h;
   el.querySelectorAll('#prRapido button').forEach(b=>b.onclick=()=>{ PR.desde=b.dataset.a; PR.hasta=b.dataset.b; cambiarRango(); });
   el.querySelector('#prD').onchange = e=>{ if(e.target.value){ PR.desde=e.target.value; if(PR.hasta<PR.desde) PR.hasta=PR.desde; cambiarRango(); } };
   el.querySelector('#prH').onchange = e=>{ if(e.target.value){ PR.hasta=e.target.value; if(PR.hasta<PR.desde) PR.desde=PR.hasta; cambiarRango(); } };
   el.querySelector('#prMin').onclick = ()=>{ PR.montos={}; PR.sel={}; PR.cuo={}; renderPresu(); };
   el.querySelector('#prTodo').onclick = ()=>{ grupos.forEach(x=>{ PR.montos[x.k]=x.tot; PR.sel[x.k]=true; delete PR.cuo[x.k]; }); renderPresu(); };
-  el.querySelectorAll('tr.rub').forEach(tr=>tr.onclick=e=>{ if(e.target.closest('[data-info],a,.sn')) return; const c=tr.dataset.rub, xs=porCat[c]; const ab = !(c in PR.cerrados ? PR.cerrados[c] : !xs.some(x=>x.min>0)); PR.cerrados[c]=ab; renderPresu(); });
+  el.querySelectorAll('tr.rub').forEach(tr=>tr.onclick=e=>{ if(e.target.closest('[data-info],a,.sn,button')) return; const c=tr.dataset.rub; if(c==='__ex'){ PR.cerrados.__ex=!PR.cerrados.__ex; renderPresu(); return; } const xs=porCat[c]; const ab = !(c in PR.cerrados ? PR.cerrados[c] : !xs.some(x=>x.min>0 || x.tra>0)); PR.cerrados[c]=ab; renderPresu(); });
+  // v12: egresos extra a mano
+  const nuevoEx = ()=>{ const id=Date.now().toString(36); PR.egExtra.push({id, nom:'', emp:empsEx[0], monto:0, nota:'', si:true, por:USUARIO.nombre||''}); PR.cerrados.__ex=false; renderPresu(); setTimeout(()=>{ const n=el.querySelector(`input.exn[data-exid="${id}"]`); if(n) n.focus(); },0); };
+  el.querySelectorAll('#prExAdd,#prExAdd2').forEach(b=>b.onclick=nuevoEx);
+  el.querySelectorAll('[data-exid][data-f]').forEach(inp=>inp.onchange=()=>{ const x=PR.egExtra.find(z=>z.id===inp.dataset.exid); if(!x) return; const f=inp.dataset.f;
+    if(f==='monto'){ const v=parseNum(inp.value); if(Number.isNaN(v)){ toast('Número no válido'); return; } x.monto=v||0; }
+    else if(f==='nom'){ x.nom=inp.value.trim(); const p=conceptosUsados().get(x.nom.toLowerCase()); if(p && !x.monto){ x.monto=+p.monto||0; if(p.emp && empsEx.includes(p.emp)) x.emp=p.emp; if(x.monto) toast('Traje el último monto de "'+p.nom+'": '+money(x.monto)+' (podés cambiarlo)'); } }
+    else x[f]=inp.value.trim();
+    renderPresu(); if(f==='nom'){ setTimeout(()=>{ const n=el.querySelector(`input.exm[data-exid="${CSS.escape(x.id)}"]`); if(n){ n.focus(); n.select(); } },0); } });
+  el.querySelectorAll('[data-exdel]').forEach(b=>b.onclick=()=>{ PR.egExtra=PR.egExtra.filter(z=>z.id!==b.dataset.exdel); renderPresu(); });
+  el.querySelectorAll('.sn[data-exsn] button').forEach(b=>b.onclick=()=>{ const x=PR.egExtra.find(z=>z.id===b.parentNode.dataset.exsn); if(x){ x.si = b.dataset.v==='1'; renderPresu(); } });
+  el.querySelectorAll('.sn[data-exrub] button').forEach(b=>b.onclick=e=>{ e.stopPropagation(); PR.egExtra.forEach(x=>x.si = b.dataset.v==='1'); renderPresu(); });
+  // v12: traer de la deuda
+  el.querySelector('#prTraer').onclick = ()=>abrirTraer();
+  el.querySelectorAll('[data-untraerk]').forEach(a=>a.onclick=e=>{ e.preventDefault(); const x=grupos.find(z=>z.k===a.dataset.untraerk); if(x) x.its.filter(i=>i._tra).forEach(i=>delete PR.traer[i._tk]); delete PR.montos[a.dataset.untraerk]; if(PR.cuo[a.dataset.untraerk]) delete PR.cuo[a.dataset.untraerk]; renderPresu(); });
   const tg = el.querySelector('#prTg'); tg.ontoggle = ()=>{ PR.tgAbierto = tg.open; };
   el.querySelectorAll('input[data-tk]').forEach(c=>c.onchange=()=>{ PR.tengo[c.dataset.tk]=c.checked; PR.tgAbierto=true; renderPresu(); });
   el.querySelectorAll('input[data-tm]').forEach(inp=>inp.onchange=()=>{ const v=parseNum(inp.value); if(Number.isNaN(v)){ toast('Número no válido'); return; }
@@ -2033,14 +2110,14 @@ function renderPresu(){
   el.querySelectorAll('[data-cuonada]').forEach(b=>b.onclick=()=>{ const k=b.dataset.cuonada; PR.cuo[k]=[]; PR.sel[k]=false; delete PR.montos[k]; renderPresu(); });
   el.querySelectorAll('[data-cuoreset]').forEach(a=>a.onclick=e=>{ e.preventDefault(); const k=a.dataset.cuoreset; delete PR.cuo[k]; delete PR.sel[k]; delete PR.montos[k]; renderPresu(); });
   el.querySelectorAll('.sn[data-rubsn] button').forEach(b=>b.onclick=e=>{ e.stopPropagation(); const c=b.parentNode.dataset.rubsn, v=b.dataset.v==='1'; porCat[c].forEach(x=>{ PR.sel[x.k]=v; if(v && PR.cuo[x.k] && !PR.cuo[x.k].length) delete PR.cuo[x.k]; }); renderPresu(); });
-  el.querySelectorAll('input.ap').forEach(inp=>inp.onchange=()=>{ const v=parseNum(inp.value); if(Number.isNaN(v)){ toast('Número no válido'); return; } PR.montos[inp.dataset.k]=v||0; delete PR.cuo[inp.dataset.k]; setTimeout(()=>{ const a=document.activeElement, k=a&&a.dataset?a.dataset.k:null; renderPresu(); if(k){ const n=el.querySelector(`input.ap[data-k="${CSS.escape(k)}"]`); if(n){ n.focus(); n.select(); } } },0); });
+  el.querySelectorAll('input.ap:not(.exm)').forEach(inp=>inp.onchange=()=>{ const v=parseNum(inp.value); if(Number.isNaN(v)){ toast('Número no válido'); return; } PR.montos[inp.dataset.k]=v||0; delete PR.cuo[inp.dataset.k]; setTimeout(()=>{ const a=document.activeElement, k=a&&a.dataset?a.dataset.k:null; renderPresu(); if(k){ const n=el.querySelector(`input.ap[data-k="${CSS.escape(k)}"]`); if(n){ n.focus(); n.select(); } } },0); });
   const bg = el.querySelector('#prGuardar');
   if(bg) bg.onclick = async ()=>{
     bg.disabled = true;
     try{
       const db = CONECTADO ? ((await sbLeer(ROW_PRESU).catch(()=>null)) || {}) : {};
-      const reg = {desde:PR.desde, hasta:PR.hasta, emp:st.emp, montos:{}, sel:{}, cuo:JSON.parse(JSON.stringify(PR.cuo)), tengo:{}, tgMonto:{...PR.tgMonto}, tgExtra:PR.tgExtra.map(x=>({...x})), por:USUARIO.nombre||'', en:new Date().toISOString(),
-        totales:{tengo, atrasado:atr, vence:per, minimo:min, apagar:ap}};
+      const reg = {desde:PR.desde, hasta:PR.hasta, emp:st.emp, montos:{}, sel:{}, cuo:JSON.parse(JSON.stringify(PR.cuo)), tengo:{}, tgMonto:{...PR.tgMonto}, tgExtra:PR.tgExtra.map(x=>({...x})), traer:{...PR.traer}, egExtra:PR.egExtra.map(x=>({...x})), por:USUARIO.nombre||'', en:new Date().toISOString(),
+        totales:{tengo, atrasado:atr, vence:per, traido:tra, extras:exAp, minimo:min, apagar:ap}};
       TL.forEach(l=>{ reg.tengo[l.k] = l.on; });
       grupos.forEach(x=>{ reg.sel[x.k] = x.si; if(x.si) reg.montos[x.k] = x.apagar; else if(x.k in PR.montos) reg.montos[x.k] = PR.montos[x.k]; });
       db[prClave()] = reg;
@@ -2049,15 +2126,51 @@ function renderPresu(){
     }catch(e){ toast('No se pudo guardar: '+e.message); bg.disabled=false; }
   };
 }
+// v12: ventana para elegir cuotas de la deuda que vencen después del "hasta"
+const TR = {q:'', cat:''};
+function abrirTraer(){
+  presuInit(); asignarTk();
+  const m = document.getElementById('modal');
+  document.getElementById('mTitle').textContent = 'Traer de la deuda al presupuesto ('+(PR.desde===PR.hasta?fdate(PR.desde):fdate(PR.desde)+' al '+fdate(PR.hasta))+')';
+  dibujarTraer(); if(!m.open) m.showModal(); m.querySelector('.mb').scrollTop = 0;
+}
+function dibujarTraer(){
+  const body = document.getElementById('mBody');
+  const todas = ITEMS.filter(it=>deudaTraible(it) && (it.vto||it.fp)>PR.hasta);
+  const cats = [...new Set(todas.map(i=>i.cat))].sort((a,b)=>EGR_ORDEN.indexOf(a)-EGR_ORDEN.indexOf(b));
+  const q = TR.q.trim().toLowerCase();
+  let its = todas.filter(it=>(!TR.cat || it.cat===TR.cat) && (!q || (it.det+' '+it.grupo+' '+it.cat+' '+it.emp).toLowerCase().includes(q)));
+  its.sort((a,b)=>EGR_ORDEN.indexOf(a.cat)-EGR_ORDEN.indexOf(b.cat) || String(a.emp).localeCompare(b.emp) || String(a.grupo||'').localeCompare(String(b.grupo||''),'es') || ((a.vto||a.fp)<(b.vto||b.fp)?-1:1));
+  const LIM = 400, nSel = Object.keys(PR.traer).length;
+  const selTot = todas.filter(i=>PR.traer[i._tk]).reduce((s,i)=>s+i.monto,0);
+  let o = `<p class="hint" style="margin-top:0">Cuotas y facturas pendientes que vencen <b>después del ${fdate(PR.hasta)}</b>. Lo que tildes entra al presupuesto con Sí (acordate de <b>Guardar presupuesto</b>). Lo atrasado y lo que vence en el período ya está adentro.</p>
+  <div class="trbox"><input type="search" id="trq" placeholder="Buscar persona, plan, acreedor…" value="${esc(TR.q)}">
+  <select id="trcat"><option value="">Todos los rubros</option>${cats.map(c=>`<option ${TR.cat===c?'selected':''}>${esc(c)}</option>`).join('')}</select>
+  <span><b>${nSel}</b> traída${nSel===1?'':'s'} · <b>${money(selTot)}</b></span>${nSel?' <button class="btn" type="button" id="trNada">Sacar todas</button>':''}</div><div class="trl">`;
+  let ug = null;
+  its.slice(0,LIM).forEach(it=>{ const gk = it.cat+'|'+it.emp+'|'+(it.grupo||'');
+    if(gk!==ug){ ug=gk; const del = todas.filter(i=>i.cat+'|'+i.emp+'|'+(i.grupo||'')===gk); o += `<div class="g">${esc(it.grupo||it.det||'—')} <span class="hint">· ${esc(it.cat)} · ${esc(it.emp)} · ${del.length} pendiente${del.length===1?'':'s'} ${money(del.reduce((s,i)=>s+i.monto,0))}</span></div>`; }
+    const on = !!PR.traer[it._tk], v = it.vto||it.fp;
+    const det = (it.det||'').startsWith(it.grupo||'\u0000') ? (it.det||'').slice((it.grupo||'').length).replace(/^\s*·\s*/,'') : (it.det||'');
+    o += `<label class="${on?'on':''}"><input type="checkbox" data-trk="${esc(it._tk)}" ${on?'checked':''}> <span>${esc(det||'cuota')}</span> <span class="cv">vence ${fdate(v)}</span> <span class="cm">${money(it.monto)}</span></label>`; });
+  if(!its.length) o += `<p>No hay deudas pendientes después del ${fdate(PR.hasta)} con este filtro.</p>`;
+  if(its.length>LIM) o += `<p class="hint">Hay ${its.length}; se muestran ${LIM}. Buscá por nombre para encontrar la que querés.</p>`;
+  body.innerHTML = o + `</div>`;
+  const q0 = body.querySelector('#trq'); q0.oninput = e=>{ TR.q = e.target.value; dibujarTraer(); const n=document.getElementById('trq'); n.focus(); n.setSelectionRange(n.value.length,n.value.length); };
+  body.querySelector('#trcat').onchange = e=>{ TR.cat = e.target.value; dibujarTraer(); };
+  const tn = body.querySelector('#trNada'); if(tn) tn.onclick = ()=>{ PR.traer = {}; dibujarTraer(); if(st.tab==='presu') renderPresu(); };
+  body.querySelectorAll('input[data-trk]').forEach(c=>c.onchange=()=>{ if(c.checked) PR.traer[c.dataset.trk]=true; else delete PR.traer[c.dataset.trk]; dibujarTraer(); if(st.tab==='presu') renderPresu(); });
+}
 function cargarGuardado(g){
   PR.montos = {...(g.montos||{})};
   PR.cuo = JSON.parse(JSON.stringify(g.cuo||{}));
   PR.tengo = {...(g.tengo||{})};
   PR.tgMonto = {...(g.tgMonto||{})}; PR.tgExtra = (g.tgExtra||[]).map(x=>({...x}));
+  PR.traer = {...(g.traer||{})}; PR.egExtra = (g.egExtra||[]).map(x=>({...x}));
   if(g.sel) PR.sel = {...g.sel};
   else { PR.sel = {}; Object.entries(PR.montos).forEach(([k,v])=>{ PR.sel[k] = v>0; }); }
 }
-function cambiarRango(){ PR.montos={}; PR.sel={}; PR.cuo={}; PR.tengo={}; PR.tgMonto={}; PR.tgExtra=[]; const g = PRESU_DB && PRESU_DB[prClave()]; if(g) cargarGuardado(g); PR.guardado=g||null; renderPresu(); }
+function cambiarRango(){ PR.montos={}; PR.sel={}; PR.cuo={}; PR.tengo={}; PR.tgMonto={}; PR.tgExtra=[]; PR.traer={}; PR.egExtra=[]; const g = PRESU_DB && PRESU_DB[prClave()]; if(g) cargarGuardado(g); PR.guardado=g||null; renderPresu(); }
 
 /* ---------- Ayuda / instructivo ---------- */
 function renderAyuda(){
@@ -2107,6 +2220,9 @@ function renderAyuda(){
     <li>Sueldos, cargas, cheques propios y excedidos de acuerdo van completos; impuestos y deudas ARCA, lo que vence; el resto queda en 0 para decidir.</li>
     <li>Columna <b>¿Pagar?</b>: marcá <b>Sí</b> o <b>No</b> en cada fila (o en el rubro para todo junto). No deja la fila en 0 sin tocar el monto; Sí la vuelve a sumar (el mínimo, o el total si el mínimo es 0).</li>
     <li><b>Elegir cuotas</b>: en cada plan o acreedor con más de una cuota, abrí "Elegir cuotas" y tildá solo las que vas a pagar (las atrasadas, las del período o hasta 3 próximas para adelantar). "A pagar" queda en la suma de lo tildado y en créditos y planes ARCA te avisa cuántas quedarían impagas.</li>
+    <li><b>+ Traer de la deuda</b>: para pagar algo que vence más adelante (por ejemplo una cuota de una desvinculación). Se abre la lista de todo lo pendiente que vence después del "hasta"; buscá y tildá. También podés tildar <b>traer</b> en la última columna de la solapa Detalle de deudas. Lo traído entra en su plan o acreedor con Sí, suma en "A pagar" (no en el mínimo) y se saca con "sacar" o destildando.</li>
+    <li><b>Extras a mano</b> (primera fila de la tabla, o botón <b>+ Egreso extra</b>): pagos que no están en el Excel, como retiro de socios, moto, limpieza o panadería. Poné concepto, empresa, monto y una nota si querés. El concepto te sugiere los que ya usaste y trae el último monto. Los que están en Sí suman en "A pagar" y en el mínimo.</li>
+    <li>Lo traído y los extras se guardan con el presupuesto; no cambian la deuda ni Caja y Bancos.</li>
     <li>Si querés un pago parcial, cambiá el monto de "A pagar" en la fila y los totales se recalculan. <b>Guardar presupuesto</b> lo deja guardado para ese día y empresa.</li>
   </ul>
   <h3>Ordenar tablas</h3>
